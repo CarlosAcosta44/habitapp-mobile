@@ -5,9 +5,10 @@ Este documento detalla el plan de acción para construir `HabitAppFrontend`. El 
 ## Sprint 1: Setup Base, Onboarding y Autenticación
 **Objetivo:** Tener la app configurada (Riverpod, Dio, GoRouter) y con todo el flujo de ingreso funcionando (registro, login, almacenamiento de JWT).
 
-*   **Carlos (Setup y Lógica Auth):** 
-    *   Crea el proyecto Flutter y estructura las carpetas según `arquitectura_base.md`.
-    *   Implementa `AuthRepository` (capa data) y `AuthProvider` (Riverpod) para conectar con NestJS.
+*   **Carlos (Setup y Lógica Auth):** ✅ **COMPLETADO**
+    *   [x] Crea el proyecto Flutter y estructura las carpetas según `arquitectura_base.md`.
+    *   [x] Implementa `AuthRepository` (capa data) y `AuthProvider` (Riverpod) para conectar con NestJS. (Incluye Login Social Nativo).
+    *   [x] *(Adelanto Sprint 2)* Implementa `ProfileRepository` y `ProfileNotifier` (Tarea 47 - Gestor global del perfil).
 *   **Breiner (Infraestructura HTTP y UI Base):** 
     *   Configura el cliente HTTP (Dio) con interceptores para inyectar y renovar tokens.
     *   Maqueta el carrusel y las pantallas de bienvenida (`1.Pre-inicio`).
