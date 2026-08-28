@@ -38,6 +38,33 @@ class AuthRepository {
       throw Exception(e.response?.data['message'] ?? 'Error al registrarse');
     }
   }
+
+  // --- SOCIAL LOGIN ---
+
+  Future<String> loginWithGoogle(String idToken) async {
+    try {
+      final response = await _dio.post('/auth/google/token', data: {
+        'token': idToken,
+      });
+      // El backend devuelve { "access_token": "..." } y setea el refresh_token en cookie
+      return response.data['access_token'] as String;
+    } on DioException catch (e) {
+      throw Exception(
+          e.response?.data['message'] ?? 'Error al iniciar sesión con Google');
+    }
+  }
+
+  Future<String> loginWithApple(String identityToken) async {
+    try {
+      final response = await _dio.post('/auth/apple/token', data: {
+        'token': identityToken,
+      });
+      return response.data['access_token'] as String;
+    } on DioException catch (e) {
+      throw Exception(
+          e.response?.data['message'] ?? 'Error al iniciar sesión con Apple');
+    }
+  }
 }
 
 @riverpod
