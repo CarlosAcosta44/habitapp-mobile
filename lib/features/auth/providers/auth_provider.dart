@@ -1,5 +1,7 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:google_sign_in/google_sign_in.dart';
+import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 import '../../../core/network/dio_client.dart';
 import '../data/auth_repository.dart';
 
@@ -57,5 +59,70 @@ class AuthNotifier extends _$AuthNotifier {
   Future<void> logout() async {
     await _storage.delete(key: 'access_token');
     state = const AsyncValue.data(false);
+  }
+
+  // --- SOCIAL LOGIN ---
+
+  Future<void> signInWithGoogle() async {
+    try {
+      state = const AsyncValue.loading();
+      
+      final GoogleSignIn googleSignIn = GoogleSignIn(
+        // clientId: 'PONER_AQUI_CLIENT_ID_SI_ES_IOS', // TODO: Configurar iOS si es necesario
+      );
+      
+      final GoogleSignInAccount? googleUser = await googleSignIn.signIn();
+      
+      if (googleUser == null) {
+        state = const AsyncValue.data(false); // Cancelado por el usuario
+        return;
+      }
+      
+      final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
+      final idToken = googleAuth.idToken;
+      
+      if (idToken == null) {
+        throw Exception('No se pudo obtener el ID Token de Google');
+      }
+      
+      final authRepo = ref.read(authRepositoryProvider);
+      final accessToken = await authRepo.loginWithGoogle(idToken);
+      
+      final secureStorage = ref.read(secureStorageProvider);
+      await secureStorage.write(key: 'access_token', value: accessToken);
+      
+      state = const AsyncValue.data(true);
+    } catch (e, st) {
+      state = AsyncValue.error(e, st);
+    }
+  }
+
+  Future<void> signInWithApple() async {
+    try {
+      state = const AsyncValue.loading();
+      
+      final AuthorizationCredentialAppleID credential = await SignInWithApple.getAppleIDCredential(
+        scopes: [
+          AppleIDAuthorizationScopes.email,
+          AppleIDAuthorizationScopes.fullName,
+        ],
+      );
+      
+      final identityToken = credential.identityToken;
+      
+      if (identityToken == null) {
+        throw Exception('No se pudo obtener el Identity Token de Apple');
+      }
+      
+      final authRepo = ref.read(authRepositoryProvider);
+      final accessToken = await authRepo.loginWithApple(identityToken);
+      
+      final secureStorage = ref.read(secureStorageProvider);
+      await secureStorage.write(key: 'access_token', value: accessToken);
+      
+      state = const AsyncValue.data(true);
+    } catch (e, st) {
+      state = AsyncValue.error(e, st);
+    }
   }
 }
