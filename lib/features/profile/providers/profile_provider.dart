@@ -1,5 +1,5 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-import '../domain/user_profile.dart';
+import '../data/models/user_profile.dart';
 import '../data/profile_repository.dart';
 
 part 'profile_provider.g.dart';

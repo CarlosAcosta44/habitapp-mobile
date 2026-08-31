@@ -2,7 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/network/dio_client.dart';
-import '../domain/user_profile.dart';
+import 'models/user_profile.dart';
 
 part 'profile_repository.g.dart';
 
