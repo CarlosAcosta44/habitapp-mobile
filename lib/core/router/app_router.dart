@@ -5,6 +5,8 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 import '../../features/auth/presentation/screens/login_screen.dart';
 import '../../features/auth/presentation/screens/splash_screen.dart';
 import '../../features/auth/providers/auth_provider.dart';
+import '../../features/onboarding/presentation/screens/onboarding_screen.dart';
+import '../../features/onboarding/providers/onboarding_provider.dart';
 
 part 'app_router.g.dart';
 
@@ -22,6 +24,10 @@ GoRouter appRouter(Ref ref) {
         builder: (context, state) => const SplashScreen(),
       ),
       GoRoute(
+        path: '/onboarding',
+        builder: (context, state) => const OnboardingScreen(),
+      ),
+      GoRoute(
         path: '/login',
         builder: (context, state) => const LoginScreen(),
       ),
@@ -36,11 +42,19 @@ GoRouter appRouter(Ref ref) {
     ],
     redirect: (context, state) {
       final authState = ref.read(authProvider);
+      final onboardingState = ref.read(onboardingProvider);
+      
       final isGoingToSplash = state.matchedLocation == '/splash';
+      final isGoingToOnboarding = state.matchedLocation == '/onboarding';
 
       // Si el estado está cargando, forzamos la pantalla de Splash
-      if (authState.isLoading) {
+      if (authState.isLoading || onboardingState.isLoading) {
         return isGoingToSplash ? null : '/splash';
+      }
+
+      final hasSeenOnboarding = onboardingState.value ?? false;
+      if (!hasSeenOnboarding) {
+        return isGoingToOnboarding ? null : '/onboarding';
       }
 
       final isAuthenticated = authState.value ?? false;
@@ -51,8 +65,8 @@ GoRouter appRouter(Ref ref) {
         return '/login';
       }
 
-      // Redirigir al inicio si ya está autenticado e intenta ir al login o al splash
-      if (isAuthenticated && (isGoingToLogin || isGoingToSplash)) {
+      // Redirigir al inicio si ya está autenticado e intenta ir al login o al splash/onboarding
+      if (isAuthenticated && (isGoingToLogin || isGoingToSplash || isGoingToOnboarding)) {
         return '/';
       }
 
@@ -65,7 +79,11 @@ GoRouter appRouter(Ref ref) {
 class _NotifierListenable extends ChangeNotifier {
   _NotifierListenable(Ref ref) {
     ref.listen(authProvider, (previous, next) {
-      // Solo notificamos al Router si el valor real (bool) cambió, ignorando estados de loading si no cambian el resultado.
+      if (previous?.value != next.value) {
+        notifyListeners();
+      }
+    });
+    ref.listen(onboardingProvider, (previous, next) {
       if (previous?.value != next.value) {
         notifyListeners();
       }
