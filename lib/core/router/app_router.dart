@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../../features/auth/presentation/screens/login_screen.dart';
+import '../../features/auth/presentation/screens/splash_screen.dart';
 import '../../features/auth/providers/auth_provider.dart';
 
 part 'app_router.g.dart';
@@ -13,9 +14,13 @@ GoRouter appRouter(Ref ref) {
   final listenable = _NotifierListenable(ref);
 
   return GoRouter(
-    initialLocation: '/login',
+    initialLocation: '/splash',
     refreshListenable: listenable,
     routes: [
+      GoRoute(
+        path: '/splash',
+        builder: (context, state) => const SplashScreen(),
+      ),
       GoRoute(
         path: '/login',
         builder: (context, state) => const LoginScreen(),
@@ -31,20 +36,23 @@ GoRouter appRouter(Ref ref) {
     ],
     redirect: (context, state) {
       final authState = ref.read(authProvider);
+      final isGoingToSplash = state.matchedLocation == '/splash';
 
-      // Si el estado está cargando, mantenemos al usuario donde está hasta que resuelva
-      if (authState.isLoading) return null;
+      // Si el estado está cargando, forzamos la pantalla de Splash
+      if (authState.isLoading) {
+        return isGoingToSplash ? null : '/splash';
+      }
 
       final isAuthenticated = authState.value ?? false;
       final isGoingToLogin = state.matchedLocation == '/login';
 
-      // Redirigir a login si no está autenticado e intenta ir a otra parte
+      // Redirigir a login si no está autenticado e intenta ir a otra parte que no sea login
       if (!isAuthenticated && !isGoingToLogin) {
         return '/login';
       }
 
-      // Redirigir al inicio si ya está autenticado e intenta ir al login
-      if (isAuthenticated && isGoingToLogin) {
+      // Redirigir al inicio si ya está autenticado e intenta ir al login o al splash
+      if (isAuthenticated && (isGoingToLogin || isGoingToSplash)) {
         return '/';
       }
 
