@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 /// SplashScreen — Pantalla de carga inicial mientras se resuelve
 /// el estado de autenticación y el flag de onboarding.
