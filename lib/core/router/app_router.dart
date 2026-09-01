@@ -68,10 +68,11 @@ GoRouter appRouter(Ref ref) {
         return isAtOnboarding ? null : '/onboarding';
       }
 
-      // 3. Si no está autenticado → solo puede estar en login o register
+      // 3. Si no está autenticado → puede estar en login, register u onboarding
+      //    (onboarding es accesible como "pantalla de atrás" desde login)
       final isAuthenticated = authState.value ?? false;
       if (!isAuthenticated) {
-        if (isAtLogin || isAtRegister) return null;
+        if (isAtLogin || isAtRegister || isAtOnboarding) return null;
         return '/login';
       }
 
