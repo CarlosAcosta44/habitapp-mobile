@@ -342,17 +342,16 @@ class _IllustrationSlide extends StatelessWidget {
 }
 
 class _FloatItem extends StatelessWidget {
-  final double? top, left, right, bottom;
+  final double? top, left, right;
   final Widget child;
 
-  const _FloatItem({this.top, this.left, this.right, this.bottom, required this.child});
+  const _FloatItem({this.top, this.left, this.right, required this.child});
 
   @override
   Widget build(BuildContext context) => Positioned(
         top: top,
         left: left,
         right: right,
-        bottom: bottom,
         child: child,
       );
 }

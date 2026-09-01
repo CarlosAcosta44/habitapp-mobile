@@ -25,6 +25,18 @@ class ProfileNotifier extends _$ProfileNotifier {
     state = const AsyncValue.loading();
     state = await AsyncValue.guard(() => _fetchProfile());
   }
+
+  Future<void> updateProfile(Map<String, dynamic> data) async {
+    state = const AsyncValue.loading();
+    try {
+      final repository = ref.read(profileRepositoryProvider);
+      final updatedProfile = await repository.updateProfile(data);
+      state = AsyncValue.data(updatedProfile);
+    } catch (e, st) {
+      state = AsyncValue.error(e, st);
+      rethrow;
+    }
+  }
   
   void clearProfile() {
     state = const AsyncValue.data(null);

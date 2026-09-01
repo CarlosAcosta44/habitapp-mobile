@@ -7,6 +7,7 @@ import '../../features/auth/presentation/screens/splash_screen.dart';
 import '../../features/auth/providers/auth_provider.dart';
 import '../../features/onboarding/presentation/screens/onboarding_screen.dart';
 import '../../features/onboarding/providers/onboarding_provider.dart';
+import '../../features/profile/presentation/screens/edit_profile_screen.dart';
 
 part 'app_router.g.dart';
 
@@ -45,6 +46,10 @@ GoRouter appRouter(Ref ref) {
             child: Text('Dashboard — (En construcción)'),
           ),
         ),
+      ),
+      GoRoute(
+        path: '/profile/edit',
+        builder: (context, state) => const EditProfileScreen(),
       ),
     ],
     redirect: (context, state) {
