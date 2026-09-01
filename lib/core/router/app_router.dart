@@ -5,12 +5,13 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 import '../../features/auth/presentation/screens/login_screen.dart';
 import '../../features/auth/presentation/screens/splash_screen.dart';
 import '../../features/auth/providers/auth_provider.dart';
+import '../../features/onboarding/presentation/screens/onboarding_screen.dart';
+import '../../features/onboarding/providers/onboarding_provider.dart';
 
 part 'app_router.g.dart';
 
 @riverpod
 GoRouter appRouter(Ref ref) {
-  // Creamos un Listenable que notifique a GoRouter cuando el estado de autenticación cambie.
   final listenable = _NotifierListenable(ref);
 
   return GoRouter(
@@ -22,37 +23,61 @@ GoRouter appRouter(Ref ref) {
         builder: (context, state) => const SplashScreen(),
       ),
       GoRoute(
+        path: '/onboarding',
+        builder: (context, state) => const OnboardingScreen(),
+      ),
+      GoRoute(
         path: '/login',
         builder: (context, state) => const LoginScreen(),
+      ),
+      GoRoute(
+        path: '/register',
+        builder: (context, state) => const Scaffold(
+          body: Center(
+            child: Text('Crear cuenta — (En construcción)'),
+          ),
+        ),
       ),
       GoRoute(
         path: '/',
         builder: (context, state) => const Scaffold(
           body: Center(
-            child: Text('Dashboard - (En construcción)'),
+            child: Text('Dashboard — (En construcción)'),
           ),
         ),
       ),
     ],
     redirect: (context, state) {
       final authState = ref.read(authProvider);
-      final isGoingToSplash = state.matchedLocation == '/splash';
+      final onboardingState = ref.read(onboardingProvider);
 
-      // Si el estado está cargando, forzamos la pantalla de Splash
-      if (authState.isLoading) {
-        return isGoingToSplash ? null : '/splash';
+      final loc = state.matchedLocation;
+      final isAtSplash = loc == '/splash';
+      final isAtOnboarding = loc == '/onboarding';
+      final isAtLogin = loc == '/login';
+      final isAtRegister = loc == '/register';
+
+      // 1. Mientras cargan los providers → mantener en Splash
+      if (authState.isLoading || onboardingState.isLoading) {
+        return isAtSplash ? null : '/splash';
       }
 
-      final isAuthenticated = authState.value ?? false;
-      final isGoingToLogin = state.matchedLocation == '/login';
+      // 2. Si NO vio el onboarding → siempre al onboarding
+      final hasSeenOnboarding = onboardingState.value ?? false;
+      if (!hasSeenOnboarding) {
+        return isAtOnboarding ? null : '/onboarding';
+      }
 
-      // Redirigir a login si no está autenticado e intenta ir a otra parte que no sea login
-      if (!isAuthenticated && !isGoingToLogin) {
+      // 3. Si no está autenticado → puede estar en login, register u onboarding
+      //    (onboarding es accesible como "pantalla de atrás" desde login)
+      final isAuthenticated = authState.value ?? false;
+      if (!isAuthenticated) {
+        if (isAtLogin || isAtRegister || isAtOnboarding) return null;
         return '/login';
       }
 
-      // Redirigir al inicio si ya está autenticado e intenta ir al login o al splash
-      if (isAuthenticated && (isGoingToLogin || isGoingToSplash)) {
+      // 4. Si ya está autenticado → no puede volver a pantallas de auth
+      if (isAuthenticated && (isAtLogin || isAtRegister || isAtSplash || isAtOnboarding)) {
         return '/';
       }
 
@@ -61,14 +86,15 @@ GoRouter appRouter(Ref ref) {
   );
 }
 
-/// Helper para convertir un Provider en un Listenable para el GoRouter
+/// Puente Riverpod → GoRouter para que el router reaccione
+/// a cambios de estado de autenticación y onboarding.
 class _NotifierListenable extends ChangeNotifier {
   _NotifierListenable(Ref ref) {
-    ref.listen(authProvider, (previous, next) {
-      // Solo notificamos al Router si el valor real (bool) cambió, ignorando estados de loading si no cambian el resultado.
-      if (previous?.value != next.value) {
-        notifyListeners();
-      }
+    ref.listen(authProvider, (prev, next) {
+      if (prev?.value != next.value) notifyListeners();
+    });
+    ref.listen(onboardingProvider, (prev, next) {
+      if (prev?.value != next.value) notifyListeners();
     });
   }
 }
