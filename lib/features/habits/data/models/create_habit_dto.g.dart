@@ -33,4 +33,5 @@ Map<String, dynamic> _$CreateHabitDtoToJson(_CreateHabitDto instance) =>
       'metaDiaria': instance.metaDiaria,
       'unidadMedida': instance.unidadMedida,
       'idCategoria': instance.idCategoria,
+      'diasSemana': instance.diasSemana,
     };
