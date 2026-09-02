@@ -16,7 +16,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$HabitModel {
 
- String get id; String get nombre; String? get descripcion; int get puntos; double get metaDiaria; String get unidadMedida; String? get idCategoria; CategoryModel? get categoria; bool get completadoHoy; double get progresoHoy; int get rachaActual; String? get fechaInicio; String? get fechaFin;
+ String get id; String get nombre; String? get descripcion; int get puntos; double get metaDiaria; String get unidadMedida; String? get idCategoria; CategoryModel? get categoria; bool get completadoHoy; double get progresoHoy; int get rachaActual; String? get fechaInicio; String? get fechaFin; List<int> get diasSemana;
 /// Create a copy of HabitModel
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -29,16 +29,16 @@ $HabitModelCopyWith<HabitModel> get copyWith => _$HabitModelCopyWithImpl<HabitMo
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is HabitModel&&(identical(other.id, id) || other.id == id)&&(identical(other.nombre, nombre) || other.nombre == nombre)&&(identical(other.descripcion, descripcion) || other.descripcion == descripcion)&&(identical(other.puntos, puntos) || other.puntos == puntos)&&(identical(other.metaDiaria, metaDiaria) || other.metaDiaria == metaDiaria)&&(identical(other.unidadMedida, unidadMedida) || other.unidadMedida == unidadMedida)&&(identical(other.idCategoria, idCategoria) || other.idCategoria == idCategoria)&&(identical(other.categoria, categoria) || other.categoria == categoria)&&(identical(other.completadoHoy, completadoHoy) || other.completadoHoy == completadoHoy)&&(identical(other.progresoHoy, progresoHoy) || other.progresoHoy == progresoHoy)&&(identical(other.rachaActual, rachaActual) || other.rachaActual == rachaActual)&&(identical(other.fechaInicio, fechaInicio) || other.fechaInicio == fechaInicio)&&(identical(other.fechaFin, fechaFin) || other.fechaFin == fechaFin));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is HabitModel&&(identical(other.id, id) || other.id == id)&&(identical(other.nombre, nombre) || other.nombre == nombre)&&(identical(other.descripcion, descripcion) || other.descripcion == descripcion)&&(identical(other.puntos, puntos) || other.puntos == puntos)&&(identical(other.metaDiaria, metaDiaria) || other.metaDiaria == metaDiaria)&&(identical(other.unidadMedida, unidadMedida) || other.unidadMedida == unidadMedida)&&(identical(other.idCategoria, idCategoria) || other.idCategoria == idCategoria)&&(identical(other.categoria, categoria) || other.categoria == categoria)&&(identical(other.completadoHoy, completadoHoy) || other.completadoHoy == completadoHoy)&&(identical(other.progresoHoy, progresoHoy) || other.progresoHoy == progresoHoy)&&(identical(other.rachaActual, rachaActual) || other.rachaActual == rachaActual)&&(identical(other.fechaInicio, fechaInicio) || other.fechaInicio == fechaInicio)&&(identical(other.fechaFin, fechaFin) || other.fechaFin == fechaFin)&&const DeepCollectionEquality().equals(other.diasSemana, diasSemana));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,nombre,descripcion,puntos,metaDiaria,unidadMedida,idCategoria,categoria,completadoHoy,progresoHoy,rachaActual,fechaInicio,fechaFin);
+int get hashCode => Object.hash(runtimeType,id,nombre,descripcion,puntos,metaDiaria,unidadMedida,idCategoria,categoria,completadoHoy,progresoHoy,rachaActual,fechaInicio,fechaFin,const DeepCollectionEquality().hash(diasSemana));
 
 @override
 String toString() {
-  return 'HabitModel(id: $id, nombre: $nombre, descripcion: $descripcion, puntos: $puntos, metaDiaria: $metaDiaria, unidadMedida: $unidadMedida, idCategoria: $idCategoria, categoria: $categoria, completadoHoy: $completadoHoy, progresoHoy: $progresoHoy, rachaActual: $rachaActual, fechaInicio: $fechaInicio, fechaFin: $fechaFin)';
+  return 'HabitModel(id: $id, nombre: $nombre, descripcion: $descripcion, puntos: $puntos, metaDiaria: $metaDiaria, unidadMedida: $unidadMedida, idCategoria: $idCategoria, categoria: $categoria, completadoHoy: $completadoHoy, progresoHoy: $progresoHoy, rachaActual: $rachaActual, fechaInicio: $fechaInicio, fechaFin: $fechaFin, diasSemana: $diasSemana)';
 }
 
 
@@ -49,7 +49,7 @@ abstract mixin class $HabitModelCopyWith<$Res>  {
   factory $HabitModelCopyWith(HabitModel value, $Res Function(HabitModel) _then) = _$HabitModelCopyWithImpl;
 @useResult
 $Res call({
- String id, String nombre, String? descripcion, int puntos, double metaDiaria, String unidadMedida, String? idCategoria, CategoryModel? categoria, bool completadoHoy, double progresoHoy, int rachaActual, String? fechaInicio, String? fechaFin
+ String id, String nombre, String? descripcion, int puntos, double metaDiaria, String unidadMedida, String? idCategoria, CategoryModel? categoria, bool completadoHoy, double progresoHoy, int rachaActual, String? fechaInicio, String? fechaFin, List<int> diasSemana
 });
 
 
@@ -66,7 +66,7 @@ class _$HabitModelCopyWithImpl<$Res>
 
 /// Create a copy of HabitModel
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? nombre = null,Object? descripcion = freezed,Object? puntos = null,Object? metaDiaria = null,Object? unidadMedida = null,Object? idCategoria = freezed,Object? categoria = freezed,Object? completadoHoy = null,Object? progresoHoy = null,Object? rachaActual = null,Object? fechaInicio = freezed,Object? fechaFin = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? nombre = null,Object? descripcion = freezed,Object? puntos = null,Object? metaDiaria = null,Object? unidadMedida = null,Object? idCategoria = freezed,Object? categoria = freezed,Object? completadoHoy = null,Object? progresoHoy = null,Object? rachaActual = null,Object? fechaInicio = freezed,Object? fechaFin = freezed,Object? diasSemana = null,}) {
   return _then(HabitModel(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,nombre: null == nombre ? _self.nombre : nombre // ignore: cast_nullable_to_non_nullable
@@ -81,7 +81,8 @@ as bool,progresoHoy: null == progresoHoy ? _self.progresoHoy : progresoHoy // ig
 as double,rachaActual: null == rachaActual ? _self.rachaActual : rachaActual // ignore: cast_nullable_to_non_nullable
 as int,fechaInicio: freezed == fechaInicio ? _self.fechaInicio : fechaInicio // ignore: cast_nullable_to_non_nullable
 as String?,fechaFin: freezed == fechaFin ? _self.fechaFin : fechaFin // ignore: cast_nullable_to_non_nullable
-as String?,
+as String?,diasSemana: null == diasSemana ? _self.diasSemana : diasSemana // ignore: cast_nullable_to_non_nullable
+as List<int>,
   ));
 }
 /// Create a copy of HabitModel
@@ -178,10 +179,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id,  String nombre,  String? descripcion,  int puntos,  double metaDiaria,  String unidadMedida,  String? idCategoria,  CategoryModel? categoria,  bool completadoHoy,  double progresoHoy,  int rachaActual,  String? fechaInicio,  String? fechaFin)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id,  String nombre,  String? descripcion,  int puntos,  double metaDiaria,  String unidadMedida,  String? idCategoria,  CategoryModel? categoria,  bool completadoHoy,  double progresoHoy,  int rachaActual,  String? fechaInicio,  String? fechaFin,  List<int> diasSemana)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _HabitModel() when $default != null:
-return $default(_that.id,_that.nombre,_that.descripcion,_that.puntos,_that.metaDiaria,_that.unidadMedida,_that.idCategoria,_that.categoria,_that.completadoHoy,_that.progresoHoy,_that.rachaActual,_that.fechaInicio,_that.fechaFin);case _:
+return $default(_that.id,_that.nombre,_that.descripcion,_that.puntos,_that.metaDiaria,_that.unidadMedida,_that.idCategoria,_that.categoria,_that.completadoHoy,_that.progresoHoy,_that.rachaActual,_that.fechaInicio,_that.fechaFin,_that.diasSemana);case _:
   return orElse();
 
 }
@@ -199,10 +200,10 @@ return $default(_that.id,_that.nombre,_that.descripcion,_that.puntos,_that.metaD
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id,  String nombre,  String? descripcion,  int puntos,  double metaDiaria,  String unidadMedida,  String? idCategoria,  CategoryModel? categoria,  bool completadoHoy,  double progresoHoy,  int rachaActual,  String? fechaInicio,  String? fechaFin)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id,  String nombre,  String? descripcion,  int puntos,  double metaDiaria,  String unidadMedida,  String? idCategoria,  CategoryModel? categoria,  bool completadoHoy,  double progresoHoy,  int rachaActual,  String? fechaInicio,  String? fechaFin,  List<int> diasSemana)  $default,) {final _that = this;
 switch (_that) {
 case _HabitModel():
-return $default(_that.id,_that.nombre,_that.descripcion,_that.puntos,_that.metaDiaria,_that.unidadMedida,_that.idCategoria,_that.categoria,_that.completadoHoy,_that.progresoHoy,_that.rachaActual,_that.fechaInicio,_that.fechaFin);case _:
+return $default(_that.id,_that.nombre,_that.descripcion,_that.puntos,_that.metaDiaria,_that.unidadMedida,_that.idCategoria,_that.categoria,_that.completadoHoy,_that.progresoHoy,_that.rachaActual,_that.fechaInicio,_that.fechaFin,_that.diasSemana);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -219,10 +220,10 @@ return $default(_that.id,_that.nombre,_that.descripcion,_that.puntos,_that.metaD
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id,  String nombre,  String? descripcion,  int puntos,  double metaDiaria,  String unidadMedida,  String? idCategoria,  CategoryModel? categoria,  bool completadoHoy,  double progresoHoy,  int rachaActual,  String? fechaInicio,  String? fechaFin)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id,  String nombre,  String? descripcion,  int puntos,  double metaDiaria,  String unidadMedida,  String? idCategoria,  CategoryModel? categoria,  bool completadoHoy,  double progresoHoy,  int rachaActual,  String? fechaInicio,  String? fechaFin,  List<int> diasSemana)?  $default,) {final _that = this;
 switch (_that) {
 case _HabitModel() when $default != null:
-return $default(_that.id,_that.nombre,_that.descripcion,_that.puntos,_that.metaDiaria,_that.unidadMedida,_that.idCategoria,_that.categoria,_that.completadoHoy,_that.progresoHoy,_that.rachaActual,_that.fechaInicio,_that.fechaFin);case _:
+return $default(_that.id,_that.nombre,_that.descripcion,_that.puntos,_that.metaDiaria,_that.unidadMedida,_that.idCategoria,_that.categoria,_that.completadoHoy,_that.progresoHoy,_that.rachaActual,_that.fechaInicio,_that.fechaFin,_that.diasSemana);case _:
   return null;
 
 }
@@ -234,7 +235,7 @@ return $default(_that.id,_that.nombre,_that.descripcion,_that.puntos,_that.metaD
 @JsonSerializable()
 
 class _HabitModel implements HabitModel {
-  const _HabitModel({required this.id, required this.nombre, this.descripcion, this.puntos = 10, this.metaDiaria = 1.0, this.unidadMedida = 'veces', this.idCategoria, this.categoria, this.completadoHoy = false, this.progresoHoy = 0.0, this.rachaActual = 0, this.fechaInicio, this.fechaFin});
+  const _HabitModel({required this.id, required this.nombre, this.descripcion, this.puntos = 10, this.metaDiaria = 1.0, this.unidadMedida = 'veces', this.idCategoria, this.categoria, this.completadoHoy = false, this.progresoHoy = 0.0, this.rachaActual = 0, this.fechaInicio, this.fechaFin,  List<int> diasSemana = const [1, 2, 3, 4, 5, 6, 7]}): _diasSemana = diasSemana;
   factory _HabitModel.fromJson(Map<String, dynamic> json) => _$HabitModelFromJson(json);
 
 @override final  String id;
@@ -250,6 +251,13 @@ class _HabitModel implements HabitModel {
 @override@JsonKey() final  int rachaActual;
 @override final  String? fechaInicio;
 @override final  String? fechaFin;
+ final  List<int> _diasSemana;
+@override@JsonKey() List<int> get diasSemana {
+  if (_diasSemana is EqualUnmodifiableListView) return _diasSemana;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(_diasSemana);
+}
+
 
 /// Create a copy of HabitModel
 /// with the given fields replaced by the non-null parameter values.
@@ -264,16 +272,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _HabitModel&&(identical(other.id, id) || other.id == id)&&(identical(other.nombre, nombre) || other.nombre == nombre)&&(identical(other.descripcion, descripcion) || other.descripcion == descripcion)&&(identical(other.puntos, puntos) || other.puntos == puntos)&&(identical(other.metaDiaria, metaDiaria) || other.metaDiaria == metaDiaria)&&(identical(other.unidadMedida, unidadMedida) || other.unidadMedida == unidadMedida)&&(identical(other.idCategoria, idCategoria) || other.idCategoria == idCategoria)&&(identical(other.categoria, categoria) || other.categoria == categoria)&&(identical(other.completadoHoy, completadoHoy) || other.completadoHoy == completadoHoy)&&(identical(other.progresoHoy, progresoHoy) || other.progresoHoy == progresoHoy)&&(identical(other.rachaActual, rachaActual) || other.rachaActual == rachaActual)&&(identical(other.fechaInicio, fechaInicio) || other.fechaInicio == fechaInicio)&&(identical(other.fechaFin, fechaFin) || other.fechaFin == fechaFin));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _HabitModel&&(identical(other.id, id) || other.id == id)&&(identical(other.nombre, nombre) || other.nombre == nombre)&&(identical(other.descripcion, descripcion) || other.descripcion == descripcion)&&(identical(other.puntos, puntos) || other.puntos == puntos)&&(identical(other.metaDiaria, metaDiaria) || other.metaDiaria == metaDiaria)&&(identical(other.unidadMedida, unidadMedida) || other.unidadMedida == unidadMedida)&&(identical(other.idCategoria, idCategoria) || other.idCategoria == idCategoria)&&(identical(other.categoria, categoria) || other.categoria == categoria)&&(identical(other.completadoHoy, completadoHoy) || other.completadoHoy == completadoHoy)&&(identical(other.progresoHoy, progresoHoy) || other.progresoHoy == progresoHoy)&&(identical(other.rachaActual, rachaActual) || other.rachaActual == rachaActual)&&(identical(other.fechaInicio, fechaInicio) || other.fechaInicio == fechaInicio)&&(identical(other.fechaFin, fechaFin) || other.fechaFin == fechaFin)&&const DeepCollectionEquality().equals(other._diasSemana, _diasSemana));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,nombre,descripcion,puntos,metaDiaria,unidadMedida,idCategoria,categoria,completadoHoy,progresoHoy,rachaActual,fechaInicio,fechaFin);
+int get hashCode => Object.hash(runtimeType,id,nombre,descripcion,puntos,metaDiaria,unidadMedida,idCategoria,categoria,completadoHoy,progresoHoy,rachaActual,fechaInicio,fechaFin,const DeepCollectionEquality().hash(_diasSemana));
 
 @override
 String toString() {
-  return 'HabitModel(id: $id, nombre: $nombre, descripcion: $descripcion, puntos: $puntos, metaDiaria: $metaDiaria, unidadMedida: $unidadMedida, idCategoria: $idCategoria, categoria: $categoria, completadoHoy: $completadoHoy, progresoHoy: $progresoHoy, rachaActual: $rachaActual, fechaInicio: $fechaInicio, fechaFin: $fechaFin)';
+  return 'HabitModel(id: $id, nombre: $nombre, descripcion: $descripcion, puntos: $puntos, metaDiaria: $metaDiaria, unidadMedida: $unidadMedida, idCategoria: $idCategoria, categoria: $categoria, completadoHoy: $completadoHoy, progresoHoy: $progresoHoy, rachaActual: $rachaActual, fechaInicio: $fechaInicio, fechaFin: $fechaFin, diasSemana: $diasSemana)';
 }
 
 
@@ -284,7 +292,7 @@ abstract mixin class _$HabitModelCopyWith<$Res> implements $HabitModelCopyWith<$
   factory _$HabitModelCopyWith(_HabitModel value, $Res Function(_HabitModel) _then) = __$HabitModelCopyWithImpl;
 @override @useResult
 $Res call({
- String id, String nombre, String? descripcion, int puntos, double metaDiaria, String unidadMedida, String? idCategoria, CategoryModel? categoria, bool completadoHoy, double progresoHoy, int rachaActual, String? fechaInicio, String? fechaFin
+ String id, String nombre, String? descripcion, int puntos, double metaDiaria, String unidadMedida, String? idCategoria, CategoryModel? categoria, bool completadoHoy, double progresoHoy, int rachaActual, String? fechaInicio, String? fechaFin, List<int> diasSemana
 });
 
 
@@ -301,7 +309,7 @@ class __$HabitModelCopyWithImpl<$Res>
 
 /// Create a copy of HabitModel
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? nombre = null,Object? descripcion = freezed,Object? puntos = null,Object? metaDiaria = null,Object? unidadMedida = null,Object? idCategoria = freezed,Object? categoria = freezed,Object? completadoHoy = null,Object? progresoHoy = null,Object? rachaActual = null,Object? fechaInicio = freezed,Object? fechaFin = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? nombre = null,Object? descripcion = freezed,Object? puntos = null,Object? metaDiaria = null,Object? unidadMedida = null,Object? idCategoria = freezed,Object? categoria = freezed,Object? completadoHoy = null,Object? progresoHoy = null,Object? rachaActual = null,Object? fechaInicio = freezed,Object? fechaFin = freezed,Object? diasSemana = null,}) {
   return _then(_HabitModel(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,nombre: null == nombre ? _self.nombre : nombre // ignore: cast_nullable_to_non_nullable
@@ -316,7 +324,8 @@ as bool,progresoHoy: null == progresoHoy ? _self.progresoHoy : progresoHoy // ig
 as double,rachaActual: null == rachaActual ? _self.rachaActual : rachaActual // ignore: cast_nullable_to_non_nullable
 as int,fechaInicio: freezed == fechaInicio ? _self.fechaInicio : fechaInicio // ignore: cast_nullable_to_non_nullable
 as String?,fechaFin: freezed == fechaFin ? _self.fechaFin : fechaFin // ignore: cast_nullable_to_non_nullable
-as String?,
+as String?,diasSemana: null == diasSemana ? _self._diasSemana : diasSemana // ignore: cast_nullable_to_non_nullable
+as List<int>,
   ));
 }
 

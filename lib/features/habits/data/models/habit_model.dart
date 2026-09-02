@@ -20,6 +20,7 @@ abstract class HabitModel with _$HabitModel {
     @Default(0) int rachaActual,
     String? fechaInicio,
     String? fechaFin,
+    @Default([1, 2, 3, 4, 5, 6, 7]) List<int> diasSemana,
   }) = _HabitModel;
 
   factory HabitModel.fromJson(Map<String, dynamic> json) =>

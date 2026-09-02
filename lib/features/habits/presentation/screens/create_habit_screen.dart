@@ -25,6 +25,20 @@ class _CreateHabitScreenState extends ConsumerState<CreateHabitScreen> {
   DateTime? _fechaFin;
   bool _isLoading = false;
 
+  // Días de la semana seleccionados (1 = Lunes, 7 = Domingo)
+  final Set<int> _selectedDays = {1, 2, 3, 4, 5, 6, 7};
+  bool _showDayError = false;
+
+  final List<Map<String, dynamic>> _dayList = [
+    {'id': 1, 'label': 'L', 'name': 'Lun'},
+    {'id': 2, 'label': 'M', 'name': 'Mar'},
+    {'id': 3, 'label': 'M', 'name': 'Mié'},
+    {'id': 4, 'label': 'J', 'name': 'Jue'},
+    {'id': 5, 'label': 'V', 'name': 'Vie'},
+    {'id': 6, 'label': 'S', 'name': 'Sáb'},
+    {'id': 7, 'label': 'D', 'name': 'Dom'},
+  ];
+
   @override
   void dispose() {
     _nombreController.dispose();
@@ -66,8 +80,54 @@ class _CreateHabitScreenState extends ConsumerState<CreateHabitScreen> {
     return '${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}';
   }
 
+  void _toggleDay(int dayId) {
+    setState(() {
+      if (_selectedDays.contains(dayId)) {
+        _selectedDays.remove(dayId);
+      } else {
+        _selectedDays.add(dayId);
+      }
+      _showDayError = _selectedDays.isEmpty;
+    });
+  }
+
+  void _selectPreset(String preset) {
+    setState(() {
+      _selectedDays.clear();
+      switch (preset) {
+        case 'all':
+          _selectedDays.addAll([1, 2, 3, 4, 5, 6, 7]);
+          break;
+        case 'workdays':
+          _selectedDays.addAll([1, 2, 3, 4, 5]);
+          break;
+        case 'weekends':
+          _selectedDays.addAll([6, 7]);
+          break;
+      }
+      _showDayError = _selectedDays.isEmpty;
+    });
+  }
+
   Future<void> _submitForm() async {
-    if (!_formKey.currentState!.validate()) return;
+    final isFormValid = _formKey.currentState!.validate();
+    
+    if (_selectedDays.isEmpty) {
+      setState(() {
+        _showDayError = true;
+      });
+    }
+
+    if (!isFormValid || _selectedDays.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Por favor completa los campos requeridos y elige al menos 1 día.'),
+          backgroundColor: Colors.redAccent,
+        ),
+      );
+      return;
+    }
+
     if (_selectedCategoryId == null) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
@@ -82,6 +142,8 @@ class _CreateHabitScreenState extends ConsumerState<CreateHabitScreen> {
       _isLoading = true;
     });
 
+    final sortedDays = _selectedDays.toList()..sort();
+
     final dto = CreateHabitDto(
       nombre: _nombreController.text.trim(),
       descripcion: _descripcionController.text.trim().isEmpty
@@ -95,6 +157,7 @@ class _CreateHabitScreenState extends ConsumerState<CreateHabitScreen> {
           ? 'veces'
           : _unidadMedidaController.text.trim(),
       idCategoria: _selectedCategoryId!,
+      diasSemana: sortedDays,
     );
 
     final success = await ref
@@ -273,6 +336,104 @@ class _CreateHabitScreenState extends ConsumerState<CreateHabitScreen> {
                     style: const TextStyle(color: Colors.red),
                   ),
                 ),
+                const SizedBox(height: 20),
+
+                // Selector de Días de la Semana (US011)
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      'Días de la semana',
+                      style: theme.textTheme.titleMedium?.copyWith(
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    if (_selectedDays.isNotEmpty)
+                      Text(
+                        '${_selectedDays.length} días',
+                        style: TextStyle(
+                          color: theme.primaryColor,
+                          fontWeight: FontWeight.w600,
+                          fontSize: 13,
+                        ),
+                      ),
+                  ],
+                ),
+                const SizedBox(height: 10),
+
+                // Botones rápidos (Presets)
+                Wrap(
+                  spacing: 8,
+                  children: [
+                    ChoiceChip(
+                      label: const Text('Todos los días', style: TextStyle(fontSize: 12)),
+                      selected: _selectedDays.length == 7,
+                      onSelected: (_) => _selectPreset('all'),
+                    ),
+                    ChoiceChip(
+                      label: const Text('Laborales (L-V)', style: TextStyle(fontSize: 12)),
+                      selected: _selectedDays.length == 5 &&
+                          _selectedDays.containsAll([1, 2, 3, 4, 5]),
+                      onSelected: (_) => _selectPreset('workdays'),
+                    ),
+                    ChoiceChip(
+                      label: const Text('Fines de semana', style: TextStyle(fontSize: 12)),
+                      selected: _selectedDays.length == 2 &&
+                          _selectedDays.containsAll([6, 7]),
+                      onSelected: (_) => _selectPreset('weekends'),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 12),
+
+                // Círculos interactivos L M M J V S D
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: _dayList.map((day) {
+                    final isSelected = _selectedDays.contains(day['id']);
+                    return GestureDetector(
+                      onTap: () => _toggleDay(day['id'] as int),
+                      child: AnimatedContainer(
+                        duration: const Duration(milliseconds: 200),
+                        width: 44,
+                        height: 44,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: isSelected
+                              ? theme.primaryColor
+                              : Colors.grey.shade200,
+                          boxShadow: isSelected
+                              ? [
+                                  BoxShadow(
+                                    color: theme.primaryColor.withValues(alpha: 0.3),
+                                    blurRadius: 6,
+                                    offset: const Offset(0, 3),
+                                  )
+                                ]
+                              : [],
+                        ),
+                        child: Center(
+                          child: Text(
+                            day['label'] as String,
+                            style: TextStyle(
+                              color: isSelected ? Colors.white : Colors.black87,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 15,
+                            ),
+                          ),
+                        ),
+                      ),
+                    );
+                  }).toList(),
+                ),
+                if (_showDayError)
+                  const Padding(
+                    padding: EdgeInsets.only(top: 8.0, left: 4.0),
+                    child: Text(
+                      'Debes seleccionar al menos un día de la semana',
+                      style: TextStyle(color: Colors.redAccent, fontSize: 12),
+                    ),
+                  ),
                 const SizedBox(height: 20),
 
                 // Meta diaria y Unidad de medida

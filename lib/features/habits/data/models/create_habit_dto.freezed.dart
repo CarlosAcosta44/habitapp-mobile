@@ -16,7 +16,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$CreateHabitDto {
 
- String get nombre; String? get descripcion; String get fechaInicio; String? get fechaFin; int get puntos; double? get metaDiaria; String? get unidadMedida; String get idCategoria;
+ String get nombre; String? get descripcion; String get fechaInicio; String? get fechaFin; int get puntos; double? get metaDiaria; String? get unidadMedida; String get idCategoria; List<int> get diasSemana;
 /// Create a copy of CreateHabitDto
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -29,16 +29,16 @@ $CreateHabitDtoCopyWith<CreateHabitDto> get copyWith => _$CreateHabitDtoCopyWith
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is CreateHabitDto&&(identical(other.nombre, nombre) || other.nombre == nombre)&&(identical(other.descripcion, descripcion) || other.descripcion == descripcion)&&(identical(other.fechaInicio, fechaInicio) || other.fechaInicio == fechaInicio)&&(identical(other.fechaFin, fechaFin) || other.fechaFin == fechaFin)&&(identical(other.puntos, puntos) || other.puntos == puntos)&&(identical(other.metaDiaria, metaDiaria) || other.metaDiaria == metaDiaria)&&(identical(other.unidadMedida, unidadMedida) || other.unidadMedida == unidadMedida)&&(identical(other.idCategoria, idCategoria) || other.idCategoria == idCategoria));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is CreateHabitDto&&(identical(other.nombre, nombre) || other.nombre == nombre)&&(identical(other.descripcion, descripcion) || other.descripcion == descripcion)&&(identical(other.fechaInicio, fechaInicio) || other.fechaInicio == fechaInicio)&&(identical(other.fechaFin, fechaFin) || other.fechaFin == fechaFin)&&(identical(other.puntos, puntos) || other.puntos == puntos)&&(identical(other.metaDiaria, metaDiaria) || other.metaDiaria == metaDiaria)&&(identical(other.unidadMedida, unidadMedida) || other.unidadMedida == unidadMedida)&&(identical(other.idCategoria, idCategoria) || other.idCategoria == idCategoria)&&const DeepCollectionEquality().equals(other.diasSemana, diasSemana));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,nombre,descripcion,fechaInicio,fechaFin,puntos,metaDiaria,unidadMedida,idCategoria);
+int get hashCode => Object.hash(runtimeType,nombre,descripcion,fechaInicio,fechaFin,puntos,metaDiaria,unidadMedida,idCategoria,const DeepCollectionEquality().hash(diasSemana));
 
 @override
 String toString() {
-  return 'CreateHabitDto(nombre: $nombre, descripcion: $descripcion, fechaInicio: $fechaInicio, fechaFin: $fechaFin, puntos: $puntos, metaDiaria: $metaDiaria, unidadMedida: $unidadMedida, idCategoria: $idCategoria)';
+  return 'CreateHabitDto(nombre: $nombre, descripcion: $descripcion, fechaInicio: $fechaInicio, fechaFin: $fechaFin, puntos: $puntos, metaDiaria: $metaDiaria, unidadMedida: $unidadMedida, idCategoria: $idCategoria, diasSemana: $diasSemana)';
 }
 
 
@@ -49,7 +49,7 @@ abstract mixin class $CreateHabitDtoCopyWith<$Res>  {
   factory $CreateHabitDtoCopyWith(CreateHabitDto value, $Res Function(CreateHabitDto) _then) = _$CreateHabitDtoCopyWithImpl;
 @useResult
 $Res call({
- String nombre, String? descripcion, String fechaInicio, String? fechaFin, int puntos, double? metaDiaria, String? unidadMedida, String idCategoria
+ String nombre, String? descripcion, String fechaInicio, String? fechaFin, int puntos, double? metaDiaria, String? unidadMedida, String idCategoria, List<int> diasSemana
 });
 
 
@@ -66,7 +66,7 @@ class _$CreateHabitDtoCopyWithImpl<$Res>
 
 /// Create a copy of CreateHabitDto
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? nombre = null,Object? descripcion = freezed,Object? fechaInicio = null,Object? fechaFin = freezed,Object? puntos = null,Object? metaDiaria = freezed,Object? unidadMedida = freezed,Object? idCategoria = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? nombre = null,Object? descripcion = freezed,Object? fechaInicio = null,Object? fechaFin = freezed,Object? puntos = null,Object? metaDiaria = freezed,Object? unidadMedida = freezed,Object? idCategoria = null,Object? diasSemana = null,}) {
   return _then(CreateHabitDto(
 nombre: null == nombre ? _self.nombre : nombre // ignore: cast_nullable_to_non_nullable
 as String,descripcion: freezed == descripcion ? _self.descripcion : descripcion // ignore: cast_nullable_to_non_nullable
@@ -76,7 +76,8 @@ as String?,puntos: null == puntos ? _self.puntos : puntos // ignore: cast_nullab
 as int,metaDiaria: freezed == metaDiaria ? _self.metaDiaria : metaDiaria // ignore: cast_nullable_to_non_nullable
 as double?,unidadMedida: freezed == unidadMedida ? _self.unidadMedida : unidadMedida // ignore: cast_nullable_to_non_nullable
 as String?,idCategoria: null == idCategoria ? _self.idCategoria : idCategoria // ignore: cast_nullable_to_non_nullable
-as String,
+as String,diasSemana: null == diasSemana ? _self.diasSemana : diasSemana // ignore: cast_nullable_to_non_nullable
+as List<int>,
   ));
 }
 
@@ -161,10 +162,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String nombre,  String? descripcion,  String fechaInicio,  String? fechaFin,  int puntos,  double? metaDiaria,  String? unidadMedida,  String idCategoria)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String nombre,  String? descripcion,  String fechaInicio,  String? fechaFin,  int puntos,  double? metaDiaria,  String? unidadMedida,  String idCategoria,  List<int> diasSemana)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _CreateHabitDto() when $default != null:
-return $default(_that.nombre,_that.descripcion,_that.fechaInicio,_that.fechaFin,_that.puntos,_that.metaDiaria,_that.unidadMedida,_that.idCategoria);case _:
+return $default(_that.nombre,_that.descripcion,_that.fechaInicio,_that.fechaFin,_that.puntos,_that.metaDiaria,_that.unidadMedida,_that.idCategoria,_that.diasSemana);case _:
   return orElse();
 
 }
@@ -182,10 +183,10 @@ return $default(_that.nombre,_that.descripcion,_that.fechaInicio,_that.fechaFin,
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String nombre,  String? descripcion,  String fechaInicio,  String? fechaFin,  int puntos,  double? metaDiaria,  String? unidadMedida,  String idCategoria)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String nombre,  String? descripcion,  String fechaInicio,  String? fechaFin,  int puntos,  double? metaDiaria,  String? unidadMedida,  String idCategoria,  List<int> diasSemana)  $default,) {final _that = this;
 switch (_that) {
 case _CreateHabitDto():
-return $default(_that.nombre,_that.descripcion,_that.fechaInicio,_that.fechaFin,_that.puntos,_that.metaDiaria,_that.unidadMedida,_that.idCategoria);case _:
+return $default(_that.nombre,_that.descripcion,_that.fechaInicio,_that.fechaFin,_that.puntos,_that.metaDiaria,_that.unidadMedida,_that.idCategoria,_that.diasSemana);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -202,10 +203,10 @@ return $default(_that.nombre,_that.descripcion,_that.fechaInicio,_that.fechaFin,
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String nombre,  String? descripcion,  String fechaInicio,  String? fechaFin,  int puntos,  double? metaDiaria,  String? unidadMedida,  String idCategoria)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String nombre,  String? descripcion,  String fechaInicio,  String? fechaFin,  int puntos,  double? metaDiaria,  String? unidadMedida,  String idCategoria,  List<int> diasSemana)?  $default,) {final _that = this;
 switch (_that) {
 case _CreateHabitDto() when $default != null:
-return $default(_that.nombre,_that.descripcion,_that.fechaInicio,_that.fechaFin,_that.puntos,_that.metaDiaria,_that.unidadMedida,_that.idCategoria);case _:
+return $default(_that.nombre,_that.descripcion,_that.fechaInicio,_that.fechaFin,_that.puntos,_that.metaDiaria,_that.unidadMedida,_that.idCategoria,_that.diasSemana);case _:
   return null;
 
 }
@@ -217,7 +218,7 @@ return $default(_that.nombre,_that.descripcion,_that.fechaInicio,_that.fechaFin,
 @JsonSerializable()
 
 class _CreateHabitDto implements CreateHabitDto {
-  const _CreateHabitDto({required this.nombre, this.descripcion, required this.fechaInicio, this.fechaFin, required this.puntos, this.metaDiaria, this.unidadMedida, required this.idCategoria});
+  const _CreateHabitDto({required this.nombre, this.descripcion, required this.fechaInicio, this.fechaFin, required this.puntos, this.metaDiaria, this.unidadMedida, required this.idCategoria,  List<int> diasSemana = const [1, 2, 3, 4, 5, 6, 7]}): _diasSemana = diasSemana;
   factory _CreateHabitDto.fromJson(Map<String, dynamic> json) => _$CreateHabitDtoFromJson(json);
 
 @override final  String nombre;
@@ -228,6 +229,13 @@ class _CreateHabitDto implements CreateHabitDto {
 @override final  double? metaDiaria;
 @override final  String? unidadMedida;
 @override final  String idCategoria;
+ final  List<int> _diasSemana;
+@override@JsonKey() List<int> get diasSemana {
+  if (_diasSemana is EqualUnmodifiableListView) return _diasSemana;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(_diasSemana);
+}
+
 
 /// Create a copy of CreateHabitDto
 /// with the given fields replaced by the non-null parameter values.
@@ -242,16 +250,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _CreateHabitDto&&(identical(other.nombre, nombre) || other.nombre == nombre)&&(identical(other.descripcion, descripcion) || other.descripcion == descripcion)&&(identical(other.fechaInicio, fechaInicio) || other.fechaInicio == fechaInicio)&&(identical(other.fechaFin, fechaFin) || other.fechaFin == fechaFin)&&(identical(other.puntos, puntos) || other.puntos == puntos)&&(identical(other.metaDiaria, metaDiaria) || other.metaDiaria == metaDiaria)&&(identical(other.unidadMedida, unidadMedida) || other.unidadMedida == unidadMedida)&&(identical(other.idCategoria, idCategoria) || other.idCategoria == idCategoria));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _CreateHabitDto&&(identical(other.nombre, nombre) || other.nombre == nombre)&&(identical(other.descripcion, descripcion) || other.descripcion == descripcion)&&(identical(other.fechaInicio, fechaInicio) || other.fechaInicio == fechaInicio)&&(identical(other.fechaFin, fechaFin) || other.fechaFin == fechaFin)&&(identical(other.puntos, puntos) || other.puntos == puntos)&&(identical(other.metaDiaria, metaDiaria) || other.metaDiaria == metaDiaria)&&(identical(other.unidadMedida, unidadMedida) || other.unidadMedida == unidadMedida)&&(identical(other.idCategoria, idCategoria) || other.idCategoria == idCategoria)&&const DeepCollectionEquality().equals(other._diasSemana, _diasSemana));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,nombre,descripcion,fechaInicio,fechaFin,puntos,metaDiaria,unidadMedida,idCategoria);
+int get hashCode => Object.hash(runtimeType,nombre,descripcion,fechaInicio,fechaFin,puntos,metaDiaria,unidadMedida,idCategoria,const DeepCollectionEquality().hash(_diasSemana));
 
 @override
 String toString() {
-  return 'CreateHabitDto(nombre: $nombre, descripcion: $descripcion, fechaInicio: $fechaInicio, fechaFin: $fechaFin, puntos: $puntos, metaDiaria: $metaDiaria, unidadMedida: $unidadMedida, idCategoria: $idCategoria)';
+  return 'CreateHabitDto(nombre: $nombre, descripcion: $descripcion, fechaInicio: $fechaInicio, fechaFin: $fechaFin, puntos: $puntos, metaDiaria: $metaDiaria, unidadMedida: $unidadMedida, idCategoria: $idCategoria, diasSemana: $diasSemana)';
 }
 
 
@@ -262,7 +270,7 @@ abstract mixin class _$CreateHabitDtoCopyWith<$Res> implements $CreateHabitDtoCo
   factory _$CreateHabitDtoCopyWith(_CreateHabitDto value, $Res Function(_CreateHabitDto) _then) = __$CreateHabitDtoCopyWithImpl;
 @override @useResult
 $Res call({
- String nombre, String? descripcion, String fechaInicio, String? fechaFin, int puntos, double? metaDiaria, String? unidadMedida, String idCategoria
+ String nombre, String? descripcion, String fechaInicio, String? fechaFin, int puntos, double? metaDiaria, String? unidadMedida, String idCategoria, List<int> diasSemana
 });
 
 
@@ -279,7 +287,7 @@ class __$CreateHabitDtoCopyWithImpl<$Res>
 
 /// Create a copy of CreateHabitDto
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? nombre = null,Object? descripcion = freezed,Object? fechaInicio = null,Object? fechaFin = freezed,Object? puntos = null,Object? metaDiaria = freezed,Object? unidadMedida = freezed,Object? idCategoria = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? nombre = null,Object? descripcion = freezed,Object? fechaInicio = null,Object? fechaFin = freezed,Object? puntos = null,Object? metaDiaria = freezed,Object? unidadMedida = freezed,Object? idCategoria = null,Object? diasSemana = null,}) {
   return _then(_CreateHabitDto(
 nombre: null == nombre ? _self.nombre : nombre // ignore: cast_nullable_to_non_nullable
 as String,descripcion: freezed == descripcion ? _self.descripcion : descripcion // ignore: cast_nullable_to_non_nullable
@@ -289,7 +297,8 @@ as String?,puntos: null == puntos ? _self.puntos : puntos // ignore: cast_nullab
 as int,metaDiaria: freezed == metaDiaria ? _self.metaDiaria : metaDiaria // ignore: cast_nullable_to_non_nullable
 as double?,unidadMedida: freezed == unidadMedida ? _self.unidadMedida : unidadMedida // ignore: cast_nullable_to_non_nullable
 as String?,idCategoria: null == idCategoria ? _self.idCategoria : idCategoria // ignore: cast_nullable_to_non_nullable
-as String,
+as String,diasSemana: null == diasSemana ? _self._diasSemana : diasSemana // ignore: cast_nullable_to_non_nullable
+as List<int>,
   ));
 }
 
