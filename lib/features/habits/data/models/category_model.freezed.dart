@@ -16,7 +16,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$CategoryModel {
 
- String get id; String get nombre; String? get descripcion; String? get icono; String? get colorHex;
+@JsonKey(name: 'id', readValue: _readId) String get id;@JsonKey(name: 'nombre', readValue: _readNombre) String get nombre; String? get descripcion; String? get icono; String? get colorHex;
 /// Create a copy of CategoryModel
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -49,7 +49,7 @@ abstract mixin class $CategoryModelCopyWith<$Res>  {
   factory $CategoryModelCopyWith(CategoryModel value, $Res Function(CategoryModel) _then) = _$CategoryModelCopyWithImpl;
 @useResult
 $Res call({
- String id, String nombre, String? descripcion, String? icono, String? colorHex
+@JsonKey(name: 'id', readValue: _readId) String id,@JsonKey(name: 'nombre', readValue: _readNombre) String nombre, String? descripcion, String? icono, String? colorHex
 });
 
 
@@ -158,7 +158,7 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id,  String nombre,  String? descripcion,  String? icono,  String? colorHex)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function(@JsonKey(name: 'id', readValue: _readId)  String id, @JsonKey(name: 'nombre', readValue: _readNombre)  String nombre,  String? descripcion,  String? icono,  String? colorHex)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _CategoryModel() when $default != null:
 return $default(_that.id,_that.nombre,_that.descripcion,_that.icono,_that.colorHex);case _:
@@ -179,7 +179,7 @@ return $default(_that.id,_that.nombre,_that.descripcion,_that.icono,_that.colorH
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id,  String nombre,  String? descripcion,  String? icono,  String? colorHex)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function(@JsonKey(name: 'id', readValue: _readId)  String id, @JsonKey(name: 'nombre', readValue: _readNombre)  String nombre,  String? descripcion,  String? icono,  String? colorHex)  $default,) {final _that = this;
 switch (_that) {
 case _CategoryModel():
 return $default(_that.id,_that.nombre,_that.descripcion,_that.icono,_that.colorHex);case _:
@@ -199,7 +199,7 @@ return $default(_that.id,_that.nombre,_that.descripcion,_that.icono,_that.colorH
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id,  String nombre,  String? descripcion,  String? icono,  String? colorHex)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function(@JsonKey(name: 'id', readValue: _readId)  String id, @JsonKey(name: 'nombre', readValue: _readNombre)  String nombre,  String? descripcion,  String? icono,  String? colorHex)?  $default,) {final _that = this;
 switch (_that) {
 case _CategoryModel() when $default != null:
 return $default(_that.id,_that.nombre,_that.descripcion,_that.icono,_that.colorHex);case _:
@@ -214,11 +214,11 @@ return $default(_that.id,_that.nombre,_that.descripcion,_that.icono,_that.colorH
 @JsonSerializable()
 
 class _CategoryModel implements CategoryModel {
-  const _CategoryModel({required this.id, required this.nombre, this.descripcion, this.icono, this.colorHex});
+  const _CategoryModel({@JsonKey(name: 'id', readValue: _readId) required this.id, @JsonKey(name: 'nombre', readValue: _readNombre) required this.nombre, this.descripcion, this.icono, this.colorHex});
   factory _CategoryModel.fromJson(Map<String, dynamic> json) => _$CategoryModelFromJson(json);
 
-@override final  String id;
-@override final  String nombre;
+@override@JsonKey(name: 'id', readValue: _readId) final  String id;
+@override@JsonKey(name: 'nombre', readValue: _readNombre) final  String nombre;
 @override final  String? descripcion;
 @override final  String? icono;
 @override final  String? colorHex;
@@ -256,7 +256,7 @@ abstract mixin class _$CategoryModelCopyWith<$Res> implements $CategoryModelCopy
   factory _$CategoryModelCopyWith(_CategoryModel value, $Res Function(_CategoryModel) _then) = __$CategoryModelCopyWithImpl;
 @override @useResult
 $Res call({
- String id, String nombre, String? descripcion, String? icono, String? colorHex
+@JsonKey(name: 'id', readValue: _readId) String id,@JsonKey(name: 'nombre', readValue: _readNombre) String nombre, String? descripcion, String? icono, String? colorHex
 });
 
 
