@@ -7,10 +7,11 @@ import '../../features/auth/presentation/screens/splash_screen.dart';
 import '../../features/auth/providers/auth_provider.dart';
 import '../../features/onboarding/presentation/screens/onboarding_screen.dart';
 import '../../features/onboarding/providers/onboarding_provider.dart';
+import '../../features/dashboard/presentation/screens/dashboard_screen.dart';
+import '../../features/dashboard/presentation/screens/main_layout_screen.dart';
 import '../../features/profile/presentation/screens/edit_profile_screen.dart';
 import '../../features/profile/presentation/screens/profile_screen.dart';
 import '../../features/settings/presentation/screens/settings_screen.dart';
-
 part 'app_router.g.dart';
 
 @riverpod
@@ -41,17 +42,57 @@ GoRouter appRouter(Ref ref) {
           ),
         ),
       ),
-      GoRoute(
-        path: '/',
-        builder: (context, state) => const Scaffold(
-          body: Center(
-            child: Text('Dashboard — (En construcción)'),
+      StatefulShellRoute.indexedStack(
+        builder: (context, state, navigationShell) {
+          return MainLayoutScreen(navigationShell: navigationShell);
+        },
+        branches: [
+          // Branch 0: Dashboard
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: '/',
+                builder: (context, state) => const DashboardScreen(),
+              ),
+            ],
           ),
-        ),
-      ),
-      GoRoute(
-        path: '/profile',
-        builder: (context, state) => const ProfileScreen(),
+          // Branch 1: Comunidad
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: '/community',
+                builder: (context, state) => const Scaffold(body: Center(child: Text('Comunidad'))),
+              ),
+            ],
+          ),
+          // Branch 2: Añadir (Placeholder since button action is handled in BottomNavBar tap)
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: '/add',
+                builder: (context, state) => const Scaffold(),
+              ),
+            ],
+          ),
+          // Branch 3: Retos
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: '/challenges',
+                builder: (context, state) => const Scaffold(body: Center(child: Text('Retos'))),
+              ),
+            ],
+          ),
+          // Branch 4: Perfil
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: '/profile',
+                builder: (context, state) => const ProfileScreen(),
+              ),
+            ],
+          ),
+        ],
       ),
       GoRoute(
         path: '/profile/edit',
