@@ -12,6 +12,7 @@ import '../../features/dashboard/presentation/screens/main_layout_screen.dart';
 import '../../features/profile/presentation/screens/edit_profile_screen.dart';
 import '../../features/profile/presentation/screens/profile_screen.dart';
 import '../../features/settings/presentation/screens/settings_screen.dart';
+import '../../features/habits/presentation/screens/create_habit_screen.dart';
 part 'app_router.g.dart';
 
 @riverpod
@@ -101,7 +102,12 @@ GoRouter appRouter(Ref ref) {
       GoRoute(
         path: '/settings',
         builder: (context, state) => const SettingsScreen(),
-      ),    ],
+      ),
+      GoRoute(
+        path: '/create-habit',
+        builder: (context, state) => const CreateHabitScreen(),
+      ),
+    ],
     redirect: (context, state) {
       final authState = ref.read(authProvider);
       final onboardingState = ref.read(onboardingProvider);
