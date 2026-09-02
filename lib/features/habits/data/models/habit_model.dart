@@ -7,7 +7,7 @@ part 'habit_model.g.dart';
 @freezed
 abstract class HabitModel with _$HabitModel {
   const factory HabitModel({
-    required String id,
+    @JsonKey(name: 'idHabito') required String id,
     required String nombre,
     String? descripcion,
     @Default(10) int puntos,
