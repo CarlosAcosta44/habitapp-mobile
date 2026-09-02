@@ -9,9 +9,9 @@ class MainLayoutScreen extends StatelessWidget {
     required this.navigationShell,
   });
 
-  void _onTap(int index) {
+  void _onTap(BuildContext context, int index) {
     if (index == 2) {
-      // Future: Open 'Create Habit' modal or screen
+      context.push('/create-habit');
       return;
     }
     
@@ -27,7 +27,7 @@ class MainLayoutScreen extends StatelessWidget {
       body: navigationShell,
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: navigationShell.currentIndex,
-        onTap: _onTap,
+        onTap: (index) => _onTap(context, index),
         type: BottomNavigationBarType.fixed,
         showSelectedLabels: false,
         showUnselectedLabels: false,
