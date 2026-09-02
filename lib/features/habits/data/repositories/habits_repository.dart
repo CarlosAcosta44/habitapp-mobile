@@ -38,19 +38,34 @@ class HabitsRepository {
 
   /// Obtiene todas las categorías de hábitos registradas en el backend
   Future<List<CategoryModel>> getCategorias() async {
+    final defaultCategories = [
+      const CategoryModel(id: 'cat-salud', nombre: 'Salud', icono: 'salud'),
+      const CategoryModel(id: 'cat-deporte', nombre: 'Deporte', icono: 'deporte'),
+      const CategoryModel(id: 'cat-lectura', nombre: 'Lectura', icono: 'lectura'),
+      const CategoryModel(id: 'cat-mente', nombre: 'Mindfulness', icono: 'mindfulness'),
+      const CategoryModel(id: 'cat-agua', nombre: 'Agua & Nutrición', icono: 'agua'),
+    ];
+
     try {
       final response = await _dio.get('/habits/categorias');
       final data = response.data;
-      if (data is List) {
-        return data
-            .map((e) => CategoryModel.fromJson(e as Map<String, dynamic>))
+      if (data is List && data.isNotEmpty) {
+        final parsed = data
+            .map((e) {
+              if (e is Map<String, dynamic>) {
+                return CategoryModel.fromJson(e);
+              }
+              return null;
+            })
+            .whereType<CategoryModel>()
             .toList();
+
+        if (parsed.isNotEmpty) return parsed;
       }
-      return [];
-    } on DioException catch (e) {
-      throw Exception(
-        e.response?.data['message'] ?? 'Error al obtener las categorías',
-      );
+      return defaultCategories;
+    } catch (_) {
+      // Retornar categorías por defecto si hay problemas de red o respuesta incompleta
+      return defaultCategories;
     }
   }
 
