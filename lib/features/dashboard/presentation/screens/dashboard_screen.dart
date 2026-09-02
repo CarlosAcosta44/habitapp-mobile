@@ -1,13 +1,17 @@
 import 'package:flutter/material.dart';
 
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+
 import '../../../habits/presentation/widgets/daily_progress_bar.dart';
 import '../../../habits/presentation/widgets/habit_card.dart';
+import '../../../habits/providers/mock_habits_provider.dart';
 
-class DashboardScreen extends StatelessWidget {
+class DashboardScreen extends ConsumerWidget {
   const DashboardScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final habits = ref.watch(mockHabitsProvider);
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
@@ -102,8 +106,11 @@ class DashboardScreen extends StatelessWidget {
             ),
             const SizedBox(height: 24),
 
-            // Progress Bar
-            const DailyProgressBar(),
+            // Progress Bar (Dynamic)
+            DailyProgressBar(
+              completed: habits.where((h) => h.isCompleted).length,
+              total: habits.length,
+            ),
             const SizedBox(height: 24),
 
             // Retos Section
@@ -156,25 +163,24 @@ class DashboardScreen extends StatelessWidget {
               ],
             ),
             
-            const HabitCard(
-              title: 'Beber agua',
-              subtitle: '500/2000 ML',
-              icon: Icons.water_drop,
-              progress: 0.25,
-            ),
-            const SizedBox(height: 12),
-            const HabitCard(
-              title: 'Caminar',
-              subtitle: '0/10000 PASOS',
-              icon: Icons.directions_walk,
-              progress: 0.0,
-            ),
-            const SizedBox(height: 12),
-            const HabitCard(
-              title: 'Regar plantas',
-              subtitle: '0/1',
-              icon: Icons.local_florist,
-              progress: 0.0,
+            ListView.separated(
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              itemCount: habits.length,
+              separatorBuilder: (context, index) => const SizedBox(height: 12),
+              itemBuilder: (context, index) {
+                final habit = habits[index];
+                return HabitCard(
+                  title: habit.title,
+                  subtitle: habit.subtitle,
+                  icon: habit.icon,
+                  progress: habit.initialProgress,
+                  isCompleted: habit.isCompleted,
+                  onToggle: () {
+                    ref.read(mockHabitsProvider.notifier).toggleHabit(habit.id);
+                  },
+                );
+              },
             ),
             const SizedBox(height: 100), // padding for bottom nav bar
           ],
