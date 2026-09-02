@@ -22,6 +22,11 @@ _HabitModel _$HabitModelFromJson(Map<String, dynamic> json) => _HabitModel(
   rachaActual: (json['rachaActual'] as num?)?.toInt() ?? 0,
   fechaInicio: json['fechaInicio'] as String?,
   fechaFin: json['fechaFin'] as String?,
+  diasSemana:
+      (json['diasSemana'] as List<dynamic>?)
+          ?.map((e) => (e as num).toInt())
+          .toList() ??
+      const [1, 2, 3, 4, 5, 6, 7],
 );
 
 Map<String, dynamic> _$HabitModelToJson(_HabitModel instance) =>
@@ -39,4 +44,5 @@ Map<String, dynamic> _$HabitModelToJson(_HabitModel instance) =>
       'rachaActual': instance.rachaActual,
       'fechaInicio': instance.fechaInicio,
       'fechaFin': instance.fechaFin,
+      'diasSemana': instance.diasSemana,
     };

@@ -7,8 +7,15 @@ import '../../../habits/presentation/widgets/habit_card.dart';
 import '../../../habits/providers/habits_provider.dart';
 import '../../../profile/providers/profile_provider.dart';
 
-class DashboardScreen extends ConsumerWidget {
+class DashboardScreen extends ConsumerStatefulWidget {
   const DashboardScreen({super.key});
+
+  @override
+  ConsumerState<DashboardScreen> createState() => _DashboardScreenState();
+}
+
+class _DashboardScreenState extends ConsumerState<DashboardScreen> {
+  int _selectedDayOffset = 0; // 0 = Hoy, 1 = Mañana, etc.
 
   IconData _getCategoryIcon(String? iconName) {
     if (iconName == null) return Icons.fitness_center;
@@ -35,11 +42,37 @@ class DashboardScreen extends ConsumerWidget {
     }
   }
 
+  String _getShortDayName(int weekday) {
+    switch (weekday) {
+      case DateTime.monday:
+        return 'LU';
+      case DateTime.tuesday:
+        return 'MA';
+      case DateTime.wednesday:
+        return 'MI';
+      case DateTime.thursday:
+        return 'JU';
+      case DateTime.friday:
+        return 'VI';
+      case DateTime.saturday:
+        return 'SA';
+      case DateTime.sunday:
+        return 'DO';
+      default:
+        return '';
+    }
+  }
+
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
     final habitsAsync = ref.watch(habitsDashboardProvider);
     final profileAsync = ref.watch(profileProvider);
     final userName = profileAsync.value?.nombre ?? 'Usuario';
+    final now = DateTime.now();
+
+    // Fecha del día seleccionado en la barra de calendario
+    final selectedDate = now.add(Duration(days: _selectedDayOffset));
+    final selectedWeekday = selectedDate.weekday; // 1 = Lunes, 7 = Domingo
 
     return Scaffold(
       appBar: AppBar(
@@ -111,28 +144,59 @@ class DashboardScreen extends ConsumerWidget {
               ),
               const SizedBox(height: 24),
 
-              // Calendar Bar (Static)
+              // Calendar Bar interactiva de 7 días (US011)
               SizedBox(
-                height: 70,
+                height: 72,
                 child: ListView.builder(
                   scrollDirection: Axis.horizontal,
                   itemCount: 7,
                   itemBuilder: (context, index) {
-                    final isSelected = index == 1;
-                    return Container(
-                      width: 50,
-                      margin: const EdgeInsets.only(right: 8),
-                      decoration: BoxDecoration(
-                        border: Border.all(color: isSelected ? Colors.blue : Colors.grey.shade300, width: 2),
-                        borderRadius: BorderRadius.circular(16),
-                        color: isSelected ? Colors.blue.withValues(alpha: 0.1) : Colors.transparent,
-                      ),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text('${index + 2}', style: TextStyle(fontWeight: FontWeight.bold, color: isSelected ? Colors.blue : Colors.black)),
-                          Text(['VI', 'SA', 'DO', 'LU', 'MA', 'MI', 'JU'][index], style: TextStyle(fontSize: 10, color: isSelected ? Colors.blue : Colors.grey)),
-                        ],
+                    final dayDate = now.add(Duration(days: index));
+                    final isSelected = index == _selectedDayOffset;
+                    final dayName = _getShortDayName(dayDate.weekday);
+
+                    return GestureDetector(
+                      onTap: () {
+                        setState(() {
+                          _selectedDayOffset = index;
+                        });
+                      },
+                      child: AnimatedContainer(
+                        duration: const Duration(milliseconds: 200),
+                        width: 54,
+                        margin: const EdgeInsets.only(right: 8),
+                        decoration: BoxDecoration(
+                          border: Border.all(
+                            color: isSelected ? Colors.blue : Colors.grey.shade300,
+                            width: isSelected ? 2 : 1,
+                          ),
+                          borderRadius: BorderRadius.circular(16),
+                          color: isSelected
+                              ? Colors.blue.withValues(alpha: 0.12)
+                              : Colors.transparent,
+                        ),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              '${dayDate.day}',
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 16,
+                                color: isSelected ? Colors.blue : Colors.black,
+                              ),
+                            ),
+                            const SizedBox(height: 2),
+                            Text(
+                              dayName,
+                              style: TextStyle(
+                                fontSize: 11,
+                                fontWeight: FontWeight.w600,
+                                color: isSelected ? Colors.blue : Colors.grey,
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
                     );
                   },
@@ -140,9 +204,15 @@ class DashboardScreen extends ConsumerWidget {
               ),
               const SizedBox(height: 24),
 
-              // Dynamic Habits rendering
+              // Dynamic Habits rendering con filtro de días (US011)
               habitsAsync.when(
-                data: (habits) {
+                data: (allHabits) {
+                  // Filtrar hábitos programados para el día seleccionado
+                  final habits = allHabits.where((h) {
+                    if (h.diasSemana.isEmpty) return true;
+                    return h.diasSemana.contains(selectedWeekday);
+                  }).toList();
+
                   final completedCount = habits.where((h) => h.completadoHoy).length;
                   final totalCount = habits.length;
 
@@ -198,7 +268,12 @@ class DashboardScreen extends ConsumerWidget {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text('Mis Hábitos ($completedCount/$totalCount)', style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                          Text(
+                            _selectedDayOffset == 0
+                                ? 'Mis Hábitos de Hoy ($completedCount/$totalCount)'
+                                : 'Hábitos del ${_getShortDayName(selectedWeekday)} (${selectedDate.day}/${selectedDate.month})',
+                            style: const TextStyle(fontSize: 17, fontWeight: FontWeight.bold),
+                          ),
                           IconButton(
                             icon: const Icon(Icons.add_circle_outline, color: Colors.blue),
                             onPressed: () => context.push('/create-habit'),
@@ -217,17 +292,19 @@ class DashboardScreen extends ConsumerWidget {
                           ),
                           child: Column(
                             children: [
-                              const Icon(Icons.style_outlined, size: 48, color: Colors.grey),
+                              const Icon(Icons.event_available_outlined, size: 48, color: Colors.grey),
                               const SizedBox(height: 8),
-                              const Text(
-                                'Aún no tienes hábitos creados para hoy.',
-                                style: TextStyle(color: Colors.grey, fontWeight: FontWeight.w500),
+                              Text(
+                                _selectedDayOffset == 0
+                                    ? 'No tienes hábitos programados para hoy.'
+                                    : 'Sin hábitos configurados para este día.',
+                                style: const TextStyle(color: Colors.grey, fontWeight: FontWeight.w500),
                               ),
                               const SizedBox(height: 12),
                               ElevatedButton.icon(
                                 onPressed: () => context.push('/create-habit'),
                                 icon: const Icon(Icons.add),
-                                label: const Text('Crear mi primer hábito'),
+                                label: const Text('Crear nuevo hábito'),
                               ),
                             ],
                           ),

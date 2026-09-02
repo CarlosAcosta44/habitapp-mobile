@@ -14,6 +14,7 @@ abstract class CreateHabitDto with _$CreateHabitDto {
     double? metaDiaria,
     String? unidadMedida,
     required String idCategoria,
+    @Default([1, 2, 3, 4, 5, 6, 7]) List<int> diasSemana,
   }) = _CreateHabitDto;
 
   factory CreateHabitDto.fromJson(Map<String, dynamic> json) =>

@@ -16,6 +16,11 @@ _CreateHabitDto _$CreateHabitDtoFromJson(Map<String, dynamic> json) =>
       metaDiaria: (json['metaDiaria'] as num?)?.toDouble(),
       unidadMedida: json['unidadMedida'] as String?,
       idCategoria: json['idCategoria'] as String,
+      diasSemana:
+          (json['diasSemana'] as List<dynamic>?)
+              ?.map((e) => (e as num).toInt())
+              .toList() ??
+          const [1, 2, 3, 4, 5, 6, 7],
     );
 
 Map<String, dynamic> _$CreateHabitDtoToJson(_CreateHabitDto instance) =>
@@ -28,4 +33,5 @@ Map<String, dynamic> _$CreateHabitDtoToJson(_CreateHabitDto instance) =>
       'metaDiaria': instance.metaDiaria,
       'unidadMedida': instance.unidadMedida,
       'idCategoria': instance.idCategoria,
+      'diasSemana': instance.diasSemana,
     };
