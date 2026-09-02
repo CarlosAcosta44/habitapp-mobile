@@ -60,8 +60,7 @@ GoRouter appRouter(Ref ref) {
       GoRoute(
         path: '/settings',
         builder: (context, state) => const SettingsScreen(),
-      ),
-    ],
+      ),    ],
     redirect: (context, state) {
       final authState = ref.read(authProvider);
       final onboardingState = ref.read(onboardingProvider);
