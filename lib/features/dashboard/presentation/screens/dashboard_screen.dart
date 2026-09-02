@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import '../../habits/presentation/widgets/daily_progress_bar.dart';
-import '../../habits/presentation/widgets/habit_card.dart';
+import '../../../habits/presentation/widgets/daily_progress_bar.dart';
+import '../../../habits/presentation/widgets/habit_card.dart';
 
 class DashboardScreen extends StatelessWidget {
   const DashboardScreen({super.key});
