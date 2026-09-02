@@ -9,15 +9,15 @@ Este documento detalla el plan de acción para construir `HabitAppFrontend`. El 
     *   [x] Crea el proyecto Flutter y estructura las carpetas según `arquitectura_base.md`.
     *   [x] Implementa `AuthRepository` (capa data) y `AuthProvider` (Riverpod) para conectar con NestJS. (Incluye Login Social Nativo).
     *   [x] *(Adelanto Sprint 2)* Implementa `ProfileRepository` y `ProfileNotifier` (Tarea 47 - Gestor global del perfil).
-*   **Breiner (Infraestructura HTTP y UI Base):** 
-    *   Configura el cliente HTTP (Dio) con interceptores para inyectar y renovar tokens.
-    *   Maqueta el carrusel y las pantallas de bienvenida (`1.Pre-inicio`).
-*   **Nicolas (Navegación y Login):** 
-    *   Configura `GoRouter` y la redirección por estado (ej. redirigir si `AuthProvider` tiene sesión).
-    *   Maqueta la pantalla de `2.Iniciar sesion` e integra los Providers.
-*   **Juan (Tema y Registro):** 
-    *   Configura el `AppTheme` global.
-    *   Maqueta la pantalla de `3.Crear cuenta` y maneja las validaciones de formulario.
+*   **Breiner (Infraestructura HTTP y UI Base):** ✅ **COMPLETADO**
+    *   [x] Configura el cliente HTTP (Dio) con interceptores para inyectar y renovar tokens.
+    *   [x] Maqueta el carrusel y las pantallas de bienvenida (`1.Pre-inicio`).
+*   **Nicolas (Navegación y Login):** ✅ **COMPLETADO**
+    *   [x] Configura `GoRouter` y la redirección por estado (ej. redirigir si `AuthProvider` tiene sesión).
+    *   [x] Maqueta la pantalla de `2.Iniciar sesion` e integra los Providers.
+*   **Juan (Tema y Registro):** ❌ **PENDIENTE (Retrasado)**
+    *   [ ] Configura el `AppTheme` global.
+    *   [ ] Maqueta la pantalla de `3.Crear cuenta` y maneja las validaciones de formulario.
 
 ---
 
@@ -25,14 +25,15 @@ Este documento detalla el plan de acción para construir `HabitAppFrontend`. El 
 **Objetivo:** El usuario ve sus hábitos, los completa, crea nuevos y gestiona su perfil.
 
 *   **Juan (Lógica Core Hábitos):** 
-    *   Desarrolla `HabitsRepository` y `HabitsProvider` para traer hábitos diarios y emitir checks al backend.
-*   **Carlos (Dashboard y Reactividad UI):** 
-    *   Maqueta el `4.Dashboard` y la barra de navegación principal.
-    *   Conecta la vista con `HabitsProvider` asegurando *Optimistic UI* (reacción instantánea al tocar un hábito).
+    *   [ ] Desarrolla `HabitsRepository` y `HabitsProvider` para traer hábitos diarios y emitir checks al backend.
+*   **Carlos (Dashboard y Reactividad UI):** ✅ **COMPLETADO (Con Mock temporal)**
+    *   [x] Maqueta el `4.Dashboard` y la barra de navegación principal.
+    *   [x] Conecta la vista con `HabitsProvider` asegurando *Optimistic UI* (reacción instantánea al tocar un hábito).
+    *   *Nota: Carlos usó un Mock Provider (`mock_habits_provider.dart`) porque Juan aún no ha completado su tarea. Este Mock DEBE SER REEMPLAZADO por el Provider real de Juan cuando él termine su parte.*
 *   **Breiner (Formularios y Accesos):** 
-    *   Maqueta la pantalla de `5.Crear-habitos` (formularios complejos) y su Provider asociado.
-*   **Nicolas (Cuenta de Usuario):** 
-    *   Maqueta `9.Perfil` (Logros básicos) y `10.Ajustes` (Edición de cuenta y funcionalidad de Logout con limpieza de tokens y estado).
+    *   [ ] Maqueta la pantalla de `5.Crear-habitos` (formularios complejos) y su Provider asociado.
+*   **Nicolas (Cuenta de Usuario):** ✅ **COMPLETADO**
+    *   [x] Maqueta `9.Perfil` (Logros básicos) y `10.Ajustes` (Edición de cuenta y funcionalidad de Logout con limpieza de tokens y estado).
 
 ---
 
