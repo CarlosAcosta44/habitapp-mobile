@@ -327,6 +327,8 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                               icon: _getCategoryIcon(habit.categoria?.icono ?? habit.categoria?.nombre),
                               progress: progressRatio,
                               isCompleted: habit.completadoHoy,
+                              categoryName: habit.categoria?.nombre,
+                              categoryColor: habit.categoria?.parsedColor,
                               onToggle: () {
                                 ref
                                     .read(habitsDashboardProvider.notifier)

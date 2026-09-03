@@ -318,7 +318,23 @@ class _CreateHabitScreenState extends ConsumerState<CreateHabitScreen> {
                       items: categories.map((cat) {
                         return DropdownMenuItem<String>(
                           value: cat.id,
-                          child: Text(cat.nombre),
+                          child: Row(
+                            children: [
+                              Container(
+                                width: 12,
+                                height: 12,
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  color: cat.parsedColor,
+                                ),
+                              ),
+                              const SizedBox(width: 10),
+                              Text(
+                                cat.nombre,
+                                style: const TextStyle(fontWeight: FontWeight.w600),
+                              ),
+                            ],
+                          ),
                         );
                       }).toList(),
                       onChanged: (val) {
