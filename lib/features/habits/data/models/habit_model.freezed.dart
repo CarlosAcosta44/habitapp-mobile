@@ -16,7 +16,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$HabitModel {
 
- String get id; String get nombre; String? get descripcion; int get puntos; double get metaDiaria; String get unidadMedida; String? get idCategoria; CategoryModel? get categoria; bool get completadoHoy; double get progresoHoy; int get rachaActual; String? get fechaInicio; String? get fechaFin; List<int> get diasSemana;
+@JsonKey(name: 'idHabito') String get id; String get nombre; String? get descripcion; int get puntos; double get metaDiaria; String get unidadMedida; String? get idCategoria; CategoryModel? get categoria; bool get completadoHoy; double get progresoHoy; int get rachaActual; String? get fechaInicio; String? get fechaFin; List<int> get diasSemana;
 /// Create a copy of HabitModel
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -49,7 +49,7 @@ abstract mixin class $HabitModelCopyWith<$Res>  {
   factory $HabitModelCopyWith(HabitModel value, $Res Function(HabitModel) _then) = _$HabitModelCopyWithImpl;
 @useResult
 $Res call({
- String id, String nombre, String? descripcion, int puntos, double metaDiaria, String unidadMedida, String? idCategoria, CategoryModel? categoria, bool completadoHoy, double progresoHoy, int rachaActual, String? fechaInicio, String? fechaFin, List<int> diasSemana
+@JsonKey(name: 'idHabito') String id, String nombre, String? descripcion, int puntos, double metaDiaria, String unidadMedida, String? idCategoria, CategoryModel? categoria, bool completadoHoy, double progresoHoy, int rachaActual, String? fechaInicio, String? fechaFin, List<int> diasSemana
 });
 
 
@@ -179,7 +179,7 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id,  String nombre,  String? descripcion,  int puntos,  double metaDiaria,  String unidadMedida,  String? idCategoria,  CategoryModel? categoria,  bool completadoHoy,  double progresoHoy,  int rachaActual,  String? fechaInicio,  String? fechaFin,  List<int> diasSemana)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function(@JsonKey(name: 'idHabito')  String id,  String nombre,  String? descripcion,  int puntos,  double metaDiaria,  String unidadMedida,  String? idCategoria,  CategoryModel? categoria,  bool completadoHoy,  double progresoHoy,  int rachaActual,  String? fechaInicio,  String? fechaFin,  List<int> diasSemana)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _HabitModel() when $default != null:
 return $default(_that.id,_that.nombre,_that.descripcion,_that.puntos,_that.metaDiaria,_that.unidadMedida,_that.idCategoria,_that.categoria,_that.completadoHoy,_that.progresoHoy,_that.rachaActual,_that.fechaInicio,_that.fechaFin,_that.diasSemana);case _:
@@ -200,7 +200,7 @@ return $default(_that.id,_that.nombre,_that.descripcion,_that.puntos,_that.metaD
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id,  String nombre,  String? descripcion,  int puntos,  double metaDiaria,  String unidadMedida,  String? idCategoria,  CategoryModel? categoria,  bool completadoHoy,  double progresoHoy,  int rachaActual,  String? fechaInicio,  String? fechaFin,  List<int> diasSemana)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function(@JsonKey(name: 'idHabito')  String id,  String nombre,  String? descripcion,  int puntos,  double metaDiaria,  String unidadMedida,  String? idCategoria,  CategoryModel? categoria,  bool completadoHoy,  double progresoHoy,  int rachaActual,  String? fechaInicio,  String? fechaFin,  List<int> diasSemana)  $default,) {final _that = this;
 switch (_that) {
 case _HabitModel():
 return $default(_that.id,_that.nombre,_that.descripcion,_that.puntos,_that.metaDiaria,_that.unidadMedida,_that.idCategoria,_that.categoria,_that.completadoHoy,_that.progresoHoy,_that.rachaActual,_that.fechaInicio,_that.fechaFin,_that.diasSemana);case _:
@@ -220,7 +220,7 @@ return $default(_that.id,_that.nombre,_that.descripcion,_that.puntos,_that.metaD
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id,  String nombre,  String? descripcion,  int puntos,  double metaDiaria,  String unidadMedida,  String? idCategoria,  CategoryModel? categoria,  bool completadoHoy,  double progresoHoy,  int rachaActual,  String? fechaInicio,  String? fechaFin,  List<int> diasSemana)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function(@JsonKey(name: 'idHabito')  String id,  String nombre,  String? descripcion,  int puntos,  double metaDiaria,  String unidadMedida,  String? idCategoria,  CategoryModel? categoria,  bool completadoHoy,  double progresoHoy,  int rachaActual,  String? fechaInicio,  String? fechaFin,  List<int> diasSemana)?  $default,) {final _that = this;
 switch (_that) {
 case _HabitModel() when $default != null:
 return $default(_that.id,_that.nombre,_that.descripcion,_that.puntos,_that.metaDiaria,_that.unidadMedida,_that.idCategoria,_that.categoria,_that.completadoHoy,_that.progresoHoy,_that.rachaActual,_that.fechaInicio,_that.fechaFin,_that.diasSemana);case _:
@@ -235,10 +235,10 @@ return $default(_that.id,_that.nombre,_that.descripcion,_that.puntos,_that.metaD
 @JsonSerializable()
 
 class _HabitModel implements HabitModel {
-  const _HabitModel({required this.id, required this.nombre, this.descripcion, this.puntos = 10, this.metaDiaria = 1.0, this.unidadMedida = 'veces', this.idCategoria, this.categoria, this.completadoHoy = false, this.progresoHoy = 0.0, this.rachaActual = 0, this.fechaInicio, this.fechaFin,  List<int> diasSemana = const [1, 2, 3, 4, 5, 6, 7]}): _diasSemana = diasSemana;
+  const _HabitModel({@JsonKey(name: 'idHabito') required this.id, required this.nombre, this.descripcion, this.puntos = 10, this.metaDiaria = 1.0, this.unidadMedida = 'veces', this.idCategoria, this.categoria, this.completadoHoy = false, this.progresoHoy = 0.0, this.rachaActual = 0, this.fechaInicio, this.fechaFin,  List<int> diasSemana = const [1, 2, 3, 4, 5, 6, 7]}): _diasSemana = diasSemana;
   factory _HabitModel.fromJson(Map<String, dynamic> json) => _$HabitModelFromJson(json);
 
-@override final  String id;
+@override@JsonKey(name: 'idHabito') final  String id;
 @override final  String nombre;
 @override final  String? descripcion;
 @override@JsonKey() final  int puntos;
@@ -292,7 +292,7 @@ abstract mixin class _$HabitModelCopyWith<$Res> implements $HabitModelCopyWith<$
   factory _$HabitModelCopyWith(_HabitModel value, $Res Function(_HabitModel) _then) = __$HabitModelCopyWithImpl;
 @override @useResult
 $Res call({
- String id, String nombre, String? descripcion, int puntos, double metaDiaria, String unidadMedida, String? idCategoria, CategoryModel? categoria, bool completadoHoy, double progresoHoy, int rachaActual, String? fechaInicio, String? fechaFin, List<int> diasSemana
+@JsonKey(name: 'idHabito') String id, String nombre, String? descripcion, int puntos, double metaDiaria, String unidadMedida, String? idCategoria, CategoryModel? categoria, bool completadoHoy, double progresoHoy, int rachaActual, String? fechaInicio, String? fechaFin, List<int> diasSemana
 });
 
 

@@ -213,8 +213,8 @@ return $default(_that.id,_that.nombre,_that.descripcion,_that.icono,_that.colorH
 /// @nodoc
 @JsonSerializable()
 
-class _CategoryModel implements CategoryModel {
-  const _CategoryModel({@JsonKey(name: 'id', readValue: _readId) required this.id, @JsonKey(name: 'nombre', readValue: _readNombre) required this.nombre, this.descripcion, this.icono, this.colorHex});
+class _CategoryModel extends CategoryModel {
+  const _CategoryModel({@JsonKey(name: 'id', readValue: _readId) required this.id, @JsonKey(name: 'nombre', readValue: _readNombre) required this.nombre, this.descripcion, this.icono, this.colorHex}): super._();
   factory _CategoryModel.fromJson(Map<String, dynamic> json) => _$CategoryModelFromJson(json);
 
 @override@JsonKey(name: 'id', readValue: _readId) final  String id;

@@ -7,7 +7,7 @@ part of 'habit_model.dart';
 // **************************************************************************
 
 _HabitModel _$HabitModelFromJson(Map<String, dynamic> json) => _HabitModel(
-  id: (json['idHabito'] ?? json['id']) as String,
+  id: json['idHabito'] as String,
   nombre: json['nombre'] as String,
   descripcion: json['descripcion'] as String?,
   puntos: (json['puntos'] as num?)?.toInt() ?? 10,
@@ -31,7 +31,7 @@ _HabitModel _$HabitModelFromJson(Map<String, dynamic> json) => _HabitModel(
 
 Map<String, dynamic> _$HabitModelToJson(_HabitModel instance) =>
     <String, dynamic>{
-      'id': instance.id,
+      'idHabito': instance.id,
       'nombre': instance.nombre,
       'descripcion': instance.descripcion,
       'puntos': instance.puntos,
