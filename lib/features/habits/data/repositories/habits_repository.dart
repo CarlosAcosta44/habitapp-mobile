@@ -24,9 +24,14 @@ class HabitsRepository {
       final response = await _dio.get('/habits/dashboard');
       final data = response.data;
       if (data is List) {
-        return data
-            .map((e) => HabitModel.fromJson(e as Map<String, dynamic>))
-            .toList();
+        return data.map((e) {
+          final map = e as Map<String, dynamic>;
+          if (map['registroHoy'] != null) {
+            map['completadoHoy'] = map['registroHoy']['completado'] ?? false;
+            map['progresoHoy'] = (map['registroHoy']['progresoActual'] ?? 0).toDouble();
+          }
+          return HabitModel.fromJson(map);
+        }).toList();
       }
       return [];
     } on DioException catch (e) {
@@ -63,8 +68,8 @@ class HabitsRepository {
         if (parsed.isNotEmpty) return parsed;
       }
       return defaultCategories;
-    } catch (_) {
-      // Retornar categorías por defecto si hay problemas de red o respuesta incompleta
+    } catch (e, stack) {
+      debugPrint('ERROR fetching categories: $e\n$stack');
       return defaultCategories;
     }
   }
@@ -122,6 +127,54 @@ class HabitsRepository {
     } on DioException catch (e) {
       throw Exception(
         e.response?.data['message'] ?? 'Error al avanzar progreso del hábito',
+      );
+    }
+  }
+
+  /// Obtiene el detalle completo de un hábito con sus estadísticas
+  Future<HabitModel> getHabitStats(String habitoId) async {
+    try {
+      final response = await _dio.get('/habits/$habitoId/stats');
+      final map = response.data as Map<String, dynamic>;
+      if (map['registroHoy'] != null) {
+        map['completadoHoy'] = map['registroHoy']['completado'] ?? false;
+        map['progresoHoy'] =
+            (map['registroHoy']['progresoActual'] ?? 0).toDouble();
+      }
+      return HabitModel.fromJson(map);
+    } on DioException catch (e) {
+      throw Exception(
+        e.response?.data['message'] ?? 'Error al obtener detalle del hábito',
+      );
+    }
+  }
+
+  /// Actualiza los campos de un hábito existente
+  Future<HabitModel> updateHabit(
+      String habitoId, Map<String, dynamic> data) async {
+    try {
+      final response = await _dio.patch('/habits/$habitoId', data: data);
+      final map = response.data as Map<String, dynamic>;
+      if (map['registroHoy'] != null) {
+        map['completadoHoy'] = map['registroHoy']['completado'] ?? false;
+        map['progresoHoy'] =
+            (map['registroHoy']['progresoActual'] ?? 0).toDouble();
+      }
+      return HabitModel.fromJson(map);
+    } on DioException catch (e) {
+      throw Exception(
+        e.response?.data['message'] ?? 'Error al actualizar el hábito',
+      );
+    }
+  }
+
+  /// Elimina un hábito permanentemente
+  Future<void> deleteHabit(String habitoId) async {
+    try {
+      await _dio.delete('/habits/$habitoId');
+    } on DioException catch (e) {
+      throw Exception(
+        e.response?.data['message'] ?? 'Error al eliminar el hábito',
       );
     }
   }
