@@ -7,20 +7,24 @@ import '../../providers/onboarding_provider.dart';
 //  Datos de cada slide
 // ─────────────────────────────────────────────────────────
 class _Slide {
-  final String title;
+  final String titleNormal;
+  final String titleHighlight;
   final String subtitle;
-  final String illustration; // emoji / ícono representativo
+  final IconData icon;
 
   const _Slide({
-    required this.title,
+    required this.titleNormal,
+    required this.titleHighlight,
     required this.subtitle,
-    required this.illustration,
+    required this.icon,
   });
 }
 
-const _kBlue = Color(0xFF4B4EFC);
-const _kBlueMid = Color(0xFF5356FF);
-const _kBlueDark = Color(0xFF3A3DC8);
+const _kPrimaryPink = Color(0xFFE22D6F); // Color rosa/magenta del botón
+const _kHighlightBlue = Color(0xFF2D82FA); // Color azul del texto
+const _kBackgroundLight = Colors.white;
+const _kTextDark = Color(0xFF1E1E1E);
+const _kTextGrey = Color(0xFF6B6B6B);
 
 // ─────────────────────────────────────────────────────────
 //  OnboardingScreen
@@ -38,20 +42,23 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
 
   static const _slides = [
     _Slide(
-      title: 'Crea buenos\nhábitos',
-      subtitle: 'Cambia tu vida incorporando poco a poco hábitos saludables',
-      illustration: '✅',
-    ),
-    _Slide(
-      title: 'Sigue tu\nprogreso',
-      subtitle: 'Cada día estás un paso más cerca de tu meta. ¡No te rindas!',
-      illustration: '📊',
-    ),
-    _Slide(
-      title: 'Mantente unido\ny fuerte',
+      titleNormal: 'Cultiva tu\n',
+      titleHighlight: 'bienestar mental',
       subtitle:
-          'Encuentra amigos para conversar sobre temas en común. Completen desafíos juntos.',
-      illustration: '🤝',
+          'Pequeñas rutinas y apoyo profesional para una mente en calma y una vida plena.',
+      icon: Icons.psychology_rounded,
+    ),
+    _Slide(
+      titleNormal: 'Crea buenos\n',
+      titleHighlight: 'hábitos',
+      subtitle: 'Cambia tu vida incorporando poco a poco rutinas saludables.',
+      icon: Icons.check_circle_outline_rounded,
+    ),
+    _Slide(
+      titleNormal: 'Sigue tu\n',
+      titleHighlight: 'progreso',
+      subtitle: 'Cada día estás un paso más cerca de tu meta. ¡No te rindas!',
+      icon: Icons.bar_chart_rounded,
     ),
   ];
 
@@ -67,475 +74,258 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
   }
 
   Future<void> _continueWithSocial() async {
-    // Por ahora lleva al mismo flujo hasta que el módulo social esté completo
     await _continueWithEmail();
   }
 
   @override
   Widget build(BuildContext context) {
-    final size = MediaQuery.of(context).size;
-
     return Scaffold(
-      body: Stack(
-        fit: StackFit.expand,
-        children: [
-          // ── Fondo degradado azul exacto del diseño ──
-          Container(
-            decoration: const BoxDecoration(
-              gradient: LinearGradient(
-                colors: [_kBlueMid, _kBlueDark],
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
+      backgroundColor: _kBackgroundLight,
+      body: SafeArea(
+        child: Column(
+          children: [
+            // ── Header (Logo) ──
+            const Padding(
+              padding: EdgeInsets.symmetric(vertical: 20),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(Icons.extension, color: _kHighlightBlue, size: 28),
+                  SizedBox(width: 8),
+                  Text(
+                    'HabitApp',
+                    style: TextStyle(
+                      color: _kTextDark,
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ],
               ),
             ),
-          ),
 
-          // ── Círculos decorativos de fondo ──
-          Positioned(
-            top: -80,
-            right: -80,
-            child: _Circle(size: 260, color: Colors.white.withValues(alpha: 0.06)),
-          ),
-          Positioned(
-            top: size.height * 0.15,
-            left: -60,
-            child: _Circle(size: 160, color: Colors.white.withValues(alpha: 0.05)),
-          ),
-          Positioned(
-            bottom: size.height * 0.28,
-            right: -40,
-            child: _Circle(size: 120, color: Colors.white.withValues(alpha: 0.05)),
-          ),
-
-          // ── Contenido ──
-          SafeArea(
-            child: Column(
-              children: [
-                // ── Barra superior: Omitir ──
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                  child: Align(
-                    alignment: Alignment.centerRight,
-                    child: TextButton(
-                      onPressed: _continueWithEmail,
-                      child: Text(
-                        'Omitir',
-                        style: TextStyle(
-                          color: Colors.white.withValues(alpha: 0.7),
-                          fontSize: 15,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-
-                // ── Zona de ilustración (ocupa ~40% de la pantalla) ──
-                SizedBox(
-                  height: size.height * 0.38,
-                  child: PageView.builder(
-                    controller: _controller,
-                    itemCount: _slides.length,
-                    onPageChanged: (i) => setState(() => _page = i),
-                    itemBuilder: (_, i) => _IllustrationSlide(
-                      slide: _slides[i],
-                      slideIndex: i,
-                    ),
-                  ),
-                ),
-
-                // ── Texto título + descripción ──
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 28),
-                  child: AnimatedSwitcher(
-                    duration: const Duration(milliseconds: 300),
+            // ── Slides (Ilustración y Texto) ──
+            Expanded(
+              child: PageView.builder(
+                controller: _controller,
+                itemCount: _slides.length,
+                onPageChanged: (i) => setState(() => _page = i),
+                itemBuilder: (context, index) {
+                  final slide = _slides[index];
+                  return Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 32),
                     child: Column(
-                      key: ValueKey(_page),
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Text(
-                          _slides[_page].title,
-                          style: const TextStyle(
-                            color: Colors.white,
-                            fontSize: 36,
-                            fontWeight: FontWeight.w900,
-                            height: 1.1,
+                        // Placeholder de ilustración
+                        Container(
+                          width: double.infinity,
+                          height: 240,
+                          decoration: BoxDecoration(
+                            color: Colors.grey.withValues(alpha: 0.1),
+                            borderRadius: BorderRadius.circular(24),
+                          ),
+                          alignment: Alignment.center,
+                          child: Icon(
+                            slide.icon,
+                            size: 120,
+                            color: _kHighlightBlue.withValues(alpha: 0.8),
                           ),
                         ),
-                        const SizedBox(height: 12),
+                        const SizedBox(height: 40),
+
+                        // Título
+                        RichText(
+                          textAlign: TextAlign.center,
+                          text: TextSpan(
+                            style: const TextStyle(
+                              color: _kTextDark,
+                              fontSize: 32,
+                              fontWeight: FontWeight.w800,
+                              height: 1.2,
+                            ),
+                            children: [
+                              TextSpan(text: slide.titleNormal),
+                              TextSpan(
+                                text: slide.titleHighlight,
+                                style: const TextStyle(color: _kHighlightBlue),
+                              ),
+                            ],
+                          ),
+                        ),
+                        const SizedBox(height: 16),
+
+                        // Subtítulo
                         Text(
-                          _slides[_page].subtitle,
+                          slide.subtitle,
+                          textAlign: TextAlign.center,
+                          style: const TextStyle(
+                            color: _kTextGrey,
+                            fontSize: 15,
+                            height: 1.5,
+                          ),
+                        ),
+                      ],
+                    ),
+                  );
+                },
+              ),
+            ),
+
+            // ── Indicador de página ──
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 24),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: List.generate(
+                  _slides.length,
+                  (index) => AnimatedContainer(
+                    duration: const Duration(milliseconds: 300),
+                    margin: const EdgeInsets.symmetric(horizontal: 4),
+                    width: _page == index ? 24 : 8,
+                    height: 8,
+                    decoration: BoxDecoration(
+                      color: _page == index
+                          ? _kHighlightBlue
+                          : Colors.grey.withValues(alpha: 0.3),
+                      borderRadius: BorderRadius.circular(4),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+
+            // ── Botones y Footer ──
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+              child: Column(
+                children: [
+                  // Botón principal
+                  ElevatedButton(
+                    onPressed: _continueWithEmail,
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: _kPrimaryPink,
+                      foregroundColor: Colors.white,
+                      elevation: 0,
+                      minimumSize: const Size(double.infinity, 56),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(28),
+                      ),
+                    ),
+                    child: const Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(Icons.mail_outline_rounded, size: 22),
+                        SizedBox(width: 8),
+                        Text(
+                          'Continuar con correo',
                           style: TextStyle(
-                            color: Colors.white.withValues(alpha: 0.75),
-                            fontSize: 14,
-                            height: 1.55,
+                            fontSize: 16,
+                            fontWeight: FontWeight.w600,
                           ),
                         ),
                       ],
                     ),
                   ),
-                ),
+                  const SizedBox(height: 12),
 
-                const SizedBox(height: 20),
-
-                // ── Indicador de puntos ──
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: List.generate(_slides.length, (i) {
-                    final active = i == _page;
-                    return AnimatedContainer(
-                      duration: const Duration(milliseconds: 300),
-                      curve: Curves.easeInOut,
-                      margin: const EdgeInsets.symmetric(horizontal: 4),
-                      width: active ? 24.0 : 8.0,
-                      height: 8.0,
-                      decoration: BoxDecoration(
-                        color: active
-                            ? Colors.white
-                            : Colors.white.withValues(alpha: 0.35),
-                        borderRadius: BorderRadius.circular(4),
-                      ),
-                    );
-                  }),
-                ),
-
-                const Spacer(),
-
-                // ── Botones de acción ──
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(24, 0, 24, 8),
-                  child: Column(
+                  // Botones sociales
+                  Row(
                     children: [
-                      // Botón principal: Continuar con correo
-                      _ActionButton(
-                        onTap: _continueWithEmail,
-                        color: Colors.white,
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            const Icon(Icons.arrow_forward_rounded,
-                                size: 18, color: _kBlue),
-                            const SizedBox(width: 8),
-                            const Text(
-                              'Continuar con correo electrónico',
-                              style: TextStyle(
-                                color: _kBlue,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 15,
-                              ),
-                            ),
-                          ],
+                      Expanded(
+                        child: _SocialButton(
+                          icon: Icons.g_mobiledata_rounded,
+                          color: Colors.red,
+                          onTap: _continueWithSocial,
                         ),
                       ),
-                      const SizedBox(height: 10),
-
-                      // Fila de redes sociales
-                      Row(
-                        children: [
-                          Expanded(
-                            child: _SocialChip(
-                              icon: Icons.apple,
-                              label: 'Apple',
-                              onTap: _continueWithSocial,
-                            ),
-                          ),
-                          const SizedBox(width: 8),
-                          Expanded(
-                            child: _SocialChip(
-                              icon: Icons.g_mobiledata_rounded,
-                              label: 'Google',
-                              onTap: _continueWithSocial,
-                            ),
-                          ),
-                          const SizedBox(width: 8),
-                          Expanded(
-                            child: _SocialChip(
-                              icon: Icons.facebook,
-                              label: 'Facebook',
-                              onTap: _continueWithSocial,
-                            ),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 10),
-
-                      // Nota legal
-                      Text(
-                        'Revisa nuestros Términos y condiciones',
-                        style: TextStyle(
-                          color: Colors.white.withValues(alpha: 0.50),
-                          fontSize: 11,
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: _SocialButton(
+                          icon: Icons.apple,
+                          color: Colors.black,
+                          onTap: _continueWithSocial,
                         ),
-                        textAlign: TextAlign.center,
                       ),
                     ],
                   ),
-                ),
-                const SizedBox(height: 20),
-              ],
+                  const SizedBox(height: 24),
+
+                  // Términos y condiciones
+                  Text(
+                    'Al continuar aceptas nuestros',
+                    style: TextStyle(
+                      color: _kTextGrey.withValues(alpha: 0.8),
+                      fontSize: 12,
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+                  const Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        'Términos de servicio',
+                        style: TextStyle(
+                          color: _kHighlightBlue,
+                          fontSize: 12,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                      Text(
+                        ' y ',
+                        style: TextStyle(
+                          color: _kTextGrey,
+                          fontSize: 12,
+                        ),
+                      ),
+                      Text(
+                        'Política de privacidad',
+                        style: TextStyle(
+                          color: _kHighlightBlue,
+                          fontSize: 12,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
 }
 
 // ─────────────────────────────────────────────────────────
-//  _IllustrationSlide  — zona visual de cada slide
+//  _SocialButton
 // ─────────────────────────────────────────────────────────
-class _IllustrationSlide extends StatelessWidget {
-  final _Slide slide;
-  final int slideIndex;
+class _SocialButton extends StatelessWidget {
+  final IconData icon;
+  final Color color;
+  final VoidCallback onTap;
 
-  const _IllustrationSlide({required this.slide, required this.slideIndex});
+  const _SocialButton({
+    required this.icon,
+    required this.color,
+    required this.onTap,
+  });
 
   @override
   Widget build(BuildContext context) {
-    // Floating cards ficticias que simulan los elementos del diseño Figma
-    final floatingItems = _buildItems(slideIndex);
-
-    return Stack(
-      children: floatingItems,
-    );
-  }
-
-  List<Widget> _buildItems(int index) {
-    switch (index) {
-      case 0:
-        return [
-          _FloatItem(top: 30, right: 40,
-              child: _HabitCard(emoji: '✅', lines: 2)),
-          _FloatItem(top: 90, left: 30,
-              child: _AvatarBubble('😊')),
-          _FloatItem(top: 130, right: 60,
-              child: _HabitCard(emoji: '✅', lines: 1)),
-          _FloatItem(top: 185, left: 50,
-              child: _AvatarBubble('🧑')),
-          _FloatItem(top: 210, right: 50,
-              child: _HabitCard(emoji: '✅', lines: 2)),
-        ];
-      case 1:
-        return [
-          _FloatItem(top: 20, left: 60,
-              child: _HabitCard(emoji: '🏃', lines: 2, label: 'Retos')),
-          _FloatItem(top: 90, left: 30,
-              child: _HabitCard(emoji: '💧', lines: 1, label: 'Hábitos')),
-          _FloatItem(top: 150, left: 30,
-              child: _HabitCard(emoji: '🚶', lines: 1)),
-          _FloatItem(top: 210, left: 30,
-              child: _HabitCard(emoji: '🧘', lines: 1)),
-        ];
-      case 2:
-        return [
-          _FloatItem(top: 20, left: 80, child: _AvatarBubble('🧑‍🦱')),
-          _FloatItem(top: 30, left: 20, child: _AvatarBubble('👱')),
-          _FloatItem(top: 110, left: 60,
-              child: _RachaCard()),
-          _FloatItem(top: 110, right: 30, child: _AvatarBubble('👩')),
-          _FloatItem(top: 210, left: 100, child: _AvatarBubble('👩‍🦰')),
-        ];
-      default:
-        return [];
-    }
-  }
-}
-
-class _FloatItem extends StatelessWidget {
-  final double? top, left, right;
-  final Widget child;
-
-  const _FloatItem({this.top, this.left, this.right, required this.child});
-
-  @override
-  Widget build(BuildContext context) => Positioned(
-        top: top,
-        left: left,
-        right: right,
-        child: child,
-      );
-}
-
-class _HabitCard extends StatelessWidget {
-  final String emoji;
-  final int lines;
-  final String? label;
-
-  const _HabitCard({required this.emoji, required this.lines, this.label});
-
-  @override
-  Widget build(BuildContext context) => Container(
-        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(28),
+      child: Container(
+        height: 56,
         decoration: BoxDecoration(
-          color: Colors.white.withValues(alpha: 0.18),
-          borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: Colors.white.withValues(alpha: 0.25)),
-        ),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Container(
-              width: 32,
-              height: 32,
-              decoration: BoxDecoration(
-                color: Colors.white.withValues(alpha: 0.2),
-                shape: BoxShape.circle,
-              ),
-              alignment: Alignment.center,
-              child: Text(emoji, style: const TextStyle(fontSize: 16)),
-            ),
-            const SizedBox(width: 8),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                if (label != null)
-                  Text(label!,
-                      style: TextStyle(
-                          color: Colors.white.withValues(alpha: 0.6),
-                          fontSize: 9,
-                          letterSpacing: 0.5)),
-                Container(
-                  width: 60,
-                  height: 6,
-                  decoration: BoxDecoration(
-                    color: Colors.white.withValues(alpha: 0.5),
-                    borderRadius: BorderRadius.circular(3),
-                  ),
-                ),
-                if (lines > 1) ...[
-                  const SizedBox(height: 4),
-                  Container(
-                    width: 40,
-                    height: 6,
-                    decoration: BoxDecoration(
-                      color: Colors.white.withValues(alpha: 0.3),
-                      borderRadius: BorderRadius.circular(3),
-                    ),
-                  ),
-                ],
-              ],
-            ),
-          ],
-        ),
-      );
-}
-
-class _AvatarBubble extends StatelessWidget {
-  final String emoji;
-  const _AvatarBubble(this.emoji);
-
-  @override
-  Widget build(BuildContext context) => Container(
-        width: 48,
-        height: 48,
-        decoration: BoxDecoration(
-          color: Colors.white.withValues(alpha: 0.18),
-          shape: BoxShape.circle,
-          border: Border.all(color: Colors.white.withValues(alpha: 0.3), width: 2),
+          border: Border.all(color: Colors.grey.withValues(alpha: 0.3)),
+          borderRadius: BorderRadius.circular(28),
         ),
         alignment: Alignment.center,
-        child: Text(emoji, style: const TextStyle(fontSize: 22)),
-      );
-}
-
-class _RachaCard extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) => Container(
-        padding: const EdgeInsets.all(12),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(16),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withValues(alpha: 0.1),
-              blurRadius: 12,
-              offset: const Offset(0, 4),
-            ),
-          ],
-        ),
-        child: const Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text('DÍA DE\nMEJOR\nRACHA',
-                textAlign: TextAlign.center,
-                style: TextStyle(fontSize: 9, fontWeight: FontWeight.bold, color: Colors.black54)),
-            SizedBox(height: 4),
-            Text('22',
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.w900, color: _kBlue)),
-          ],
-        ),
-      );
-}
-
-// ─────────────────────────────────────────────────────────
-//  Auxiliares compartidos
-// ─────────────────────────────────────────────────────────
-class _Circle extends StatelessWidget {
-  final double size;
-  final Color color;
-  const _Circle({required this.size, required this.color});
-
-  @override
-  Widget build(BuildContext context) => Container(
-        width: size,
-        height: size,
-        decoration: BoxDecoration(color: color, shape: BoxShape.circle),
-      );
-}
-
-class _ActionButton extends StatelessWidget {
-  final VoidCallback onTap;
-  final Color color;
-  final Widget child;
-  const _ActionButton({required this.onTap, required this.color, required this.child});
-
-  @override
-  Widget build(BuildContext context) => Material(
-        color: color,
-        borderRadius: BorderRadius.circular(30),
-        child: InkWell(
-          borderRadius: BorderRadius.circular(30),
-          onTap: onTap,
-          child: Container(
-            width: double.infinity,
-            height: 52,
-            alignment: Alignment.center,
-            child: child,
-          ),
-        ),
-      );
-}
-
-class _SocialChip extends StatelessWidget {
-  final IconData icon;
-  final String label;
-  final VoidCallback onTap;
-  const _SocialChip({required this.icon, required this.label, required this.onTap});
-
-  @override
-  Widget build(BuildContext context) => Material(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(30),
-        child: InkWell(
-          borderRadius: BorderRadius.circular(30),
-          onTap: onTap,
-          child: Container(
-            height: 48,
-            alignment: Alignment.center,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Icon(icon, size: 18, color: Colors.black87),
-                const SizedBox(width: 4),
-                Text(label,
-                    style: const TextStyle(
-                        fontSize: 13,
-                        fontWeight: FontWeight.w600,
-                        color: Colors.black87)),
-              ],
-            ),
-          ),
-        ),
-      );
+        child: Icon(icon, size: 28, color: color),
+      ),
+    );
+  }
 }
