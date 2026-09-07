@@ -85,14 +85,20 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
         child: Column(
           children: [
             // ── Header (Logo) ──
-            const Padding(
-              padding: EdgeInsets.symmetric(vertical: 20),
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 20),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Icon(Icons.extension, color: _kHighlightBlue, size: 28),
-                  SizedBox(width: 8),
-                  Text(
+                  Image.asset(
+                    'assets/images/play_store_icon.png',
+                    width: 28,
+                    height: 28,
+                    errorBuilder: (context, error, stackTrace) =>
+                        const Icon(Icons.extension, color: _kHighlightBlue, size: 28),
+                  ),
+                  const SizedBox(width: 8),
+                  const Text(
                     'HabitApp',
                     style: TextStyle(
                       color: _kTextDark,
@@ -123,7 +129,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                           height: 240,
                           alignment: Alignment.center,
                           child: Image.asset(
-                            'assets/images/brain_illustration.png',
+                            'assets/images/play_store_icon.png',
                             fit: BoxFit.contain,
                             // Si la imagen no está aún, mostrará un error en pantalla (esto te avisará que falta).
                             errorBuilder: (context, error, stackTrace) =>

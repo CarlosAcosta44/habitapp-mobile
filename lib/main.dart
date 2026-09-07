@@ -15,6 +15,7 @@ class MyApp extends ConsumerWidget {
 
     return MaterialApp.router(
       title: 'HabitApp',
+      debugShowCheckedModeBanner: false,
       routerConfig: router,
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
