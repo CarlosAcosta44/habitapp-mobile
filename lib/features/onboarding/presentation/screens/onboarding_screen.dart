@@ -91,7 +91,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Image.asset(
-                    'assets/images/play_store_icon.png',
+                    'assets/images/logo-habitapp.png',
                     width: 28,
                     height: 28,
                     errorBuilder: (context, error, stackTrace) =>
@@ -129,7 +129,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                           height: 240,
                           alignment: Alignment.center,
                           child: Image.asset(
-                            'assets/images/play_store_icon.png',
+                            'assets/images/logo-habitapp.png',
                             fit: BoxFit.contain,
                             // Si la imagen no está aún, mostrará un error en pantalla (esto te avisará que falta).
                             errorBuilder: (context, error, stackTrace) =>
