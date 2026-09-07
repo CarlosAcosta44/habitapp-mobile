@@ -248,31 +248,33 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                           ),
                           const SizedBox(height: 24),
                           
-                          // ── Banner Calma Matutina ──
+                          // ── Banner Paisaje Motivacional ──
                           Container(
                             width: double.infinity,
-                            padding: const EdgeInsets.all(24),
+                            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 36),
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(24),
-                              gradient: const LinearGradient(
-                                colors: [Color(0xFFFFF0F5), Color(0xFFFFF8E1)],
-                                begin: Alignment.topCenter,
-                                end: Alignment.bottomCenter,
+                              image: const DecorationImage(
+                                image: AssetImage('assets/images/landscape.png'),
+                                fit: BoxFit.cover,
                               ),
                             ),
                             child: const Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 Text(
-                                  'CALMA MATUTINA',
-                                  style: TextStyle(color: _kPink, fontWeight: FontWeight.w800, fontSize: 10, letterSpacing: 1),
+                                  '«Cada nuevo amanecer es una nueva oportunidad»',
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                    fontSize: 16, 
+                                    fontWeight: FontWeight.w800, 
+                                    color: Colors.white,
+                                    shadows: [
+                                      Shadow(color: Colors.black54, blurRadius: 6, offset: Offset(0, 2))
+                                    ],
+                                  ),
                                 ),
-                                SizedBox(height: 8),
-                                Text(
-                                  'Inicia tu día con serenidad',
-                                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.w800, color: _kTextDark),
-                                ),
-                                SizedBox(height: 32), // Espacio extra imitando la imagen
                               ],
                             ),
                           ),

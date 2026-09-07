@@ -122,50 +122,56 @@ class HabitCard extends StatelessWidget {
             const SizedBox(width: 12),
             
             // Sección Derecha (Números o Botón Check)
-            if (isNumeric && rightText != null)
-              // Texto de progreso numérico (Ej: 15/20 min)
-              Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: [
-                  Text(
-                    rightText!.split('\n').first, // "15/20"
-                    style: const TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.w800,
-                      color: Color(0xFF1E1E1E),
-                    ),
-                  ),
-                  if (rightText!.contains('\n'))
-                    Text(
-                      rightText!.split('\n').last, // "min"
-                      style: const TextStyle(
-                        fontSize: 12,
-                        fontWeight: FontWeight.w500,
-                        color: Color(0xFF6B6B6B),
+            Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                if (isNumeric && rightText != null) ...[
+                  // Texto de progreso numérico (Ej: 15/20 min)
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      Text(
+                        rightText!.split('\n').first, // "15/20"
+                        style: const TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.w800,
+                          color: Color(0xFF1E1E1E),
+                        ),
                       ),
-                    ),
-                ],
-              )
-            else
-              // Botón azul con check
-              GestureDetector(
-                onTap: onToggle,
-                child: Container(
-                  width: 44,
-                  height: 44,
-                  decoration: BoxDecoration(
-                    color: isCompleted ? const Color(0xFF2D82FA) : const Color(0xFFF3F3F3),
-                    shape: BoxShape.circle,
+                      if (rightText!.contains('\n'))
+                        Text(
+                          rightText!.split('\n').last, // "min"
+                          style: const TextStyle(
+                            fontSize: 12,
+                            fontWeight: FontWeight.w500,
+                            color: Color(0xFF6B6B6B),
+                          ),
+                        ),
+                    ],
                   ),
-                  alignment: Alignment.center,
-                  child: Icon(
-                    Icons.check,
-                    color: isCompleted ? Colors.white : Colors.transparent,
-                    size: 24,
+                  const SizedBox(width: 12),
+                ],
+                // Botón azul con check
+                GestureDetector(
+                  onTap: onToggle,
+                  child: Container(
+                    width: 44,
+                    height: 44,
+                    decoration: BoxDecoration(
+                      color: isCompleted ? const Color(0xFF2D82FA) : (isNumeric ? const Color(0xFF2D82FA) : const Color(0xFFF3F3F3)),
+                      shape: BoxShape.circle,
+                    ),
+                    alignment: Alignment.center,
+                    child: Icon(
+                      Icons.check,
+                      color: isCompleted || isNumeric ? Colors.white : Colors.transparent,
+                      size: 24,
+                    ),
                   ),
                 ),
-              ),
+              ],
+            ),
           ],
         ),
       ),
