@@ -20,6 +20,14 @@ _HabitModel _$HabitModelFromJson(Map<String, dynamic> json) => _HabitModel(
   completadoHoy: json['completadoHoy'] as bool? ?? false,
   progresoHoy: (json['progresoHoy'] as num?)?.toDouble() ?? 0.0,
   rachaActual: (json['rachaActual'] as num?)?.toInt() ?? 0,
+  mejorRacha: (json['mejorRacha'] as num?)?.toInt() ?? 0,
+  tasaExito: (json['tasaExito'] as num?)?.toInt() ?? 0,
+  totalCumplido: (json['totalCumplido'] as num?)?.toInt() ?? 0,
+  historialReciente:
+      (json['historialReciente'] as List<dynamic>?)
+          ?.map((e) => HabitRecordModel.fromJson(e as Map<String, dynamic>))
+          .toList() ??
+      const [],
   fechaInicio: json['fechaInicio'] as String?,
   fechaFin: json['fechaFin'] as String?,
   diasSemana:
@@ -27,6 +35,12 @@ _HabitModel _$HabitModelFromJson(Map<String, dynamic> json) => _HabitModel(
           ?.map((e) => (e as num).toInt())
           .toList() ??
       const [1, 2, 3, 4, 5, 6, 7],
+  fechasCompletadas:
+      (json['fechasCompletadas'] as List<dynamic>?)
+          ?.map((e) => e as String)
+          .toList() ??
+      const [],
+  estado: json['estado'] as String?,
 );
 
 Map<String, dynamic> _$HabitModelToJson(_HabitModel instance) =>
@@ -42,7 +56,13 @@ Map<String, dynamic> _$HabitModelToJson(_HabitModel instance) =>
       'completadoHoy': instance.completadoHoy,
       'progresoHoy': instance.progresoHoy,
       'rachaActual': instance.rachaActual,
+      'mejorRacha': instance.mejorRacha,
+      'tasaExito': instance.tasaExito,
+      'totalCumplido': instance.totalCumplido,
+      'historialReciente': instance.historialReciente,
       'fechaInicio': instance.fechaInicio,
       'fechaFin': instance.fechaFin,
       'diasSemana': instance.diasSemana,
+      'fechasCompletadas': instance.fechasCompletadas,
+      'estado': instance.estado,
     };

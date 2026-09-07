@@ -18,7 +18,7 @@ Dio dioClient(Ref ref) {
   
   final dio = Dio(
     BaseOptions(
-      baseUrl: 'http://localhost:4000/api/v1',
+      baseUrl: 'http://127.0.0.1:4000/api/v1',
       connectTimeout: const Duration(seconds: 10),
       receiveTimeout: const Duration(seconds: 10),
       headers: {

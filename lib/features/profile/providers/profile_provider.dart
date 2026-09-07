@@ -38,6 +38,18 @@ class ProfileNotifier extends _$ProfileNotifier {
     }
   }
   
+  Future<void> uploadAvatar(String filePath) async {
+    state = const AsyncValue.loading();
+    try {
+      final repository = ref.read(profileRepositoryProvider);
+      await repository.uploadAvatar(filePath);
+      await refreshProfile();
+    } catch (e, st) {
+      state = AsyncValue.error(e, st);
+      rethrow;
+    }
+  }
+
   void clearProfile() {
     state = const AsyncValue.data(null);
   }

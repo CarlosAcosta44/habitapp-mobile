@@ -29,6 +29,17 @@ class ProfileRepository {
           e.response?.data['message'] ?? 'Error al actualizar el perfil');
     }
   }
+  Future<void> uploadAvatar(String filePath) async {
+    try {
+      final formData = FormData.fromMap({
+        'file': await MultipartFile.fromFile(filePath),
+      });
+      await _dio.post('/users/me/avatar', data: formData);
+    } on DioException catch (e) {
+      throw Exception(
+          e.response?.data['message'] ?? 'Error al subir la foto de perfil');
+    }
+  }
 }
 
 @riverpod

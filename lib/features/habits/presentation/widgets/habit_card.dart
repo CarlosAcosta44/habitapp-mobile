@@ -4,183 +4,177 @@ class HabitCard extends StatelessWidget {
   final String title;
   final String subtitle;
   final IconData icon;
-  final double progress;
+  final Color? iconColor;
+  final String? badgeText; // Ejemplo: "5d" o "Nuevo"
   final bool isCompleted;
-  final String? categoryName;
-  final Color? categoryColor;
-  final VoidCallback onToggle;
+  final bool isNumeric; // Si es verdadero, mostramos números a la derecha, si no, el botón check
+  final String? rightText; // Ejemplo: "15/20\nmin"
+  final VoidCallback? onToggle;
 
   const HabitCard({
     super.key,
     required this.title,
     required this.subtitle,
     required this.icon,
-    required this.progress,
-    this.isCompleted = false,
-    this.categoryName,
-    this.categoryColor,
-    required this.onToggle,
+    this.iconColor,
+    this.badgeText,
+    required this.isCompleted,
+    this.isNumeric = false,
+    this.rightText,
+    this.onToggle,
   });
 
   @override
   Widget build(BuildContext context) {
-    final effectiveColor = categoryColor ?? Colors.blue;
+    final effectiveColor = iconColor ?? const Color(0xFF2D82FA); // Azul por defecto si no hay
+    final bgColor = effectiveColor.withValues(alpha: 0.1);
 
-    return GestureDetector(
-      onTap: onToggle,
-      child: Container(
-        decoration: BoxDecoration(
-          color: isCompleted ? Colors.blue.shade50 : Colors.white,
-          borderRadius: BorderRadius.circular(16),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withValues(alpha: 0.05),
-              blurRadius: 10,
-              offset: const Offset(0, 4),
-            )
-          ],
-        ),
-        child: ListTile(
-          contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-          leading: SizedBox(
-            width: 50,
-            height: 50,
-            child: Stack(
-              fit: StackFit.expand,
-              children: [
-                CircularProgressIndicator(
-                  value: isCompleted ? 1.0 : progress,
-                  backgroundColor: Colors.grey.shade200,
-                  valueColor: AlwaysStoppedAnimation<Color>(
-                    isCompleted ? Colors.green : effectiveColor,
-                  ),
-                  strokeWidth: 3,
-                ),
-                Icon(
-                  isCompleted ? Icons.check : icon,
-                  color: isCompleted ? Colors.green : effectiveColor,
-                  size: 20,
-                ),
-              ],
-            ),
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(24),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.03),
+            blurRadius: 15,
+            offset: const Offset(0, 5),
           ),
-          title: Row(
-            children: [
-              Expanded(
-                child: Text(
-                  title,
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    decoration: isCompleted ? TextDecoration.lineThrough : null,
-                    color: isCompleted ? Colors.grey : Colors.black,
-                  ),
-                ),
+        ],
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Row(
+          children: [
+            // Icono en círculo de color
+            Container(
+              width: 52,
+              height: 52,
+              decoration: BoxDecoration(
+                color: bgColor,
+                shape: BoxShape.circle,
               ),
-              if (categoryName != null && categoryName!.isNotEmpty) ...[
-                const SizedBox(width: 6),
-                Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-                  decoration: BoxDecoration(
-                    color: effectiveColor.withValues(alpha: 0.12),
-                    borderRadius: BorderRadius.circular(8),
-                    border: Border.all(
-                      color: effectiveColor.withValues(alpha: 0.3),
-                      width: 1,
-                    ),
-                  ),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Container(
-                        width: 6,
-                        height: 6,
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: effectiveColor,
-                        ),
-                      ),
-                      const SizedBox(width: 4),
-                      Text(
-                        categoryName!,
-                        style: TextStyle(
-                          color: effectiveColor,
-                          fontSize: 10,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ],
-          ),
-          subtitle: Padding(
-            padding: const EdgeInsets.only(top: 4.0),
-            child: Text(
-              subtitle,
-              style: const TextStyle(color: Colors.grey, fontSize: 12),
+              alignment: Alignment.center,
+              child: Icon(
+                icon,
+                color: effectiveColor,
+                size: 26,
+              ),
             ),
-          ),
-          trailing: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              // Mock friends avatars
-              if (!isCompleted)
-                SizedBox(
-                  width: 50,
-                  child: Stack(
+            const SizedBox(width: 16),
+            
+            // Textos (Título, Badge, Subtítulo)
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Row(
                     children: [
-                      Positioned(
-                        right: 20,
-                        child: CircleAvatar(
-                          radius: 12,
-                          backgroundColor: Colors.red.shade100,
-                          child: const Icon(Icons.person, size: 12),
+                      Flexible(
+                        child: Text(
+                          title,
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w700,
+                            color: isCompleted ? Colors.grey.shade400 : const Color(0xFF1E1E1E),
+                            decoration: isCompleted ? TextDecoration.lineThrough : null,
+                          ),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
                         ),
                       ),
-                      Positioned(
-                        right: 10,
-                        child: CircleAvatar(
-                          radius: 12,
-                          backgroundColor: Colors.green.shade100,
-                          child: const Icon(Icons.person, size: 12),
-                        ),
-                      ),
-                      Positioned(
-                        right: 0,
-                        child: CircleAvatar(
-                          radius: 12,
-                          backgroundColor: Colors.blue.shade100,
-                          child: const Text(
-                            '+3',
-                            style: TextStyle(fontSize: 10),
+                      if (badgeText != null) ...[
+                        const SizedBox(width: 8),
+                        Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                          decoration: BoxDecoration(
+                            color: badgeText == 'Nuevo' 
+                                ? Colors.orange.withValues(alpha: 0.1) 
+                                : effectiveColor.withValues(alpha: 0.1),
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: Text(
+                            badgeText!,
+                            style: TextStyle(
+                              fontSize: 10,
+                              fontWeight: FontWeight.w800,
+                              color: badgeText == 'Nuevo' ? Colors.orange.shade700 : effectiveColor,
+                            ),
                           ),
                         ),
-                      ),
+                      ]
                     ],
                   ),
-                ),
-              if (!isCompleted) const SizedBox(width: 12),
-              Container(
-                decoration: BoxDecoration(
-                  border: Border.all(
-                    color: isCompleted ? Colors.green : Colors.grey.shade300,
+                  const SizedBox(height: 4),
+                  Text(
+                    subtitle,
+                    style: TextStyle(
+                      fontSize: 12,
+                      color: isCompleted ? Colors.grey.shade400 : const Color(0xFF6B6B6B),
+                    ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
                   ),
-                  borderRadius: BorderRadius.circular(12),
-                  color: isCompleted ? Colors.green : Colors.transparent,
-                ),
-                child: IconButton(
-                  icon: Icon(
-                    isCompleted ? Icons.check : Icons.add,
-                    color: isCompleted ? Colors.white : Colors.black,
-                  ),
-                  onPressed: onToggle,
-                  constraints: const BoxConstraints(),
-                  padding: const EdgeInsets.all(8),
-                ),
+                ],
               ),
-            ],
-          ),
+            ),
+            
+            const SizedBox(width: 12),
+            
+            // Sección Derecha (Números o Botón Check)
+            Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                if (isNumeric && rightText != null) ...[
+                  // Texto de progreso numérico (Ej: 15/20 min)
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.baseline,
+                    textBaseline: TextBaseline.alphabetic,
+                    children: [
+                      Text(
+                        rightText!.split('\n').first, // "15/20"
+                        style: const TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.w800,
+                          color: Color(0xFF1E1E1E),
+                        ),
+                      ),
+                      if (rightText!.contains('\n')) ...[
+                        const SizedBox(width: 4),
+                        Text(
+                          rightText!.split('\n').last, // "min"
+                          style: const TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w600,
+                            color: Color(0xFF6B6B6B),
+                          ),
+                        ),
+                      ],
+                    ],
+                  ),
+                  const SizedBox(width: 12),
+                ],
+                // Botón check
+                GestureDetector(
+                  onTap: onToggle,
+                  child: Container(
+                    width: 44,
+                    height: 44,
+                    decoration: BoxDecoration(
+                      color: isCompleted ? const Color(0xFF2D82FA) : const Color(0xFFF0F1F5),
+                      shape: BoxShape.circle,
+                    ),
+                    alignment: Alignment.center,
+                    child: Icon(
+                      Icons.check,
+                      color: isCompleted ? Colors.white : const Color(0xFFA0A5B1),
+                      size: 24,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ],
         ),
       ),
     );

@@ -16,7 +16,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$UserProfile {
 
- String get idusuario; String get nombre; String get apellido; int get puntostotales; String get idrol; String get nombrerol; String? get fotoperfil; String? get telefono; String? get genero; String? get fechanacimiento;
+ String get idusuario; String get nombre; String get apellido; int get puntostotales; String get idrol; String get nombrerol; int get puntosFaltantesTop1; String? get fotoperfil; String? get correo; String? get telefono; String? get genero; String? get fechanacimiento;
 /// Create a copy of UserProfile
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -29,16 +29,16 @@ $UserProfileCopyWith<UserProfile> get copyWith => _$UserProfileCopyWithImpl<User
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is UserProfile&&(identical(other.idusuario, idusuario) || other.idusuario == idusuario)&&(identical(other.nombre, nombre) || other.nombre == nombre)&&(identical(other.apellido, apellido) || other.apellido == apellido)&&(identical(other.puntostotales, puntostotales) || other.puntostotales == puntostotales)&&(identical(other.idrol, idrol) || other.idrol == idrol)&&(identical(other.nombrerol, nombrerol) || other.nombrerol == nombrerol)&&(identical(other.fotoperfil, fotoperfil) || other.fotoperfil == fotoperfil)&&(identical(other.telefono, telefono) || other.telefono == telefono)&&(identical(other.genero, genero) || other.genero == genero)&&(identical(other.fechanacimiento, fechanacimiento) || other.fechanacimiento == fechanacimiento));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is UserProfile&&(identical(other.idusuario, idusuario) || other.idusuario == idusuario)&&(identical(other.nombre, nombre) || other.nombre == nombre)&&(identical(other.apellido, apellido) || other.apellido == apellido)&&(identical(other.puntostotales, puntostotales) || other.puntostotales == puntostotales)&&(identical(other.idrol, idrol) || other.idrol == idrol)&&(identical(other.nombrerol, nombrerol) || other.nombrerol == nombrerol)&&(identical(other.puntosFaltantesTop1, puntosFaltantesTop1) || other.puntosFaltantesTop1 == puntosFaltantesTop1)&&(identical(other.fotoperfil, fotoperfil) || other.fotoperfil == fotoperfil)&&(identical(other.correo, correo) || other.correo == correo)&&(identical(other.telefono, telefono) || other.telefono == telefono)&&(identical(other.genero, genero) || other.genero == genero)&&(identical(other.fechanacimiento, fechanacimiento) || other.fechanacimiento == fechanacimiento));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,idusuario,nombre,apellido,puntostotales,idrol,nombrerol,fotoperfil,telefono,genero,fechanacimiento);
+int get hashCode => Object.hash(runtimeType,idusuario,nombre,apellido,puntostotales,idrol,nombrerol,puntosFaltantesTop1,fotoperfil,correo,telefono,genero,fechanacimiento);
 
 @override
 String toString() {
-  return 'UserProfile(idusuario: $idusuario, nombre: $nombre, apellido: $apellido, puntostotales: $puntostotales, idrol: $idrol, nombrerol: $nombrerol, fotoperfil: $fotoperfil, telefono: $telefono, genero: $genero, fechanacimiento: $fechanacimiento)';
+  return 'UserProfile(idusuario: $idusuario, nombre: $nombre, apellido: $apellido, puntostotales: $puntostotales, idrol: $idrol, nombrerol: $nombrerol, puntosFaltantesTop1: $puntosFaltantesTop1, fotoperfil: $fotoperfil, correo: $correo, telefono: $telefono, genero: $genero, fechanacimiento: $fechanacimiento)';
 }
 
 
@@ -49,7 +49,7 @@ abstract mixin class $UserProfileCopyWith<$Res>  {
   factory $UserProfileCopyWith(UserProfile value, $Res Function(UserProfile) _then) = _$UserProfileCopyWithImpl;
 @useResult
 $Res call({
- String idusuario, String nombre, String apellido, int puntostotales, String idrol, String nombrerol, String? fotoperfil, String? telefono, String? genero, String? fechanacimiento
+ String idusuario, String nombre, String apellido, int puntostotales, String idrol, String nombrerol, int puntosFaltantesTop1, String? fotoperfil, String? correo, String? telefono, String? genero, String? fechanacimiento
 });
 
 
@@ -66,7 +66,7 @@ class _$UserProfileCopyWithImpl<$Res>
 
 /// Create a copy of UserProfile
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? idusuario = null,Object? nombre = null,Object? apellido = null,Object? puntostotales = null,Object? idrol = null,Object? nombrerol = null,Object? fotoperfil = freezed,Object? telefono = freezed,Object? genero = freezed,Object? fechanacimiento = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? idusuario = null,Object? nombre = null,Object? apellido = null,Object? puntostotales = null,Object? idrol = null,Object? nombrerol = null,Object? puntosFaltantesTop1 = null,Object? fotoperfil = freezed,Object? correo = freezed,Object? telefono = freezed,Object? genero = freezed,Object? fechanacimiento = freezed,}) {
   return _then(UserProfile(
 idusuario: null == idusuario ? _self.idusuario : idusuario // ignore: cast_nullable_to_non_nullable
 as String,nombre: null == nombre ? _self.nombre : nombre // ignore: cast_nullable_to_non_nullable
@@ -74,7 +74,9 @@ as String,apellido: null == apellido ? _self.apellido : apellido // ignore: cast
 as String,puntostotales: null == puntostotales ? _self.puntostotales : puntostotales // ignore: cast_nullable_to_non_nullable
 as int,idrol: null == idrol ? _self.idrol : idrol // ignore: cast_nullable_to_non_nullable
 as String,nombrerol: null == nombrerol ? _self.nombrerol : nombrerol // ignore: cast_nullable_to_non_nullable
-as String,fotoperfil: freezed == fotoperfil ? _self.fotoperfil : fotoperfil // ignore: cast_nullable_to_non_nullable
+as String,puntosFaltantesTop1: null == puntosFaltantesTop1 ? _self.puntosFaltantesTop1 : puntosFaltantesTop1 // ignore: cast_nullable_to_non_nullable
+as int,fotoperfil: freezed == fotoperfil ? _self.fotoperfil : fotoperfil // ignore: cast_nullable_to_non_nullable
+as String?,correo: freezed == correo ? _self.correo : correo // ignore: cast_nullable_to_non_nullable
 as String?,telefono: freezed == telefono ? _self.telefono : telefono // ignore: cast_nullable_to_non_nullable
 as String?,genero: freezed == genero ? _self.genero : genero // ignore: cast_nullable_to_non_nullable
 as String?,fechanacimiento: freezed == fechanacimiento ? _self.fechanacimiento : fechanacimiento // ignore: cast_nullable_to_non_nullable
@@ -163,10 +165,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String idusuario,  String nombre,  String apellido,  int puntostotales,  String idrol,  String nombrerol,  String? fotoperfil,  String? telefono,  String? genero,  String? fechanacimiento)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String idusuario,  String nombre,  String apellido,  int puntostotales,  String idrol,  String nombrerol,  int puntosFaltantesTop1,  String? fotoperfil,  String? correo,  String? telefono,  String? genero,  String? fechanacimiento)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _UserProfile() when $default != null:
-return $default(_that.idusuario,_that.nombre,_that.apellido,_that.puntostotales,_that.idrol,_that.nombrerol,_that.fotoperfil,_that.telefono,_that.genero,_that.fechanacimiento);case _:
+return $default(_that.idusuario,_that.nombre,_that.apellido,_that.puntostotales,_that.idrol,_that.nombrerol,_that.puntosFaltantesTop1,_that.fotoperfil,_that.correo,_that.telefono,_that.genero,_that.fechanacimiento);case _:
   return orElse();
 
 }
@@ -184,10 +186,10 @@ return $default(_that.idusuario,_that.nombre,_that.apellido,_that.puntostotales,
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String idusuario,  String nombre,  String apellido,  int puntostotales,  String idrol,  String nombrerol,  String? fotoperfil,  String? telefono,  String? genero,  String? fechanacimiento)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String idusuario,  String nombre,  String apellido,  int puntostotales,  String idrol,  String nombrerol,  int puntosFaltantesTop1,  String? fotoperfil,  String? correo,  String? telefono,  String? genero,  String? fechanacimiento)  $default,) {final _that = this;
 switch (_that) {
 case _UserProfile():
-return $default(_that.idusuario,_that.nombre,_that.apellido,_that.puntostotales,_that.idrol,_that.nombrerol,_that.fotoperfil,_that.telefono,_that.genero,_that.fechanacimiento);case _:
+return $default(_that.idusuario,_that.nombre,_that.apellido,_that.puntostotales,_that.idrol,_that.nombrerol,_that.puntosFaltantesTop1,_that.fotoperfil,_that.correo,_that.telefono,_that.genero,_that.fechanacimiento);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -204,10 +206,10 @@ return $default(_that.idusuario,_that.nombre,_that.apellido,_that.puntostotales,
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String idusuario,  String nombre,  String apellido,  int puntostotales,  String idrol,  String nombrerol,  String? fotoperfil,  String? telefono,  String? genero,  String? fechanacimiento)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String idusuario,  String nombre,  String apellido,  int puntostotales,  String idrol,  String nombrerol,  int puntosFaltantesTop1,  String? fotoperfil,  String? correo,  String? telefono,  String? genero,  String? fechanacimiento)?  $default,) {final _that = this;
 switch (_that) {
 case _UserProfile() when $default != null:
-return $default(_that.idusuario,_that.nombre,_that.apellido,_that.puntostotales,_that.idrol,_that.nombrerol,_that.fotoperfil,_that.telefono,_that.genero,_that.fechanacimiento);case _:
+return $default(_that.idusuario,_that.nombre,_that.apellido,_that.puntostotales,_that.idrol,_that.nombrerol,_that.puntosFaltantesTop1,_that.fotoperfil,_that.correo,_that.telefono,_that.genero,_that.fechanacimiento);case _:
   return null;
 
 }
@@ -219,7 +221,7 @@ return $default(_that.idusuario,_that.nombre,_that.apellido,_that.puntostotales,
 @JsonSerializable()
 
 class _UserProfile implements UserProfile {
-  const _UserProfile({required this.idusuario, required this.nombre, required this.apellido, required this.puntostotales, required this.idrol, required this.nombrerol, this.fotoperfil, this.telefono, this.genero, this.fechanacimiento});
+  const _UserProfile({required this.idusuario, required this.nombre, required this.apellido, required this.puntostotales, required this.idrol, this.nombrerol = 'Usuario', this.puntosFaltantesTop1 = 0, this.fotoperfil, this.correo, this.telefono, this.genero, this.fechanacimiento});
   factory _UserProfile.fromJson(Map<String, dynamic> json) => _$UserProfileFromJson(json);
 
 @override final  String idusuario;
@@ -227,8 +229,10 @@ class _UserProfile implements UserProfile {
 @override final  String apellido;
 @override final  int puntostotales;
 @override final  String idrol;
-@override final  String nombrerol;
+@override@JsonKey() final  String nombrerol;
+@override@JsonKey() final  int puntosFaltantesTop1;
 @override final  String? fotoperfil;
+@override final  String? correo;
 @override final  String? telefono;
 @override final  String? genero;
 @override final  String? fechanacimiento;
@@ -246,16 +250,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _UserProfile&&(identical(other.idusuario, idusuario) || other.idusuario == idusuario)&&(identical(other.nombre, nombre) || other.nombre == nombre)&&(identical(other.apellido, apellido) || other.apellido == apellido)&&(identical(other.puntostotales, puntostotales) || other.puntostotales == puntostotales)&&(identical(other.idrol, idrol) || other.idrol == idrol)&&(identical(other.nombrerol, nombrerol) || other.nombrerol == nombrerol)&&(identical(other.fotoperfil, fotoperfil) || other.fotoperfil == fotoperfil)&&(identical(other.telefono, telefono) || other.telefono == telefono)&&(identical(other.genero, genero) || other.genero == genero)&&(identical(other.fechanacimiento, fechanacimiento) || other.fechanacimiento == fechanacimiento));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _UserProfile&&(identical(other.idusuario, idusuario) || other.idusuario == idusuario)&&(identical(other.nombre, nombre) || other.nombre == nombre)&&(identical(other.apellido, apellido) || other.apellido == apellido)&&(identical(other.puntostotales, puntostotales) || other.puntostotales == puntostotales)&&(identical(other.idrol, idrol) || other.idrol == idrol)&&(identical(other.nombrerol, nombrerol) || other.nombrerol == nombrerol)&&(identical(other.puntosFaltantesTop1, puntosFaltantesTop1) || other.puntosFaltantesTop1 == puntosFaltantesTop1)&&(identical(other.fotoperfil, fotoperfil) || other.fotoperfil == fotoperfil)&&(identical(other.correo, correo) || other.correo == correo)&&(identical(other.telefono, telefono) || other.telefono == telefono)&&(identical(other.genero, genero) || other.genero == genero)&&(identical(other.fechanacimiento, fechanacimiento) || other.fechanacimiento == fechanacimiento));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,idusuario,nombre,apellido,puntostotales,idrol,nombrerol,fotoperfil,telefono,genero,fechanacimiento);
+int get hashCode => Object.hash(runtimeType,idusuario,nombre,apellido,puntostotales,idrol,nombrerol,puntosFaltantesTop1,fotoperfil,correo,telefono,genero,fechanacimiento);
 
 @override
 String toString() {
-  return 'UserProfile(idusuario: $idusuario, nombre: $nombre, apellido: $apellido, puntostotales: $puntostotales, idrol: $idrol, nombrerol: $nombrerol, fotoperfil: $fotoperfil, telefono: $telefono, genero: $genero, fechanacimiento: $fechanacimiento)';
+  return 'UserProfile(idusuario: $idusuario, nombre: $nombre, apellido: $apellido, puntostotales: $puntostotales, idrol: $idrol, nombrerol: $nombrerol, puntosFaltantesTop1: $puntosFaltantesTop1, fotoperfil: $fotoperfil, correo: $correo, telefono: $telefono, genero: $genero, fechanacimiento: $fechanacimiento)';
 }
 
 
@@ -266,7 +270,7 @@ abstract mixin class _$UserProfileCopyWith<$Res> implements $UserProfileCopyWith
   factory _$UserProfileCopyWith(_UserProfile value, $Res Function(_UserProfile) _then) = __$UserProfileCopyWithImpl;
 @override @useResult
 $Res call({
- String idusuario, String nombre, String apellido, int puntostotales, String idrol, String nombrerol, String? fotoperfil, String? telefono, String? genero, String? fechanacimiento
+ String idusuario, String nombre, String apellido, int puntostotales, String idrol, String nombrerol, int puntosFaltantesTop1, String? fotoperfil, String? correo, String? telefono, String? genero, String? fechanacimiento
 });
 
 
@@ -283,7 +287,7 @@ class __$UserProfileCopyWithImpl<$Res>
 
 /// Create a copy of UserProfile
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? idusuario = null,Object? nombre = null,Object? apellido = null,Object? puntostotales = null,Object? idrol = null,Object? nombrerol = null,Object? fotoperfil = freezed,Object? telefono = freezed,Object? genero = freezed,Object? fechanacimiento = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? idusuario = null,Object? nombre = null,Object? apellido = null,Object? puntostotales = null,Object? idrol = null,Object? nombrerol = null,Object? puntosFaltantesTop1 = null,Object? fotoperfil = freezed,Object? correo = freezed,Object? telefono = freezed,Object? genero = freezed,Object? fechanacimiento = freezed,}) {
   return _then(_UserProfile(
 idusuario: null == idusuario ? _self.idusuario : idusuario // ignore: cast_nullable_to_non_nullable
 as String,nombre: null == nombre ? _self.nombre : nombre // ignore: cast_nullable_to_non_nullable
@@ -291,7 +295,9 @@ as String,apellido: null == apellido ? _self.apellido : apellido // ignore: cast
 as String,puntostotales: null == puntostotales ? _self.puntostotales : puntostotales // ignore: cast_nullable_to_non_nullable
 as int,idrol: null == idrol ? _self.idrol : idrol // ignore: cast_nullable_to_non_nullable
 as String,nombrerol: null == nombrerol ? _self.nombrerol : nombrerol // ignore: cast_nullable_to_non_nullable
-as String,fotoperfil: freezed == fotoperfil ? _self.fotoperfil : fotoperfil // ignore: cast_nullable_to_non_nullable
+as String,puntosFaltantesTop1: null == puntosFaltantesTop1 ? _self.puntosFaltantesTop1 : puntosFaltantesTop1 // ignore: cast_nullable_to_non_nullable
+as int,fotoperfil: freezed == fotoperfil ? _self.fotoperfil : fotoperfil // ignore: cast_nullable_to_non_nullable
+as String?,correo: freezed == correo ? _self.correo : correo // ignore: cast_nullable_to_non_nullable
 as String?,telefono: freezed == telefono ? _self.telefono : telefono // ignore: cast_nullable_to_non_nullable
 as String?,genero: freezed == genero ? _self.genero : genero // ignore: cast_nullable_to_non_nullable
 as String?,fechanacimiento: freezed == fechanacimiento ? _self.fechanacimiento : fechanacimiento // ignore: cast_nullable_to_non_nullable

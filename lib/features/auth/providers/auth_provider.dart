@@ -40,10 +40,10 @@ class AuthNotifier extends _$AuthNotifier {
     }
   }
 
-  Future<void> register(String email, String password) async {
+  Future<void> register(String email, String password, String nombre, String apellido) async {
     state = const AsyncValue.loading();
     try {
-      final response = await _repository.register(email, password);
+      final response = await _repository.register(email, password, nombre, apellido);
       final token = response['access_token'];
       if (token != null) {
         await _storage.write(key: 'access_token', value: token);
@@ -68,7 +68,7 @@ class AuthNotifier extends _$AuthNotifier {
       state = const AsyncValue.loading();
       
       final GoogleSignIn googleSignIn = GoogleSignIn(
-        // clientId: 'PONER_AQUI_CLIENT_ID_SI_ES_IOS', // TODO: Configurar iOS si es necesario
+        // clientId: 'PONER_AQUI_CLIENT_ID_SI_ES_IOS',
       );
       
       final GoogleSignInAccount? googleUser = await googleSignIn.signIn();

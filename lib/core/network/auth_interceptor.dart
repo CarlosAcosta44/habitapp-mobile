@@ -19,10 +19,11 @@ class AuthInterceptor extends Interceptor {
   }
 
   @override
-  void onError(DioException err, ErrorInterceptorHandler handler) {
+  void onError(DioException err, ErrorInterceptorHandler handler) async {
     // Handle 401 Unauthorized globally if needed
     if (err.response?.statusCode == 401) {
-      // Trigger logout or token refresh
+      await secureStorage.delete(key: 'access_token');
+      // En una app real aquí usaríamos un GlobalKey<NavigatorState> o Riverpod para redirigir al login
     }
     super.onError(err, handler);
   }
