@@ -22,7 +22,6 @@ class _Slide {
   });
 }
 
-const _kPrimaryPink = Color(0xFFE22D6F); // Color rosa/magenta del botón
 const _kHighlightBlue = Color(0xFF2D82FA); // Color azul del texto
 const _kBackgroundLight = Colors.white;
 const _kTextDark = Color(0xFF1E1E1E);

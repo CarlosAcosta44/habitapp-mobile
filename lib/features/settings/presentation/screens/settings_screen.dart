@@ -25,7 +25,6 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
   int _selectedSound = 0; // 0: Campanas, 1: Naturaleza, 2: Silencio
   bool _appleHealthEnabled = true;
   bool _privateModeEnabled = true;
-  bool _faceIdEnabled = false;
 
   void _confirmLogout(BuildContext context, WidgetRef ref) {
     showDialog(
@@ -63,16 +62,14 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
         elevation: 0,
         title: Row(
           children: [
-            Container(
-              width: 32,
-              height: 32,
-              decoration: BoxDecoration(
-                color: _kTextDark,
-                borderRadius: BorderRadius.circular(8),
-              ),
-              child: const Icon(Icons.hexagon_outlined, color: _kPink, size: 20),
+            Image.asset(
+              'assets/images/logo-habitapp.png',
+              width: 24,
+              height: 24,
+              errorBuilder: (context, error, stackTrace) =>
+                  const Icon(Icons.extension, color: _kBlue, size: 24),
             ),
-            const SizedBox(width: 12),
+            const SizedBox(width: 8),
             const Text(
               'HabitApp',
               style: TextStyle(color: _kTextDark, fontWeight: FontWeight.bold, fontSize: 18),
@@ -87,10 +84,13 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
         actions: [
           Padding(
             padding: const EdgeInsets.only(right: 16.0),
-            child: CircleAvatar(
-              radius: 16,
-              backgroundColor: _kPink.withValues(alpha: 0.1),
-              child: const Icon(Icons.person_outline, color: _kPink, size: 18),
+            child: GestureDetector(
+              onTap: () => context.push('/profile'),
+              child: CircleAvatar(
+                radius: 16,
+                backgroundColor: _kPink.withValues(alpha: 0.1),
+                child: const Icon(Icons.person_outline, color: _kPink, size: 18),
+              ),
             ),
           )
         ],
@@ -219,8 +219,8 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
               Expanded(
                 child: FilledButton.icon(
                   onPressed: () => context.push('/profile'),
-                  icon: const Icon(Icons.edit, size: 16, color: _kTextDark),
-                  label: const Text('Editar perfil', style: TextStyle(color: _kTextDark, fontWeight: FontWeight.bold)),
+                  icon: const Icon(Icons.visibility_outlined, size: 16, color: _kTextDark),
+                  label: const Text('Ver perfil', style: TextStyle(color: _kTextDark, fontWeight: FontWeight.bold)),
                   style: FilledButton.styleFrom(
                     backgroundColor: _kBg,
                     padding: const EdgeInsets.symmetric(vertical: 12),
@@ -363,7 +363,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
           Switch(
             value: value,
             onChanged: onChanged,
-            activeColor: Colors.white,
+            activeThumbColor: Colors.white,
             activeTrackColor: _kBlue,
             inactiveTrackColor: Colors.grey.shade300,
             inactiveThumbColor: Colors.white,
@@ -474,15 +474,6 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
             _privateModeEnabled,
             (v) => setState(() => _privateModeEnabled = v),
           ),
-          const Divider(height: 1, indent: 70, color: Color(0xFFF3F3F3)),
-          _buildPrivacyTile(
-            'Bloqueo con FaceID / Huella',
-            'Seguridad para tus reflexiones\nprivadas',
-            Icons.fingerprint,
-            _kPink,
-            _faceIdEnabled,
-            (v) => setState(() => _faceIdEnabled = v),
-          ),
         ],
       ),
     );
@@ -519,7 +510,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
           Switch(
             value: value,
             onChanged: onChanged,
-            activeColor: Colors.white,
+            activeThumbColor: Colors.white,
             activeTrackColor: _kBlue,
             inactiveTrackColor: Colors.grey.shade300,
             inactiveThumbColor: Colors.white,
