@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
+const _kBlue = Color(0xFF2D82FA);
+const _kGreen = Color(0xFF0F8A5D);
+const _kGrey = Color(0xFF6B6B6B);
+
 class MainLayoutScreen extends StatelessWidget {
   final StatefulNavigationShell navigationShell;
 
@@ -10,11 +14,7 @@ class MainLayoutScreen extends StatelessWidget {
   });
 
   void _onTap(BuildContext context, int index) {
-    if (index == 2) {
-      context.push('/create-habit');
-      return;
-    }
-    
+    if (index == navigationShell.currentIndex) return;
     navigationShell.goBranch(
       index,
       initialLocation: index == navigationShell.currentIndex,
@@ -23,34 +23,131 @@ class MainLayoutScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final idx = navigationShell.currentIndex;
+
     return Scaffold(
+      backgroundColor: const Color(0xFFF7F7F9),
       body: navigationShell,
-      bottomNavigationBar: BottomNavigationBar(
-        currentIndex: navigationShell.currentIndex,
-        onTap: (index) => _onTap(context, index),
-        type: BottomNavigationBarType.fixed,
-        showSelectedLabels: false,
-        showUnselectedLabels: false,
-        items: [
-          const BottomNavigationBarItem(
-            icon: Icon(Icons.home_filled),
-            label: 'Home',
-          ),
-          const BottomNavigationBarItem(
-            icon: Icon(Icons.explore_outlined),
-            label: 'Comunidad',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.add_circle, size: 48, color: Theme.of(context).primaryColor),
-            label: 'Añadir',
-          ),
-          const BottomNavigationBarItem(
-            icon: Icon(Icons.military_tech_outlined),
-            label: 'Retos',
-          ),
-          const BottomNavigationBarItem(
-            icon: Icon(Icons.person_outline),
-            label: 'Perfil',
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+      floatingActionButton: Container(
+        width: 64,
+        height: 64,
+        margin: const EdgeInsets.only(top: 32),
+        decoration: BoxDecoration(
+          shape: BoxShape.circle,
+          boxShadow: [
+            BoxShadow(
+              color: _kBlue.withValues(alpha: 0.3),
+              blurRadius: 16,
+              offset: const Offset(0, 8),
+            ),
+          ],
+        ),
+        child: FloatingActionButton(
+          onPressed: () => context.push('/create-habit'),
+          backgroundColor: _kBlue,
+          elevation: 0,
+          shape: const CircleBorder(),
+          child: const Icon(Icons.add, color: Colors.white, size: 32),
+        ),
+      ),
+      bottomNavigationBar: BottomAppBar(
+        color: Colors.white,
+        elevation: 20,
+        shadowColor: Colors.black.withValues(alpha: 0.1),
+        shape: const CircularNotchedRectangle(),
+        notchMargin: 8,
+        height: 70,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            // Left side
+            Expanded(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  _NavItem(
+                    icon: Icons.check_circle_outline,
+                    activeIcon: Icons.check_circle_rounded,
+                    label: 'Hábitos',
+                    isActive: idx == 0,
+                    onTap: () => _onTap(context, 0),
+                  ),
+                  _NavItem(
+                    icon: Icons.emoji_events_outlined,
+                    activeIcon: Icons.emoji_events_rounded,
+                    label: 'Retos',
+                    isActive: idx == 1, // Comunidad or Retos based on current router setup
+                    onTap: () => _onTap(context, 1),
+                  ),
+                ],
+              ),
+            ),
+            // Spacer for FAB
+            const SizedBox(width: 48),
+            // Right side
+            Expanded(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  _NavItem(
+                    icon: Icons.show_chart_rounded,
+                    activeIcon: Icons.show_chart_rounded,
+                    label: 'Progreso',
+                    isActive: idx == 3,
+                    onTap: () => _onTap(context, 3),
+                  ),
+                  _NavItem(
+                    icon: Icons.settings_outlined,
+                    activeIcon: Icons.settings,
+                    label: 'Ajustes',
+                    isActive: idx == 4,
+                    onTap: () => _onTap(context, 4),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _NavItem extends StatelessWidget {
+  final IconData icon;
+  final IconData activeIcon;
+  final String label;
+  final bool isActive;
+  final VoidCallback onTap;
+
+  const _NavItem({
+    required this.icon,
+    required this.activeIcon,
+    required this.label,
+    required this.isActive,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final color = isActive ? _kGreen : _kGrey;
+    return GestureDetector(
+      onTap: onTap,
+      behavior: HitTestBehavior.opaque,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(isActive ? activeIcon : icon, color: color, size: 24),
+          const SizedBox(height: 2),
+          Text(
+            label,
+            style: TextStyle(
+              fontSize: 10,
+              fontWeight: isActive ? FontWeight.bold : FontWeight.normal,
+              color: color,
+            ),
           ),
         ],
       ),
