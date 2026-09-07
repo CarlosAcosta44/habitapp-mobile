@@ -9,7 +9,7 @@ class HabitCard extends StatelessWidget {
   final bool isCompleted;
   final bool isNumeric; // Si es verdadero, mostramos números a la derecha, si no, el botón check
   final String? rightText; // Ejemplo: "15/20\nmin"
-  final VoidCallback onToggle;
+  final VoidCallback? onToggle;
 
   const HabitCard({
     super.key,
@@ -21,7 +21,7 @@ class HabitCard extends StatelessWidget {
     required this.isCompleted,
     this.isNumeric = false,
     this.rightText,
-    required this.onToggle,
+    this.onToggle,
   });
 
   @override

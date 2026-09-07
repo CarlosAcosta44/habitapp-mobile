@@ -1,5 +1,6 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'category_model.dart';
+import 'habit_record_model.dart';
 
 part 'habit_model.freezed.dart';
 part 'habit_model.g.dart';
@@ -18,9 +19,15 @@ abstract class HabitModel with _$HabitModel {
     @Default(false) bool completadoHoy,
     @Default(0.0) double progresoHoy,
     @Default(0) int rachaActual,
+    @Default(0) int mejorRacha,
+    @Default(0) int tasaExito,
+    @Default(0) int totalCumplido,
+    @Default([]) List<HabitRecordModel> historialReciente,
     String? fechaInicio,
     String? fechaFin,
     @Default([1, 2, 3, 4, 5, 6, 7]) List<int> diasSemana,
+    @Default([]) List<String> fechasCompletadas,
+    String? estado,
   }) = _HabitModel;
 
   factory HabitModel.fromJson(Map<String, dynamic> json) =>

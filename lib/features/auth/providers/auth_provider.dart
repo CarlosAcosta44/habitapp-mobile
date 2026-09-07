@@ -68,7 +68,7 @@ class AuthNotifier extends _$AuthNotifier {
       state = const AsyncValue.loading();
       
       final GoogleSignIn googleSignIn = GoogleSignIn(
-        // clientId: 'PONER_AQUI_CLIENT_ID_SI_ES_IOS', // TODO: Configurar iOS si es necesario
+        // clientId: 'PONER_AQUI_CLIENT_ID_SI_ES_IOS',
       );
       
       final GoogleSignInAccount? googleUser = await googleSignIn.signIn();

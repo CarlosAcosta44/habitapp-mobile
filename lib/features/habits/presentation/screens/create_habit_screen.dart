@@ -12,19 +12,29 @@ const _kTextDark = Color(0xFF1E1E1E);
 const _kTextGrey = Color(0xFF6B6B6B);
 
 IconData getCategoryIcon(String? iconName) {
-  switch (iconName) {
+  switch (iconName?.toLowerCase()) {
     case 'water_drop':
+    case 'agua':
       return Icons.water_drop_outlined;
     case 'fitness_center':
+    case 'deporte':
       return Icons.fitness_center;
     case 'self_improvement':
+    case 'mindfulness':
+    case 'mente':
       return Icons.self_improvement;
     case 'bedtime':
+    case 'descanso':
       return Icons.bedtime_outlined;
     case 'restaurant':
+    case 'nutricion':
       return Icons.restaurant_outlined;
     case 'checklist':
       return Icons.checklist_rtl_outlined;
+    case 'salud':
+      return Icons.favorite_outline;
+    case 'lectura':
+      return Icons.menu_book;
     default:
       return Icons.category_outlined;
   }
@@ -46,7 +56,7 @@ class _CreateHabitScreenState extends ConsumerState<CreateHabitScreen> {
   final _unidadMedidaController = TextEditingController(text: 'vasos');
 
   String? _selectedCategoryId;
-  DateTime _fechaInicio = DateTime.now();
+  final DateTime _fechaInicio = DateTime.now();
   DateTime? _fechaFin;
   bool _isLoading = false;
 

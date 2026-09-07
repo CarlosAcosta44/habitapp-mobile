@@ -69,7 +69,7 @@ class _HabitDetailScreenState extends ConsumerState<HabitDetailScreen> {
 
   Widget _buildEditSheet(BuildContext context, HabitModel habit) {
     final metaController = TextEditingController(text: habit.metaDiaria.toString());
-    final unidadController = TextEditingController(text: habit.unidadMedida ?? '');
+    final unidadController = TextEditingController(text: habit.unidadMedida);
     String? selectedCategoryId = habit.categoria?.id;
 
     return StatefulBuilder(

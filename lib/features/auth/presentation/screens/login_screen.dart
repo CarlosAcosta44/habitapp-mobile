@@ -336,7 +336,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                               children: [
                                 Expanded(
                                   child: ElevatedButton.icon(
-                                    onPressed: () {}, // TODO: Social Login
+                                    onPressed: () {},
                                     style: ElevatedButton.styleFrom(
                                       backgroundColor: _kFieldBg,
                                       foregroundColor: _kTextDark,
@@ -364,7 +364,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                                 const SizedBox(width: 12),
                                 Expanded(
                                   child: ElevatedButton.icon(
-                                    onPressed: () {}, // TODO: Social Login
+                                    onPressed: () {},
                                     style: ElevatedButton.styleFrom(
                                       backgroundColor: _kFieldBg,
                                       foregroundColor: _kTextDark,

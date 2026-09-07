@@ -74,10 +74,10 @@ class MainLayoutScreen extends StatelessWidget {
                     onTap: () => _onTap(context, 0),
                   ),
                   _NavItem(
-                    icon: Icons.emoji_events_outlined,
-                    activeIcon: Icons.emoji_events_rounded,
-                    label: 'Retos',
-                    isActive: idx == 1, // Comunidad or Retos based on current router setup
+                    icon: Icons.groups_outlined,
+                    activeIcon: Icons.groups_rounded,
+                    label: 'Comunidad',
+                    isActive: idx == 1,
                     onTap: () => _onTap(context, 1),
                   ),
                 ],

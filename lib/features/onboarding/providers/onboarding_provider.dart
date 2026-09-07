@@ -9,12 +9,8 @@ class OnboardingNotifier extends _$OnboardingNotifier {
   @override
   Future<bool> build() async {
     final storage = ref.watch(secureStorageProvider);
-    // TODO(debug): Eliminar este bloque antes de release a producción
-    if (kDebugMode) {
-      await storage.delete(key: 'has_seen_onboarding');
-    }
-    final value = await storage.read(key: 'has_seen_onboarding');
-    return value == 'true';
+    final hasSeenOnboarding = await storage.read(key: 'has_seen_onboarding');
+    return hasSeenOnboarding == 'true';
   }
 
   Future<void> completeOnboarding() async {
