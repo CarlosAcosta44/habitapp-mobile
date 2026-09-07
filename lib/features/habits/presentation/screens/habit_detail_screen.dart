@@ -247,8 +247,10 @@ class _HabitDetailScreenState extends ConsumerState<HabitDetailScreen> {
                     final updateData = <String, dynamic>{
                       'metaDiaria': meta,
                       'unidadMedida': unidad,
-                      if (selectedCategoryId != null) 'idCategoria': selectedCategoryId,
                     };
+                    if (selectedCategoryId != null) {
+                      updateData['idCategoria'] = selectedCategoryId;
+                    }
                     try {
                       await ref.read(habitsRepositoryProvider).updateHabit(widget.habitId, updateData);
                       ref.invalidate(habitStatsProvider(widget.habitId));
