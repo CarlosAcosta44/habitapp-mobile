@@ -117,19 +117,17 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        // Placeholder de ilustración
+                        // Placeholder de ilustración (Ahora usará una imagen real)
                         Container(
                           width: double.infinity,
                           height: 240,
-                          decoration: BoxDecoration(
-                            color: Colors.grey.withValues(alpha: 0.1),
-                            borderRadius: BorderRadius.circular(24),
-                          ),
                           alignment: Alignment.center,
-                          child: Icon(
-                            slide.icon,
-                            size: 120,
-                            color: _kHighlightBlue.withValues(alpha: 0.8),
+                          child: Image.asset(
+                            'assets/images/brain_illustration.png',
+                            fit: BoxFit.contain,
+                            // Si la imagen no está aún, mostrará un error en pantalla (esto te avisará que falta).
+                            errorBuilder: (context, error, stackTrace) =>
+                                Icon(slide.icon, size: 120, color: _kHighlightBlue),
                           ),
                         ),
                         const SizedBox(height: 40),
@@ -204,7 +202,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                   ElevatedButton(
                     onPressed: _continueWithEmail,
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: _kPrimaryPink,
+                      backgroundColor: _kHighlightBlue,
                       foregroundColor: Colors.white,
                       elevation: 0,
                       minimumSize: const Size(double.infinity, 56),
@@ -234,7 +232,8 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                     children: [
                       Expanded(
                         child: _SocialButton(
-                          icon: Icons.g_mobiledata_rounded,
+                          imageAsset: 'assets/images/google_logo.png',
+                          fallbackIcon: Icons.g_mobiledata_rounded,
                           color: Colors.red,
                           onTap: _continueWithSocial,
                         ),
@@ -242,7 +241,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                       const SizedBox(width: 12),
                       Expanded(
                         child: _SocialButton(
-                          icon: Icons.apple,
+                          fallbackIcon: Icons.apple,
                           color: Colors.black,
                           onTap: _continueWithSocial,
                         ),
@@ -302,12 +301,14 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
 //  _SocialButton
 // ─────────────────────────────────────────────────────────
 class _SocialButton extends StatelessWidget {
-  final IconData icon;
+  final IconData fallbackIcon;
+  final String? imageAsset;
   final Color color;
   final VoidCallback onTap;
 
   const _SocialButton({
-    required this.icon,
+    required this.fallbackIcon,
+    this.imageAsset,
     required this.color,
     required this.onTap,
   });
@@ -324,7 +325,15 @@ class _SocialButton extends StatelessWidget {
           borderRadius: BorderRadius.circular(28),
         ),
         alignment: Alignment.center,
-        child: Icon(icon, size: 28, color: color),
+        child: imageAsset != null
+            ? Image.asset(
+                imageAsset!,
+                width: 24,
+                height: 24,
+                errorBuilder: (context, error, stackTrace) =>
+                    Icon(fallbackIcon, size: 28, color: color),
+              )
+            : Icon(fallbackIcon, size: 28, color: color),
       ),
     );
   }
