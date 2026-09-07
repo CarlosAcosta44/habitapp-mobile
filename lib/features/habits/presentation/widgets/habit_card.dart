@@ -127,9 +127,9 @@ class HabitCard extends StatelessWidget {
               children: [
                 if (isNumeric && rightText != null) ...[
                   // Texto de progreso numérico (Ej: 15/20 min)
-                  Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.end,
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.baseline,
+                    textBaseline: TextBaseline.alphabetic,
                     children: [
                       Text(
                         rightText!.split('\n').first, // "15/20"
@@ -139,33 +139,35 @@ class HabitCard extends StatelessWidget {
                           color: Color(0xFF1E1E1E),
                         ),
                       ),
-                      if (rightText!.contains('\n'))
+                      if (rightText!.contains('\n')) ...[
+                        const SizedBox(width: 4),
                         Text(
                           rightText!.split('\n').last, // "min"
                           style: const TextStyle(
-                            fontSize: 12,
-                            fontWeight: FontWeight.w500,
+                            fontSize: 14,
+                            fontWeight: FontWeight.w600,
                             color: Color(0xFF6B6B6B),
                           ),
                         ),
+                      ],
                     ],
                   ),
                   const SizedBox(width: 12),
                 ],
-                // Botón azul con check
+                // Botón check
                 GestureDetector(
                   onTap: onToggle,
                   child: Container(
                     width: 44,
                     height: 44,
                     decoration: BoxDecoration(
-                      color: isCompleted ? const Color(0xFF2D82FA) : (isNumeric ? const Color(0xFF2D82FA) : const Color(0xFFF3F3F3)),
+                      color: isCompleted ? const Color(0xFF2D82FA) : const Color(0xFFF0F1F5),
                       shape: BoxShape.circle,
                     ),
                     alignment: Alignment.center,
                     child: Icon(
                       Icons.check,
-                      color: isCompleted || isNumeric ? Colors.white : Colors.transparent,
+                      color: isCompleted ? Colors.white : const Color(0xFFA0A5B1),
                       size: 24,
                     ),
                   ),

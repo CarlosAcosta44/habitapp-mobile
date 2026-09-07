@@ -24,13 +24,15 @@ class AuthRepository {
     }
   }
 
-  Future<Map<String, dynamic>> register(String email, String password) async {
+  Future<Map<String, dynamic>> register(String email, String password, String nombre, String apellido) async {
     try {
       final response = await _dio.post(
         '/auth/register',
         data: {
           'email': email,
           'password': password,
+          'nombre': nombre,
+          'apellido': apellido,
         },
       );
       return response.data;

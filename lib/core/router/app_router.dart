@@ -13,6 +13,8 @@ import '../../features/profile/presentation/screens/edit_profile_screen.dart';
 import '../../features/profile/presentation/screens/profile_screen.dart';
 import '../../features/settings/presentation/screens/settings_screen.dart';
 import '../../features/habits/presentation/screens/create_habit_screen.dart';
+import '../../features/auth/presentation/screens/register_screen.dart';
+
 part 'app_router.g.dart';
 
 @riverpod
@@ -37,11 +39,7 @@ GoRouter appRouter(Ref ref) {
       ),
       GoRoute(
         path: '/register',
-        builder: (context, state) => const Scaffold(
-          body: Center(
-            child: Text('Crear cuenta — (En construcción)'),
-          ),
-        ),
+        builder: (context, state) => const RegisterScreen(),
       ),
       StatefulShellRoute.indexedStack(
         builder: (context, state, navigationShell) {
@@ -84,12 +82,12 @@ GoRouter appRouter(Ref ref) {
               ),
             ],
           ),
-          // Branch 4: Perfil
+          // Branch 4: Ajustes
           StatefulShellBranch(
             routes: [
               GoRoute(
-                path: '/profile',
-                builder: (context, state) => const ProfileScreen(),
+                path: '/settings',
+                builder: (context, state) => const SettingsScreen(),
               ),
             ],
           ),
@@ -100,8 +98,8 @@ GoRouter appRouter(Ref ref) {
         builder: (context, state) => const EditProfileScreen(),
       ),
       GoRoute(
-        path: '/settings',
-        builder: (context, state) => const SettingsScreen(),
+        path: '/profile',
+        builder: (context, state) => const ProfileScreen(),
       ),
       GoRoute(
         path: '/create-habit',

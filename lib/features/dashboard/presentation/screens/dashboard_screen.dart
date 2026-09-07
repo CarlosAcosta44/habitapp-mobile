@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import '../../../habits/presentation/widgets/habit_card.dart';
 import '../../../habits/providers/habits_provider.dart';
 import '../../../profile/providers/profile_provider.dart';
+import '../../providers/retos_provider.dart';
 
 const _kBlue = Color(0xFF2D82FA);
 const _kPink = Color(0xFFE22D6F);
@@ -23,27 +24,28 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
   int _selectedDayOffset = 0; // 0 = Hoy, 1 = Mañana, etc.
 
   IconData _getCategoryIcon(String? iconName) {
-    if (iconName == null) return Icons.fitness_center;
+    if (iconName == null) return Icons.category_outlined;
     switch (iconName.toLowerCase()) {
-      case 'water':
+      case 'water_drop':
       case 'agua':
-      case 'beber':
-        return Icons.water_drop_rounded;
-      case 'walk':
-      case 'caminar':
-      case 'correr':
-      case 'deporte':
-        return Icons.directions_walk_rounded;
-      case 'read':
-      case 'leer':
-      case 'lectura':
-        return Icons.menu_book_rounded;
-      case 'mindfulness':
-      case 'meditar':
-      case 'salud':
-        return Icons.self_improvement_rounded;
+        return Icons.water_drop_outlined;
+      case 'fitness_center':
+      case 'ejercicio':
+        return Icons.fitness_center;
+      case 'self_improvement':
+      case 'salud mental':
+        return Icons.self_improvement;
+      case 'bedtime':
+      case 'sueño':
+        return Icons.bedtime_outlined;
+      case 'restaurant':
+      case 'nutrición':
+        return Icons.restaurant_outlined;
+      case 'checklist':
+      case 'productividad':
+        return Icons.checklist_rtl_outlined;
       default:
-        return Icons.star_rounded;
+        return Icons.category_outlined;
     }
   }
 
@@ -68,6 +70,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
   @override
   Widget build(BuildContext context) {
     final habitsAsync = ref.watch(habitsDashboardProvider);
+    final retosAsync = ref.watch(retosProvider);
     final now = DateTime.now();
 
     final selectedDate = now.add(Duration(days: _selectedDayOffset));
@@ -251,11 +254,11 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                           // ── Banner Paisaje Motivacional ──
                           Container(
                             width: double.infinity,
-                            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 36),
+                            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 52),
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(24),
                               image: const DecorationImage(
-                                image: AssetImage('assets/images/landscape.png'),
+                                image: AssetImage('assets/images/paisaje-dashboard.png'),
                                 fit: BoxFit.cover,
                               ),
                             ),
@@ -299,28 +302,39 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                           const SizedBox(height: 16),
                           SizedBox(
                             height: 170,
-                            child: ListView(
-                              scrollDirection: Axis.horizontal,
-                              clipBehavior: Clip.none,
-                              children: const [
-                                _ChallengeCard(
-                                  title: 'Sin Azúcar',
-                                  subtitle: 'Detox energy dip',
-                                  progressText: '20% completado',
-                                  progress: 0.2,
-                                  color: _kPink,
-                                  badgeText: '7 Días',
-                                ),
-                                SizedBox(width: 16),
-                                _ChallengeCard(
-                                  title: 'Meditación Diaria',
-                                  subtitle: 'Mindful presence',
-                                  progressText: '45% completado',
-                                  progress: 0.45,
-                                  color: Color(0xFF0F8A5D),
-                                  badgeText: '14 Días',
-                                ),
-                              ],
+                            child: retosAsync.when(
+                              data: (retos) {
+                                if (retos.isEmpty) {
+                                  return const Center(
+                                    child: Text('No hay retos activos.', style: TextStyle(color: Colors.grey)),
+                                  );
+                                }
+                                return ListView.separated(
+                                  scrollDirection: Axis.horizontal,
+                                  clipBehavior: Clip.none,
+                                  itemCount: retos.length,
+                                  separatorBuilder: (_, __) => const SizedBox(width: 16),
+                                  itemBuilder: (context, index) {
+                                    final reto = retos[index];
+                                    final color = index % 2 == 0 ? _kPink : const Color(0xFF0F8A5D);
+                                    
+                                    // Cálculo de progreso ficticio para demostración
+                                    final progresoMock = index % 2 == 0 ? 0.2 : 0.45;
+                                    final progressText = '${(progresoMock * 100).toInt()}% completado';
+
+                                    return _ChallengeCard(
+                                      title: reto['titulo'] ?? 'Reto',
+                                      subtitle: reto['descripcion'] ?? 'Únete ahora',
+                                      progressText: progressText,
+                                      progress: progresoMock,
+                                      color: color,
+                                      badgeText: '${reto['puntosRecompensa'] ?? 50} pts',
+                                    );
+                                  },
+                                );
+                              },
+                              loading: () => const Center(child: CircularProgressIndicator()),
+                              error: (e, _) => Center(child: Text('Error al cargar retos')),
                             ),
                           ),
                           const SizedBox(height: 28),
@@ -493,11 +507,17 @@ class _ChallengeCard extends StatelessWidget {
               ),
             ],
           ),
-          const SizedBox(height: 16),
-          Text(title, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w800, color: _kTextDark)),
+          const SizedBox(height: 12),
+          Text(title, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w800, color: _kTextDark), maxLines: 1, overflow: TextOverflow.ellipsis),
           const SizedBox(height: 2),
-          Text(subtitle, style: const TextStyle(fontSize: 12, color: _kTextGrey)),
-          const Spacer(),
+          Expanded(
+            child: Text(
+              subtitle,
+              style: const TextStyle(fontSize: 12, color: _kTextGrey),
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+            ),
+          ),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
