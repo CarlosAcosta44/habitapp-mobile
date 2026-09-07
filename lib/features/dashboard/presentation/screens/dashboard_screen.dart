@@ -340,7 +340,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                                   scrollDirection: Axis.horizontal,
                                   clipBehavior: Clip.none,
                                   itemCount: retos.length,
-                                  separatorBuilder: (_, _i) => const SizedBox(width: 16),
+                                  separatorBuilder: (_, i) => const SizedBox(width: 16),
                                   itemBuilder: (context, index) {
                                     final reto = retos[index];
                                     final color = index % 2 == 0 ? _kPink : const Color(0xFF0F8A5D);
