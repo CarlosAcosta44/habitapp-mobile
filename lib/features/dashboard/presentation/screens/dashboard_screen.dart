@@ -184,7 +184,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                           
                           // ── Calendario Semanal Strip ──
                           Container(
-                            padding: const EdgeInsets.symmetric(vertical: 16),
+                            padding: const EdgeInsets.symmetric(vertical: 12),
                             decoration: BoxDecoration(
                               color: Colors.white,
                               borderRadius: BorderRadius.circular(24),
@@ -194,43 +194,53 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                             ),
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              children: List.generate(5, (index) {
-                                // Mostrar hoy y los 4 días siguientes
-                                final dayDate = now.add(Duration(days: index));
-                                final isSelected = index == _selectedDayOffset;
+                              children: List.generate(7, (index) {
+                                // 7 días, hoy en el medio (índice 3)
+                                final offsetFromToday = index - 3; 
+                                final dayDate = now.add(Duration(days: offsetFromToday));
+                                final isSelected = offsetFromToday == _selectedDayOffset;
                                 final dayName = _getShortDayName(dayDate.weekday);
                                 
                                 return GestureDetector(
-                                  onTap: () => setState(() => _selectedDayOffset = index),
-                                  child: Column(
-                                    children: [
-                                      Text(
-                                        dayName,
-                                        style: TextStyle(
-                                          fontSize: 12,
-                                          fontWeight: FontWeight.w600,
-                                          color: isSelected ? _kTextDark : _kTextGrey,
+                                  onTap: () => setState(() => _selectedDayOffset = offsetFromToday),
+                                  child: Container(
+                                    padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 10),
+                                    decoration: BoxDecoration(
+                                      color: isSelected ? _kBlue : Colors.transparent,
+                                      borderRadius: BorderRadius.circular(16),
+                                    ),
+                                    child: Column(
+                                      children: [
+                                        Text(
+                                          dayName,
+                                          style: TextStyle(
+                                            fontSize: 12,
+                                            fontWeight: FontWeight.w600,
+                                            color: isSelected ? Colors.white : _kTextGrey,
+                                          ),
                                         ),
-                                      ),
-                                      const SizedBox(height: 4),
-                                      Text(
-                                        '${dayDate.day}',
-                                        style: TextStyle(
-                                          fontSize: 22,
-                                          fontWeight: isSelected ? FontWeight.w900 : FontWeight.w600,
-                                          color: isSelected ? _kTextDark : _kTextGrey,
+                                        const SizedBox(height: 4),
+                                        Text(
+                                          '${dayDate.day}',
+                                          style: TextStyle(
+                                            fontSize: 20,
+                                            fontWeight: isSelected ? FontWeight.w900 : FontWeight.w600,
+                                            color: isSelected ? Colors.white : _kTextDark,
+                                          ),
                                         ),
-                                      ),
-                                      const SizedBox(height: 6),
-                                      Container(
-                                        width: 4,
-                                        height: 4,
-                                        decoration: BoxDecoration(
-                                          shape: BoxShape.circle,
-                                          color: isSelected ? const Color(0xFF0F8A5D) : Colors.grey.shade300,
-                                        ),
-                                      )
-                                    ],
+                                        const SizedBox(height: 6),
+                                        Container(
+                                          width: 4,
+                                          height: 4,
+                                          decoration: BoxDecoration(
+                                            shape: BoxShape.circle,
+                                            color: isSelected 
+                                                ? Colors.white 
+                                                : (offsetFromToday == 0 ? const Color(0xFF0F8A5D) : Colors.transparent),
+                                          ),
+                                        )
+                                      ],
+                                    ),
                                   ),
                                 );
                               }),
