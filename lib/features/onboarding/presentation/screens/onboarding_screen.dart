@@ -11,12 +11,14 @@ class _Slide {
   final String titleHighlight;
   final String subtitle;
   final IconData icon;
+  final String? imageAsset;
 
   const _Slide({
     required this.titleNormal,
     required this.titleHighlight,
     required this.subtitle,
     required this.icon,
+    this.imageAsset,
   });
 }
 
@@ -42,23 +44,23 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
 
   static const _slides = [
     _Slide(
-      titleNormal: 'Cultiva tu\n',
-      titleHighlight: 'bienestar mental',
-      subtitle:
-          'Pequeñas rutinas y apoyo profesional para una mente en calma y una vida plena.',
-      icon: Icons.psychology_rounded,
-    ),
-    _Slide(
       titleNormal: 'Crea buenos\n',
       titleHighlight: 'hábitos',
       subtitle: 'Cambia tu vida incorporando poco a poco rutinas saludables.',
       icon: Icons.check_circle_outline_rounded,
+      imageAsset: 'assets/images/logo-habitapp.png', // Por ahora usamos el logo aquí
     ),
     _Slide(
       titleNormal: 'Sigue tu\n',
       titleHighlight: 'progreso',
       subtitle: 'Cada día estás un paso más cerca de tu meta. ¡No te rindas!',
       icon: Icons.bar_chart_rounded,
+    ),
+    _Slide(
+      titleNormal: 'Únete a la\n',
+      titleHighlight: 'comunidad',
+      subtitle: 'Comparte tus logros y motívate junto a otras personas.',
+      icon: Icons.groups_rounded,
     ),
   ];
 
@@ -123,18 +125,19 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        // Placeholder de ilustración (Ahora usará una imagen real)
+                        // Ilustración
                         Container(
                           width: double.infinity,
                           height: 240,
                           alignment: Alignment.center,
-                          child: Image.asset(
-                            'assets/images/logo-habitapp.png',
-                            fit: BoxFit.contain,
-                            // Si la imagen no está aún, mostrará un error en pantalla (esto te avisará que falta).
-                            errorBuilder: (context, error, stackTrace) =>
-                                Icon(slide.icon, size: 120, color: _kHighlightBlue),
-                          ),
+                          child: slide.imageAsset != null
+                              ? Image.asset(
+                                  slide.imageAsset!,
+                                  fit: BoxFit.contain,
+                                  errorBuilder: (context, error, stackTrace) =>
+                                      Icon(slide.icon, size: 120, color: _kHighlightBlue),
+                                )
+                              : Icon(slide.icon, size: 120, color: _kHighlightBlue),
                         ),
                         const SizedBox(height: 40),
 
