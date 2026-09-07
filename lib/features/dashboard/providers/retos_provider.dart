@@ -7,7 +7,7 @@ final retosProvider = FutureProvider<List<dynamic>>((ref) async {
     final response = await dio.get('/community/retos');
     return response.data as List<dynamic>;
   } catch (e) {
-    print('Error fetching retos: $e');
+    debugPrint('Error fetching retos: $e');
     return [];
   }
 });

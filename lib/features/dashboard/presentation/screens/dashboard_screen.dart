@@ -30,20 +30,24 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
       case 'agua':
         return Icons.water_drop_outlined;
       case 'fitness_center':
-      case 'ejercicio':
+      case 'deporte':
         return Icons.fitness_center;
       case 'self_improvement':
-      case 'salud mental':
+      case 'mindfulness':
+      case 'mente':
         return Icons.self_improvement;
       case 'bedtime':
-      case 'sueño':
+      case 'descanso':
         return Icons.bedtime_outlined;
       case 'restaurant':
-      case 'nutrición':
+      case 'nutricion':
         return Icons.restaurant_outlined;
       case 'checklist':
-      case 'productividad':
         return Icons.checklist_rtl_outlined;
+      case 'salud':
+        return Icons.favorite_outline;
+      case 'lectura':
+        return Icons.menu_book;
       default:
         return Icons.category_outlined;
     }
@@ -71,10 +75,12 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
   Widget build(BuildContext context) {
     final habitsAsync = ref.watch(habitsDashboardProvider);
     final retosAsync = ref.watch(retosProvider);
+    final profileState = ref.watch(profileProvider);
     final now = DateTime.now();
 
     final selectedDate = now.add(Duration(days: _selectedDayOffset));
     final selectedWeekday = selectedDate.weekday;
+    final selectedDateString = "${selectedDate.year}-${selectedDate.month.toString().padLeft(2, '0')}-${selectedDate.day.toString().padLeft(2, '0')}";
 
     return Scaffold(
       backgroundColor: _kBg,
@@ -94,19 +100,36 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      const Text(
-                        'HabitApp',
-                        style: TextStyle(fontSize: 20, fontWeight: FontWeight.w900, color: _kTextDark),
+                      Row(
+                        children: [
+                          Image.asset(
+                            'assets/images/logo-habitapp.png',
+                            width: 24,
+                            height: 24,
+                            errorBuilder: (context, error, stackTrace) =>
+                                const Icon(Icons.extension, color: _kBlue, size: 24),
+                          ),
+                          const SizedBox(width: 8),
+                          const Text(
+                            'HabitApp',
+                            style: TextStyle(fontSize: 20, fontWeight: FontWeight.w900, color: _kTextDark),
+                          ),
+                        ],
                       ),
                       Row(
                         children: [
-                          const Text('Hábitos de hoy', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: _kTextDark)),
-                          const SizedBox(width: 12),
-                          Container(
-                            width: 36,
-                            height: 36,
-                            decoration: BoxDecoration(color: _kPink.withValues(alpha: 0.15), shape: BoxShape.circle),
-                            child: const Icon(Icons.person_outline, color: _kPink, size: 20),
+                          GestureDetector(
+                            onTap: () => context.push('/profile'),
+                            child: CircleAvatar(
+                              radius: 18,
+                              backgroundColor: _kPink.withValues(alpha: 0.15),
+                              backgroundImage: (profileState.value?.fotoperfil != null)
+                                  ? NetworkImage(profileState.value!.fotoperfil!)
+                                  : null,
+                              child: (profileState.value?.fotoperfil == null)
+                                  ? const Icon(Icons.person_outline, color: _kPink, size: 20)
+                                  : null,
+                            ),
                           ),
                         ],
                       ),
@@ -119,11 +142,12 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                 habitsAsync.when(
                   data: (allHabits) {
                     final habits = allHabits.where((h) {
+                      if (h.estado != 'Activo') return false;
                       if (h.diasSemana.isEmpty) return true;
                       return h.diasSemana.contains(selectedWeekday);
                     }).toList();
 
-                    final completedCount = habits.where((h) => h.completadoHoy).length;
+                    final completedCount = habits.where((h) => h.fechasCompletadas.contains(selectedDateString)).length;
                     final totalCount = habits.length;
 
                     return Padding(
@@ -135,49 +159,52 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                           
                           // ── Fila de Fecha y Nivel ──
                           Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Row(
-                                children: [
-                                  Container(
-                                    width: 44,
-                                    height: 44,
-                                    decoration: BoxDecoration(
-                                      shape: BoxShape.circle,
-                                      border: Border.all(color: _kPink.withValues(alpha: 0.3), width: 1.5),
-                                    ),
-                                    child: const Icon(Icons.calendar_today_rounded, color: _kPink, size: 20),
-                                  ),
-                                  const SizedBox(width: 12),
-                                  Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        '${selectedDate.day} ${_getMonthName(selectedDate.month)}, ${selectedDate.year}',
-                                        style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w800, color: _kTextDark),
-                                      ),
-                                      const SizedBox(height: 2),
-                                      Text(
-                                        '$completedCount de $totalCount hábitos completados',
-                                        style: const TextStyle(fontSize: 13, color: _kTextGrey),
-                                      ),
-                                    ],
-                                  ),
-                                ],
-                              ),
                               Container(
-                                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                                width: 44,
+                                height: 44,
                                 decoration: BoxDecoration(
-                                  color: const Color(0xFFE8F5E9),
-                                  borderRadius: BorderRadius.circular(20),
+                                  shape: BoxShape.circle,
+                                  border: Border.all(color: _kPink.withValues(alpha: 0.3), width: 1.5),
                                 ),
-                                child: const Row(
+                                child: const Icon(Icons.calendar_today_rounded, color: _kPink, size: 20),
+                              ),
+                              const SizedBox(width: 12),
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    Icon(Icons.eco_rounded, color: Color(0xFF0F8A5D), size: 14),
-                                    SizedBox(width: 4),
-                                    Text('Nivel 4', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700, color: Color(0xFF0F8A5D))),
-                                    SizedBox(width: 4),
-                                    Icon(Icons.circle, color: Color(0xFF0F8A5D), size: 6),
+                                    Text(
+                                      '${selectedDate.day} ${_getMonthName(selectedDate.month)}, ${selectedDate.year}',
+                                      style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w800, color: _kTextDark),
+                                    ),
+                                    const SizedBox(height: 2),
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Text(
+                                          '$completedCount de $totalCount hábitos',
+                                          style: const TextStyle(fontSize: 13, color: _kTextGrey),
+                                        ),
+                                        Text(
+                                          '${totalCount > 0 ? (completedCount / totalCount * 100).round() : 0}%',
+                                          style: const TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: _kBlue),
+                                        ),
+                                      ],
+                                    ),
+                                    const SizedBox(height: 8),
+                                    SizedBox(
+                                      width: double.infinity,
+                                      height: 8,
+                                      child: ClipRRect(
+                                        borderRadius: BorderRadius.circular(4),
+                                        child: LinearProgressIndicator(
+                                          value: totalCount > 0 ? completedCount / totalCount : 0,
+                                          backgroundColor: Colors.grey.shade200,
+                                          valueColor: const AlwaysStoppedAnimation(_kBlue),
+                                        ),
+                                      ),
+                                    ),
                                   ],
                                 ),
                               ),
@@ -313,7 +340,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                                   scrollDirection: Axis.horizontal,
                                   clipBehavior: Clip.none,
                                   itemCount: retos.length,
-                                  separatorBuilder: (_, __) => const SizedBox(width: 16),
+                                  separatorBuilder: (_, _i) => const SizedBox(width: 16),
                                   itemBuilder: (context, index) {
                                     final reto = retos[index];
                                     final color = index % 2 == 0 ? _kPink : const Color(0xFF0F8A5D);
@@ -377,22 +404,27 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                                 final habit = habits[index];
                                 final isNumeric = habit.metaDiaria > 1;
                                 final rightText = isNumeric 
-                                    ? '${habit.progresoHoy.toInt()}/${habit.metaDiaria.toInt()}\n${habit.unidadMedida ?? 'veces'}' 
+                                    ? '${habit.progresoHoy.toInt()}/${habit.metaDiaria.toInt()}\n${habit.unidadMedida}' 
                                     : null;
-                                final badgeText = isNumeric ? '${habit.rachaActual}d' : (index == 2 ? 'Nuevo' : null);
+                                final badgeText = isNumeric ? '${habit.rachaActual}d' : null;
                                 
-                                return HabitCard(
-                                  title: habit.nombre,
-                                  subtitle: habit.descripcion ?? 'Sin descripción',
-                                  icon: _getCategoryIcon(habit.categoria?.icono ?? habit.categoria?.nombre),
-                                  iconColor: habit.categoria?.parsedColor ?? _kBlue,
-                                  badgeText: badgeText,
-                                  isCompleted: habit.completadoHoy,
-                                  isNumeric: isNumeric,
-                                  rightText: rightText,
-                                  onToggle: () {
-                                    ref.read(habitsDashboardProvider.notifier).toggleHabit(habit.id);
-                                  },
+                                final isCompleted = habit.fechasCompletadas.contains(selectedDateString);
+
+                                return GestureDetector(
+                                  onTap: () => context.push('/habit/${habit.id}'),
+                                  child: HabitCard(
+                                    title: habit.nombre,
+                                    subtitle: habit.descripcion ?? 'Sin descripción',
+                                    icon: _getCategoryIcon(habit.categoria?.icono ?? habit.categoria?.nombre),
+                                    iconColor: habit.categoria?.parsedColor ?? _kBlue,
+                                    badgeText: badgeText,
+                                    isCompleted: isCompleted,
+                                    isNumeric: isNumeric,
+                                    rightText: rightText,
+                                    onToggle: _selectedDayOffset == 0 ? () {
+                                      ref.read(habitsDashboardProvider.notifier).toggleHabit(habit.id);
+                                    } : null,
+                                  ),
                                 );
                               },
                             ),
