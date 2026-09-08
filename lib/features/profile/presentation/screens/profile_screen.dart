@@ -20,11 +20,6 @@ class ProfileScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final profileState = ref.watch(profileProvider);
     final friendsState = ref.watch(friendsProvider);
-    final habitsAsync = ref.watch(habitsDashboardProvider);
-    final activeHabitsCount = habitsAsync.maybeWhen(
-      data: (habits) => habits.where((h) => h.estado == 'Activo').length,
-      orElse: () => 0,
-    );
 
     return Scaffold(
       backgroundColor: _kBg,
@@ -143,9 +138,8 @@ class ProfileScreen extends ConsumerWidget {
             );
           },
           loading: () => const Center(child: CircularProgressIndicator()),
-          ),
-        loading: () => const Center(child: CircularProgressIndicator()),
-        error: (error, stack) => Center(child: Text('Error: $error')),
+          error: (error, stack) => Center(child: Text('Error: $error')),
+        ),
       ),
     );
   }
