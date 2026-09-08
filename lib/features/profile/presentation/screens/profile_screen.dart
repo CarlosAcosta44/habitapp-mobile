@@ -4,7 +4,6 @@ import 'package:go_router/go_router.dart';
 
 import '../../providers/profile_provider.dart';
 import '../../providers/friends_provider.dart';
-import '../../../habits/providers/habits_provider.dart';
 
 const _kPurple = Color(0xFF6B48FF);
 const _kLightPurple = Color(0xFFF4F0FB);
