@@ -93,6 +93,7 @@ class AuthNotifier extends _$AuthNotifier {
       final accessToken = await authRepo.loginWithGoogle(idToken);
       
       final secureStorage = ref.read(secureStorageProvider);
+      AuthInterceptor.setToken(accessToken);
       await secureStorage.write(key: 'access_token', value: accessToken);
       
       state = const AsyncValue.data(true);
@@ -122,6 +123,7 @@ class AuthNotifier extends _$AuthNotifier {
       final accessToken = await authRepo.loginWithApple(identityToken);
       
       final secureStorage = ref.read(secureStorageProvider);
+      AuthInterceptor.setToken(accessToken);
       await secureStorage.write(key: 'access_token', value: accessToken);
       
       state = const AsyncValue.data(true);
