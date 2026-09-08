@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import '../../../core/network/dio_client.dart';
 import 'models/user_profile.dart';
+import 'models/user_stats.dart';
 
 part 'profile_repository.g.dart';
 
@@ -17,6 +18,16 @@ class ProfileRepository {
     } on DioException catch (e) {
       throw Exception(
           e.response?.data['message'] ?? 'Error al obtener el perfil del usuario');
+    }
+  }
+
+  Future<UserStats> getUserStats() async {
+    try {
+      final response = await _dio.get('/users/me/stats');
+      return UserStats.fromJson(response.data);
+    } on DioException catch (e) {
+      throw Exception(
+          e.response?.data['message'] ?? 'Error al obtener las estadísticas del usuario');
     }
   }
 
