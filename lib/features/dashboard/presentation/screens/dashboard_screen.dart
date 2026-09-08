@@ -408,7 +408,9 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                                     : null;
                                 final badgeText = isNumeric ? '${habit.rachaActual}d' : null;
                                 
-                                final isCompleted = habit.fechasCompletadas.contains(selectedDateString);
+                                final isCompleted = _selectedDayOffset == 0 
+                                    ? habit.completadoHoy 
+                                    : habit.fechasCompletadas.contains(selectedDateString);
 
                                 return GestureDetector(
                                   onTap: () => context.push('/habit/${habit.id}'),
