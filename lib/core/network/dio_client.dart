@@ -29,7 +29,7 @@ Dio dioClient(Ref ref) {
   );
 
   // Add the Auth Interceptor
-  dio.interceptors.add(AuthInterceptor(secureStorage));
+  dio.interceptors.add(AuthInterceptor(secureStorage, ref));
   
   // Add a simple log interceptor for debugging
   dio.interceptors.add(LogInterceptor(responseBody: true, requestBody: true));

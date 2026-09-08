@@ -1,11 +1,14 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
+import '../../features/auth/providers/auth_provider.dart';
 
 class AuthInterceptor extends Interceptor {
   final FlutterSecureStorage secureStorage;
+  final Ref ref;
   static String? _cachedToken;
 
-  AuthInterceptor(this.secureStorage);
+  AuthInterceptor(this.secureStorage, this.ref);
 
   static void setToken(String token) {
     _cachedToken = token;
@@ -33,7 +36,7 @@ class AuthInterceptor extends Interceptor {
     if (err.response?.statusCode == 401) {
       _cachedToken = null;
       await secureStorage.delete(key: 'access_token');
-      // En una app real aquí usaríamos un GlobalKey<NavigatorState> o Riverpod para redirigir al login
+      ref.read(authProvider.notifier).logout();
     }
     super.onError(err, handler);
   }
