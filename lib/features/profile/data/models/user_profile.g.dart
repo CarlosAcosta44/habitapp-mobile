@@ -19,6 +19,7 @@ _UserProfile _$UserProfileFromJson(Map<String, dynamic> json) => _UserProfile(
   telefono: json['telefono'] as String?,
   genero: json['genero'] as String?,
   fechanacimiento: json['fechanacimiento'] as String?,
+  zonaHoraria: json['zonaHoraria'] as String?,
 );
 
 Map<String, dynamic> _$UserProfileToJson(_UserProfile instance) =>
@@ -35,4 +36,5 @@ Map<String, dynamic> _$UserProfileToJson(_UserProfile instance) =>
       'telefono': instance.telefono,
       'genero': instance.genero,
       'fechanacimiento': instance.fechanacimiento,
+      'zonaHoraria': instance.zonaHoraria,
     };

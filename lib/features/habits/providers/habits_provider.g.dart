@@ -50,6 +50,45 @@ final class CategoriesProvider
 
 String _$categoriesHash() => r'271e6eaa8998a15055bb118eb45409ad8de15f90';
 
+@ProviderFor(archivedHabits)
+final archivedHabitsProvider = ArchivedHabitsProvider._();
+
+final class ArchivedHabitsProvider
+    extends
+        $FunctionalProvider<
+          AsyncValue<List<HabitModel>>,
+          List<HabitModel>,
+          FutureOr<List<HabitModel>>
+        >
+    with $FutureModifier<List<HabitModel>>, $FutureProvider<List<HabitModel>> {
+  ArchivedHabitsProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'archivedHabitsProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$archivedHabitsHash();
+
+  @$internal
+  @override
+  $FutureProviderElement<List<HabitModel>> $createElement(
+    $ProviderPointer pointer,
+  ) => $FutureProviderElement(pointer);
+
+  @override
+  FutureOr<List<HabitModel>> create(Ref ref) {
+    return archivedHabits(ref);
+  }
+}
+
+String _$archivedHabitsHash() => r'ac97af0b2d3517aa59f4882b2255ca8c0048b9aa';
+
 @ProviderFor(HabitsDashboardNotifier)
 final habitsDashboardProvider = HabitsDashboardNotifierProvider._();
 
@@ -75,7 +114,7 @@ final class HabitsDashboardNotifierProvider
 }
 
 String _$habitsDashboardNotifierHash() =>
-    r'af65c925893cbea4e49cd6ba9d9dda12b30855f3';
+    r'be686f11adcd04cdf88bd63317b9f933e49af48c';
 
 abstract class _$HabitsDashboardNotifier
     extends $AsyncNotifier<List<HabitModel>> {

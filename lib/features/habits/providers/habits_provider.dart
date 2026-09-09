@@ -12,6 +12,12 @@ Future<List<CategoryModel>> categories(Ref ref) async {
   return repository.getCategorias();
 }
 
+@riverpod
+Future<List<HabitModel>> archivedHabits(Ref ref) async {
+  final repository = ref.watch(habitsRepositoryProvider);
+  return repository.getArchivedHabits();
+}
+
 @Riverpod(keepAlive: true)
 class HabitsDashboardNotifier extends _$HabitsDashboardNotifier {
   final Set<String> _togglingHabits = {};
@@ -90,6 +96,19 @@ class HabitsDashboardNotifier extends _$HabitsDashboardNotifier {
       state = AsyncValue.data(previousState);
     } finally {
       _togglingHabits.remove(id);
+    }
+  }
+
+  /// Desarchiva un hábito
+  Future<bool> unarchiveHabit(String id) async {
+    try {
+      final repository = ref.read(habitsRepositoryProvider);
+      await repository.updateHabit(id, {'estado': 'Activo'});
+      ref.invalidate(archivedHabitsProvider);
+      await refresh();
+      return true;
+    } catch (e) {
+      return false;
     }
   }
 }

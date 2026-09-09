@@ -54,6 +54,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
   @override
   Widget build(BuildContext context) {
     final profileState = ref.watch(profileProvider);
+    final userStatsAsync = ref.watch(profileStatsProvider);
 
     return Scaffold(
       backgroundColor: _kBg,
@@ -81,26 +82,14 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
             ),
           ],
         ),
-        actions: [
-          Padding(
-            padding: const EdgeInsets.only(right: 16.0),
-            child: GestureDetector(
-              onTap: () => context.push('/profile'),
-              child: CircleAvatar(
-                radius: 16,
-                backgroundColor: _kPink.withValues(alpha: 0.1),
-                child: const Icon(Icons.person_outline, color: _kPink, size: 18),
-              ),
-            ),
-          )
-        ],
+        actions: [],
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(20.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            _buildProfileCard(profileState),
+            _buildProfileCard(profileState, userStatsAsync),
             const SizedBox(height: 24),
             _buildSectionHeader('PREFERENCIAS DE LA APP', Icons.tune),
             _buildThemeCard(),
@@ -145,7 +134,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     );
   }
 
-  Widget _buildProfileCard(AsyncValue profileState) {
+  Widget _buildProfileCard(AsyncValue profileState, AsyncValue userStatsAsync) {
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
@@ -202,12 +191,12 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                   color: _kBlue.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(20),
                 ),
-                child: const Row(
+                child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Icon(Icons.local_fire_department, color: _kBlue, size: 14),
-                    SizedBox(width: 4),
-                    Text('24 días', style: TextStyle(color: _kBlue, fontSize: 10, fontWeight: FontWeight.bold)),
+                    const Icon(Icons.local_fire_department, color: _kBlue, size: 14),
+                    const SizedBox(width: 4),
+                    Text('${userStatsAsync.value?.rachaActual ?? 0} días', style: const TextStyle(color: _kBlue, fontSize: 10, fontWeight: FontWeight.bold)),
                   ],
                 ),
               ),

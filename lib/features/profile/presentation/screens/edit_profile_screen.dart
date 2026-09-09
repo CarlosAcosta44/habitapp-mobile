@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:flutter_timezone/flutter_timezone.dart';
 
 import '../../providers/profile_provider.dart';
 
@@ -40,7 +41,25 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
     _phoneController = TextEditingController(text: profile?.telefono ?? '');
     _genderController = TextEditingController(text: profile?.genero ?? 'Femenino');
     _dobController = TextEditingController(text: profile?.fechanacimiento ?? '14 de Mayo, 1994');
-    _timezoneController = TextEditingController(text: 'UTC -5 (Bogotá, Lima, Quito)');
+    _timezoneController = TextEditingController(text: profile?.zonaHoraria ?? 'UTC -5 (Bogotá, Lima, Quito)');
+    
+    // Autodetectar zona horaria si está vacía
+    if (profile != null && (profile.zonaHoraria == null || profile.zonaHoraria!.isEmpty)) {
+      _loadTimezone();
+    }
+  }
+
+  Future<void> _loadTimezone() async {
+    try {
+      final currentTimeZone = await FlutterTimezone.getLocalTimezone();
+      if (mounted) {
+        setState(() {
+          _timezoneController.text = currentTimeZone.identifier;
+        });
+      }
+    } catch (e) {
+      // Ignore timezone fetch error
+    }
   }
 
   @override
@@ -86,6 +105,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
           'telefono': _phoneController.text,
           'genero': _genderController.text,
           'fechanacimiento': _dobController.text,
+          'zona_horaria': _timezoneController.text,
         });
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
