@@ -1,4 +1,5 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+import '../../profile/providers/profile_provider.dart';
 import '../data/models/category_model.dart';
 import '../data/models/create_habit_dto.dart';
 import '../data/models/habit_model.dart';
@@ -91,6 +92,10 @@ class HabitsDashboardNotifier extends _$HabitsDashboardNotifier {
       } else {
         await repository.marcarCompletado(id);
       }
+      
+      // Invalidar proveedores del perfil para actualizar los puntos
+      ref.invalidate(profileProvider);
+      ref.invalidate(profileStatsProvider);
     } catch (e) {
       // Revertir en caso de error
       state = AsyncValue.data(previousState);

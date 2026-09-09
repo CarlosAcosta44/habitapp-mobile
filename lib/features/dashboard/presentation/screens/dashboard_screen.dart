@@ -146,8 +146,10 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                       if (h.diasSemana.isEmpty) return true;
                       return h.diasSemana.contains(selectedWeekday);
                     }).toList();
-
-                    final completedCount = habits.where((h) => h.fechasCompletadas.contains(selectedDateString)).length;
+                    final completedCount = habits.where((h) {
+                      if (_selectedDayOffset == 0) return h.completadoHoy;
+                      return h.fechasCompletadas.contains(selectedDateString);
+                    }).length;
                     final totalCount = habits.length;
 
                     return Padding(
