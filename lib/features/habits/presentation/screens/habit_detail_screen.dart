@@ -310,6 +310,9 @@ class _HabitDetailScreenState extends ConsumerState<HabitDetailScreen> {
   @override
   Widget build(BuildContext context) {
     final state = ref.watch(habitStatsProvider(widget.habitId));
+    // También observamos el dashboard para recibir actualizaciones optimistas de progreso
+    final dashboardState = ref.watch(habitsDashboardProvider);
+    final localHabit = dashboardState.value?.where((h) => h.id == widget.habitId).firstOrNull;
 
     return Scaffold(
       backgroundColor: _kBg,
@@ -318,6 +321,10 @@ class _HabitDetailScreenState extends ConsumerState<HabitDetailScreen> {
           loading: () => const Center(child: CircularProgressIndicator()),
           error: (e, _) => Center(child: Text('Error al cargar: $e')),
           data: (habit) {
+            // Si hay datos locales más recientes del dashboard, usar ese progresoHoy
+            final habitConProgreso = localHabit != null
+                ? habit.copyWith(progresoHoy: localHabit.progresoHoy)
+                : habit;
             return CustomScrollView(
               slivers: [
                 SliverAppBar(
@@ -345,7 +352,7 @@ class _HabitDetailScreenState extends ConsumerState<HabitDetailScreen> {
                   sliver: SliverList(
                     delegate: SliverChildListDelegate([
                       // Main Card
-                      _buildMainCard(habit),
+                      _buildMainCard(habitConProgreso),
                       const SizedBox(height: 24),
                       
                       // Stats Grid
@@ -366,7 +373,7 @@ class _HabitDetailScreenState extends ConsumerState<HabitDetailScreen> {
                       const SizedBox(height: 24),
 
                       // History
-                      _buildHistorySection(habit),
+                      _buildHistorySection(habitConProgreso),
                       const SizedBox(height: 24),
 
                       // Motivation
@@ -518,12 +525,17 @@ class _HabitDetailScreenState extends ConsumerState<HabitDetailScreen> {
                     child: IconButton(
                       onPressed: habit.diasSemana.contains(DateTime.now().weekday) && habit.progresoHoy > 0
                           ? () async {
+                              final nuevoProgreso = (habit.progresoHoy - 1).clamp(0, habit.metaDiaria).toDouble();
+                              // Actualizar UI local inmediatamente (evita freeze)
+                              ref.read(habitsDashboardProvider.notifier).updateLocalProgress(widget.habitId, nuevoProgreso);
                               try {
                                 await ref.read(habitsRepositoryProvider).avanzarProgreso(widget.habitId, -1);
                                 ref.invalidate(habitStatsProvider(widget.habitId));
-                                ref.read(habitsDashboardProvider.notifier).refresh();
+                                // Refrescar dashboard en el siguiente microtask
+                                Future.microtask(() => ref.read(habitsDashboardProvider.notifier).refresh());
                               } catch (_) {
-                                // silenciar error de decremento
+                                // revertir
+                                ref.read(habitsDashboardProvider.notifier).updateLocalProgress(widget.habitId, habit.progresoHoy);
                               }
                             }
                           : null,
@@ -537,12 +549,18 @@ class _HabitDetailScreenState extends ConsumerState<HabitDetailScreen> {
                   FilledButton.icon(
                     onPressed: habit.diasSemana.contains(DateTime.now().weekday)
                         ? () async {
+                            final nuevoProgreso = (habit.progresoHoy + 1).clamp(0, habit.metaDiaria).toDouble();
+                            // Actualizar UI local inmediatamente
+                            ref.read(habitsDashboardProvider.notifier).updateLocalProgress(widget.habitId, nuevoProgreso);
                             try {
                               await ref.read(habitsRepositoryProvider).avanzarProgreso(widget.habitId, 1);
                               ref.invalidate(habitStatsProvider(widget.habitId));
-                              ref.read(habitsDashboardProvider.notifier).refresh();
+                              // Refrescar dashboard en el siguiente microtask
+                              Future.microtask(() => ref.read(habitsDashboardProvider.notifier).refresh());
                               if (mounted) ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Progreso incrementado')));
                             } catch (e) {
+                              // revertir
+                              ref.read(habitsDashboardProvider.notifier).updateLocalProgress(widget.habitId, habit.progresoHoy);
                               if (mounted) ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Error: $e')));
                             }
                           }

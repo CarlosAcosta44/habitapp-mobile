@@ -1,8 +1,14 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import '../data/models/user_profile.dart';
+import '../data/models/user_stats.dart';
 import '../data/profile_repository.dart';
 
 part 'profile_provider.g.dart';
+
+@riverpod
+Future<UserStats> profileStats(Ref ref) async {
+  return ref.watch(profileRepositoryProvider).getUserStats();
+}
 
 @Riverpod(keepAlive: true)
 class ProfileNotifier extends _$ProfileNotifier {

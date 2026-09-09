@@ -4,7 +4,6 @@ import 'package:go_router/go_router.dart';
 
 import '../../providers/profile_provider.dart';
 import '../../providers/friends_provider.dart';
-import '../../../habits/providers/habits_provider.dart';
 
 const _kPurple = Color(0xFF6B48FF);
 const _kLightPurple = Color(0xFFF4F0FB);
@@ -20,11 +19,6 @@ class ProfileScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final profileState = ref.watch(profileProvider);
     final friendsState = ref.watch(friendsProvider);
-    final habitsAsync = ref.watch(habitsDashboardProvider);
-    final activeHabitsCount = habitsAsync.maybeWhen(
-      data: (habits) => habits.where((h) => h.estado == 'Activo').length,
-      orElse: () => 0,
-    );
 
     return Scaffold(
       backgroundColor: _kBg,
@@ -69,11 +63,11 @@ class ProfileScreen extends ConsumerWidget {
                   sliver: SliverList(
                     delegate: SliverChildListDelegate([
                       // ── User Card ──
-                      _buildUserCard(context, profile),
+                      _buildUserCard(context, profile, ref),
                       const SizedBox(height: 24),
 
                       // ── Basic Stats Row ──
-                      _buildBasicStatsRow(activeHabitsCount),
+                      _buildBasicStatsRow(ref),
                       const SizedBox(height: 24),
 
                       // ── Puntos de Bienestar ──
@@ -153,7 +147,9 @@ class ProfileScreen extends ConsumerWidget {
   //  Widgets
   // ──────────────────────────────────────────────────────────────────────────
 
-  Widget _buildUserCard(BuildContext context, profile) {
+  Widget _buildUserCard(BuildContext context, profile, WidgetRef ref) {
+    final statsAsync = ref.watch(profileStatsProvider);
+    
     return Stack(
       alignment: Alignment.topCenter,
       children: [
@@ -191,11 +187,18 @@ class ProfileScreen extends ConsumerWidget {
                   Container(
                     padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                     decoration: BoxDecoration(color: _kOrange.withValues(alpha: 0.15), borderRadius: BorderRadius.circular(12)),
-                    child: const Row(
+                    child: Row(
                       children: [
-                        Icon(Icons.local_fire_department, color: _kOrange, size: 14),
-                        SizedBox(width: 6),
-                        Text('24 días de racha', style: TextStyle(color: _kOrange, fontSize: 11, fontWeight: FontWeight.bold)),
+                        const Icon(Icons.local_fire_department, color: _kOrange, size: 14),
+                        const SizedBox(width: 6),
+                        Text(
+                          statsAsync.when(
+                            data: (s) => '${s.rachaActual} días de racha',
+                            loading: () => 'Cargando...',
+                            error: (e, st) => 'Error',
+                          ), 
+                          style: const TextStyle(color: _kOrange, fontSize: 11, fontWeight: FontWeight.bold)
+                        ),
                       ],
                     ),
                   ),
@@ -242,14 +245,25 @@ class ProfileScreen extends ConsumerWidget {
     );
   }
 
-  Widget _buildBasicStatsRow(int activeHabitsCount) {
+  Widget _buildBasicStatsRow(WidgetRef ref) {
+    final statsAsync = ref.watch(profileStatsProvider);
+    
     return Row(
       children: [
-        _buildStatBox(activeHabitsCount.toString(), 'Hábitos\nactivos'),
+        _buildStatBox(
+          statsAsync.when(data: (s) => s.activeHabitsCount.toString(), loading: () => '-', error: (e, st) => '!'),
+          'Hábitos\nactivos'
+        ),
         const SizedBox(width: 12),
-        _buildStatBox('94%', 'Tasa de\néxito'),
+        _buildStatBox(
+          statsAsync.when(data: (s) => '${s.tasaExito}%', loading: () => '-', error: (e, st) => '!'),
+          'Tasa de\néxito'
+        ),
         const SizedBox(width: 12),
-        _buildStatBox('86', 'Días\ntotales'),
+        _buildStatBox(
+          statsAsync.when(data: (s) => s.diasTotales.toString(), loading: () => '-', error: (e, st) => '!'),
+          'Días\ntotales'
+        ),
       ],
     );
   }

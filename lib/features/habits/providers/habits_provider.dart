@@ -14,19 +14,33 @@ Future<List<CategoryModel>> categories(Ref ref) async {
 
 @Riverpod(keepAlive: true)
 class HabitsDashboardNotifier extends _$HabitsDashboardNotifier {
+  final Set<String> _togglingHabits = {};
+
   @override
   Future<List<HabitModel>> build() async {
     final repository = ref.watch(habitsRepositoryProvider);
     return repository.getDashboardHabits();
   }
 
-  /// Recarga la lista de hábitos desde la API
+  /// Recarga la lista de hábitos desde la API (sin pasar por loading para no freezar la UI)
   Future<void> refresh() async {
-    state = const AsyncValue.loading();
-    state = await AsyncValue.guard(() async {
+    try {
       final repository = ref.read(habitsRepositoryProvider);
-      return repository.getDashboardHabits();
-    });
+      final newData = await repository.getDashboardHabits();
+      state = AsyncValue.data(newData);
+    } catch (e, st) {
+      state = AsyncValue.error(e, st);
+    }
+  }
+
+  /// Actualiza el progresoHoy de un hábito localmente (sin llamada a la API).
+  /// Usar después de avanzarProgreso para reflejar el cambio al instante.
+  void updateLocalProgress(String id, double nuevoProg) {
+    final current = state.value;
+    if (current == null) return;
+    state = AsyncValue.data(
+      current.map((h) => h.id == id ? h.copyWith(progresoHoy: nuevoProg) : h).toList(),
+    );
   }
 
   /// Crea un nuevo hábito y recarga el dashboard
@@ -44,6 +58,9 @@ class HabitsDashboardNotifier extends _$HabitsDashboardNotifier {
 
   /// Alterna el estado de completado de un hábito (Optimistic UI)
   Future<void> toggleHabit(String id) async {
+    if (_togglingHabits.contains(id)) return;
+    _togglingHabits.add(id);
+
     final previousState = state.value ?? [];
     
     // Actualización optimista del estado local
@@ -71,6 +88,8 @@ class HabitsDashboardNotifier extends _$HabitsDashboardNotifier {
     } catch (e) {
       // Revertir en caso de error
       state = AsyncValue.data(previousState);
+    } finally {
+      _togglingHabits.remove(id);
     }
   }
 }

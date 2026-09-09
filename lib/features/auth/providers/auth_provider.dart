@@ -2,6 +2,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
+import '../../../core/network/auth_interceptor.dart';
 import '../../../core/network/dio_client.dart';
 import '../data/auth_repository.dart';
 
@@ -30,6 +31,7 @@ class AuthNotifier extends _$AuthNotifier {
       final response = await _repository.login(email, password);
       final token = response['access_token'];
       if (token != null) {
+        AuthInterceptor.setToken(token);
         await _storage.write(key: 'access_token', value: token);
         state = const AsyncValue.data(true);
       } else {
@@ -46,6 +48,7 @@ class AuthNotifier extends _$AuthNotifier {
       final response = await _repository.register(email, password, nombre, apellido);
       final token = response['access_token'];
       if (token != null) {
+        AuthInterceptor.setToken(token);
         await _storage.write(key: 'access_token', value: token);
         state = const AsyncValue.data(true);
       } else {
@@ -57,6 +60,7 @@ class AuthNotifier extends _$AuthNotifier {
   }
 
   Future<void> logout() async {
+    AuthInterceptor.clearToken();
     await _storage.delete(key: 'access_token');
     state = const AsyncValue.data(false);
   }
@@ -89,6 +93,7 @@ class AuthNotifier extends _$AuthNotifier {
       final accessToken = await authRepo.loginWithGoogle(idToken);
       
       final secureStorage = ref.read(secureStorageProvider);
+      AuthInterceptor.setToken(accessToken);
       await secureStorage.write(key: 'access_token', value: accessToken);
       
       state = const AsyncValue.data(true);
@@ -118,6 +123,7 @@ class AuthNotifier extends _$AuthNotifier {
       final accessToken = await authRepo.loginWithApple(identityToken);
       
       final secureStorage = ref.read(secureStorageProvider);
+      AuthInterceptor.setToken(accessToken);
       await secureStorage.write(key: 'access_token', value: accessToken);
       
       state = const AsyncValue.data(true);
