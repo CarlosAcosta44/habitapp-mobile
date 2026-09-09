@@ -95,9 +95,7 @@ class _HabitDetailScreenState extends ConsumerState<HabitDetailScreen> {
                   final categories = snapshot.data!;
                   
                   if (selectedCategoryId == null && categories.isNotEmpty) {
-                    WidgetsBinding.instance.addPostFrameCallback((_) {
-                      setState(() => selectedCategoryId = categories.first.id);
-                    });
+                    selectedCategoryId = categories.first.id;
                   }
                   
                   final selectedCat = categories.firstWhere(

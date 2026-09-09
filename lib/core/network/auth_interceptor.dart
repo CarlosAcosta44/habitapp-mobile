@@ -36,7 +36,11 @@ class AuthInterceptor extends Interceptor {
     if (err.response?.statusCode == 401) {
       _cachedToken = null;
       await secureStorage.delete(key: 'access_token');
-      ref.read(authProvider.notifier).logout();
+      // Delay logout to next event loop to avoid Riverpod CircularDependencyError
+      // during provider builds or router redirects.
+      Future.microtask(() {
+        ref.read(authProvider.notifier).logout();
+      });
     }
     super.onError(err, handler);
   }

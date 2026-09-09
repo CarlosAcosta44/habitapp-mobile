@@ -18,6 +18,7 @@ abstract class UserProfile with _$UserProfile {
     String? telefono,
     String? genero,
     String? fechanacimiento,
+    String? zonaHoraria,
   }) = _UserProfile;
 
   factory UserProfile.fromJson(Map<String, dynamic> json) =>

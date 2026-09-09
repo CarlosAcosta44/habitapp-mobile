@@ -146,8 +146,10 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                       if (h.diasSemana.isEmpty) return true;
                       return h.diasSemana.contains(selectedWeekday);
                     }).toList();
-
-                    final completedCount = habits.where((h) => h.fechasCompletadas.contains(selectedDateString)).length;
+                    final completedCount = habits.where((h) {
+                      if (_selectedDayOffset == 0) return h.completadoHoy;
+                      return h.fechasCompletadas.contains(selectedDateString);
+                    }).length;
                     final totalCount = habits.length;
 
                     return Padding(
@@ -433,6 +435,21 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                             
                           const SizedBox(height: 24),
                           
+                          SizedBox(
+                            width: double.infinity,
+                            child: OutlinedButton.icon(
+                              onPressed: () => context.push('/archived-habits'),
+                              icon: const Icon(Icons.archive_outlined, color: _kTextGrey),
+                              label: const Text('Ver hábitos archivados', style: TextStyle(color: _kTextDark, fontWeight: FontWeight.bold)),
+                              style: OutlinedButton.styleFrom(
+                                padding: const EdgeInsets.symmetric(vertical: 16),
+                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                                side: BorderSide(color: Colors.grey.shade300),
+                              ),
+                            ),
+                          ),
+
+                          const SizedBox(height: 24),
                           // ── Quote Footer ──
                           Container(
                             padding: const EdgeInsets.all(20),

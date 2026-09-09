@@ -42,6 +42,22 @@ class HabitsRepository {
     }
   }
 
+  /// Obtiene los hábitos archivados del usuario
+  Future<List<HabitModel>> getArchivedHabits() async {
+    try {
+      final response = await _dio.get('/habits?estado=Archivado');
+      final data = response.data;
+      if (data is List) {
+        return data.map((e) => HabitModel.fromJson(e as Map<String, dynamic>)).toList();
+      }
+      return [];
+    } on DioException catch (e) {
+      throw Exception(
+        e.response?.data['message'] ?? 'Error al obtener los hábitos archivados',
+      );
+    }
+  }
+
   /// Obtiene todas las categorías de hábitos registradas en el backend
   Future<List<CategoryModel>> getCategorias() async {
     final defaultCategories = [

@@ -14,6 +14,7 @@ import '../../features/profile/presentation/screens/profile_screen.dart';
 import '../../features/settings/presentation/screens/settings_screen.dart';
 import '../../features/habits/presentation/screens/create_habit_screen.dart';
 import '../../features/habits/presentation/screens/habit_detail_screen.dart';
+import '../../features/habits/presentation/screens/archived_habits_screen.dart';
 import '../../features/auth/presentation/screens/register_screen.dart';
 
 part 'app_router.g.dart';
@@ -112,6 +113,10 @@ GoRouter appRouter(Ref ref) {
       GoRoute(
         path: '/create-habit',
         builder: (context, state) => const CreateHabitScreen(),
+      ),
+      GoRoute(
+        path: '/archived-habits',
+        builder: (context, state) => const ArchivedHabitsScreen(),
       ),
     ],
     redirect: (context, state) {

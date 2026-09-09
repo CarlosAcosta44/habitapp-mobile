@@ -201,9 +201,7 @@ class _CreateHabitScreenState extends ConsumerState<CreateHabitScreen> {
           }
 
           if (_selectedCategoryId == null && categories.isNotEmpty) {
-            WidgetsBinding.instance.addPostFrameCallback((_) {
-              setState(() => _selectedCategoryId = categories.first.id);
-            });
+            _selectedCategoryId = categories.first.id;
           }
 
           final selectedCat = categories.firstWhere(
