@@ -16,6 +16,7 @@ import '../../features/habits/presentation/screens/create_habit_screen.dart';
 import '../../features/habits/presentation/screens/habit_detail_screen.dart';
 import '../../features/habits/presentation/screens/archived_habits_screen.dart';
 import '../../features/auth/presentation/screens/register_screen.dart';
+import '../../features/reports/presentation/screens/reports_screen.dart';
 
 part 'app_router.g.dart';
 
@@ -75,12 +76,12 @@ GoRouter appRouter(Ref ref) {
               ),
             ],
           ),
-          // Branch 3: Retos
+          // Branch 3: Progreso / Reportes
           StatefulShellBranch(
             routes: [
               GoRoute(
-                path: '/challenges',
-                builder: (context, state) => const Scaffold(body: Center(child: Text('Retos'))),
+                path: '/reports',
+                builder: (context, state) => const ReportsScreen(),
               ),
             ],
           ),
