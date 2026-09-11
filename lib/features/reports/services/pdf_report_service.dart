@@ -1,7 +1,7 @@
 import 'dart:io';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
-import 'package:path_provider/path_provider.dart';
+import 'package:printing/printing.dart';
 import 'package:flutter/foundation.dart';
 
 class PdfReportService {
@@ -47,19 +47,15 @@ class PdfReportService {
         ),
       );
 
-      // INFO 1: Guardar en el directorio temporal
-      // Usamos el directorio temporal (caché de la app) porque no requiere permisos adicionales 
-      // de almacenamiento por parte del usuario y es el lugar ideal para archivos efímeros.
-      final output = await getTemporaryDirectory();
-      final file = File("${output.path}/reporte_habitos.pdf");
-      await file.writeAsBytes(await pdf.save());
+      // INFO 1: Guardar o Compartir el PDF
+      // El paquete printing se encarga de manejar automáticamente el guardado o 
+      // visualización de manera compatible con Web, Android y iOS.
+      await Printing.sharePdf(
+        bytes: await pdf.save(),
+        filename: 'reporte_habitos.pdf',
+      );
 
-      debugPrint("PDF generado exitosamente en: ${file.path}");
-      
-      // INFO 2: Compartir o abrir el archivo
-      // Dado que el archivo está en caché, el usuario no puede navegar a él manualmente.
-      // Se requiere implementar 'share_plus' para desplegar el menú nativo de compartir 
-      // (WhatsApp, Email) o 'open_file' para visualizarlo en pantalla completa.
+      debugPrint("PDF generado y enviado para descarga/compartir.");
     } catch (e) {
       debugPrint("Error generando PDF: $e");
     }
