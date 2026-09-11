@@ -283,8 +283,8 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
               subtitle: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(constante['nombre'], style: const TextStyle(fontWeight: FontWeight.bold, color: _kTextDark, fontSize: 14)),
-                  Text('Racha activa de ${constante['racha']} días seguidos', style: const TextStyle(fontSize: 12)),
+                  Text(constante['nombre'] ?? 'Desconocido', style: const TextStyle(fontWeight: FontWeight.bold, color: _kTextDark, fontSize: 14)),
+                  Text('Racha activa de ${constante['racha'] ?? 0} días seguidos', style: const TextStyle(fontSize: 12)),
                 ],
               ),
               trailing: Column(
@@ -308,8 +308,8 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
               subtitle: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(oportunidad['nombre'], style: const TextStyle(fontWeight: FontWeight.bold, color: _kTextDark, fontSize: 14)),
-                  const Text('Requiere atención', style: TextStyle(fontSize: 12)),
+                  Text(oportunidad['nombre'] ?? 'Desconocido', style: const TextStyle(fontWeight: FontWeight.bold, color: _kTextDark, fontSize: 14)),
+                  Text('Cumplimiento del ${oportunidad['rate'] ?? 0}%', style: const TextStyle(fontSize: 12)),
                 ],
               ),
               trailing: Column(

@@ -8,7 +8,7 @@ final reportSummaryProvider = FutureProvider.autoDispose<Map<String, dynamic>>((
 
   if (userProfile == null) throw Exception('No user profile found');
 
-  final response = await dio.get('/reports/user/\${userProfile.id}');
+  final response = await dio.get('/reports/user/${userProfile.idusuario}');
   
   if (response.statusCode == 200) {
     return response.data as Map<String, dynamic>;
