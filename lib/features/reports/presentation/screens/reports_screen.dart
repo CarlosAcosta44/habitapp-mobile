@@ -30,24 +30,6 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
       appBar: AppBar(
         backgroundColor: _kBg,
         elevation: 0,
-        leading: IconButton(
-          icon: Container(
-            padding: const EdgeInsets.all(8),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              shape: BoxShape.circle,
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withValues(alpha: 0.05),
-                  blurRadius: 4,
-                  offset: const Offset(0, 2),
-                )
-              ],
-            ),
-            child: const Icon(Icons.arrow_back_ios_new, size: 16, color: _kTextDark),
-          ),
-          onPressed: () => context.pop(),
-        ),
         title: const Text(
           'Progreso y Métricas',
           style: TextStyle(color: _kTextDark, fontWeight: FontWeight.bold, fontSize: 18),

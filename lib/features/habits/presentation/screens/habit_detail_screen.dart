@@ -410,19 +410,6 @@ class _HabitDetailScreenState extends ConsumerState<HabitDetailScreen> {
                               ),
                             ),
                           ),
-                          const SizedBox(width: 12),
-                          Expanded(
-                            child: OutlinedButton.icon(
-                              onPressed: () => _updateState('Pausado'),
-                              icon: const Icon(Icons.pause_circle_outline, color: _kTextGrey, size: 18),
-                              label: const Text('Pausar', style: TextStyle(color: _kTextDark)),
-                              style: OutlinedButton.styleFrom(
-                                padding: const EdgeInsets.symmetric(vertical: 14),
-                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-                                side: BorderSide(color: Colors.grey.shade300),
-                              ),
-                            ),
-                          ),
                         ],
                       ),
                       const SizedBox(height: 12),

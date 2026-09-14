@@ -19,7 +19,7 @@ Dio dioClient(Ref ref) {
   
   final dio = Dio(
     BaseOptions(
-      baseUrl: 'https://silver-chainsaw-77pwjr6rqx52xr4p-4000.app.github.dev/api/v1',
+      baseUrl: 'http://localhost:4000/api/v1',
       connectTimeout: const Duration(seconds: 10),
       receiveTimeout: const Duration(seconds: 10),
       headers: {

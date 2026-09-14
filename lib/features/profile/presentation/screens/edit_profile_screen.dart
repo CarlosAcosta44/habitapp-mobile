@@ -216,7 +216,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
                           ],
                         ),
                         const SizedBox(height: 16),
-                        _buildTextField('Teléfono móvil', _phoneController, prefixWidget: _buildPhonePrefix(), suffixIcon: Icons.phone_outlined),
+                        _buildTextField('Teléfono móvil', _phoneController, suffixIcon: Icons.phone_outlined),
                         const SizedBox(height: 16),
                         _buildTextField('Género', _genderController, prefixIcon: Icons.people_outline, suffixIcon: Icons.expand_more),
                         const SizedBox(height: 16),
