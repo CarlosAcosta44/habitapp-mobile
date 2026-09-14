@@ -45,7 +45,7 @@ class HabitsRepository {
   /// Obtiene los hábitos archivados del usuario
   Future<List<HabitModel>> getArchivedHabits() async {
     try {
-      final response = await _dio.get('/habits?estado=Archivado');
+      final response = await _dio.get('/habits?estado=Inactivo');
       final data = response.data;
       if (data is List) {
         return data.map((e) => HabitModel.fromJson(e as Map<String, dynamic>)).toList();
