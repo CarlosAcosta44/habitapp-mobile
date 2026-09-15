@@ -109,33 +109,31 @@ class ProfileScreen extends ConsumerWidget {
 
                     // ── Botón Buscar Contactos ──
                     Container(
-                      Container(
-                        width: double.infinity,
-                        padding: EdgeInsets.symmetric(vertical: 16),
-                        decoration: BoxDecoration(
-                          color: Theme.of(context).colorScheme.surface,
-                          borderRadius: BorderRadius.circular(16),
-                          border: Border.all(color: Theme.of(context).colorScheme.surfaceContainerHighest),
-                        ),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Icon(Icons.contact_page_outlined, size: 18, color: Theme.of(context).colorScheme.onSurface),
-                            SizedBox(width: 8),
-                            Text('Buscar amigos por contacto o enlace compartido', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: Theme.of(context).colorScheme.onSurface)),
-                          ],
-                        ),
+                      width: double.infinity,
+                      padding: EdgeInsets.symmetric(vertical: 16),
+                      decoration: BoxDecoration(
+                        color: Theme.of(context).colorScheme.surface,
+                        borderRadius: BorderRadius.circular(16),
+                        border: Border.all(color: Theme.of(context).colorScheme.surfaceContainerHighest),
                       ),
-                      SizedBox(height: 48),
-                    ]),
-                  ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(Icons.contact_page_outlined, size: 18, color: Theme.of(context).colorScheme.onSurface),
+                          SizedBox(width: 8),
+                          Text('Buscar amigos por contacto o enlace compartido', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: Theme.of(context).colorScheme.onSurface)),
+                        ],
+                      ),
+                    ),
+                    SizedBox(height: 48),
+                  ]),
                 ),
-              ],
-            );
-          },
-          loading: () => Center(child: CircularProgressIndicator()),
-          error: (error, stack) => Center(child: Text('Error: $error')),
-        ),
+              ),
+            ],
+          );
+        },
+        loading: () => Center(child: CircularProgressIndicator()),
+        error: (error, stack) => Center(child: Text('Error: $error')),
       ),
     );
   }
