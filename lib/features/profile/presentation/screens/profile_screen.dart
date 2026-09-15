@@ -31,9 +31,11 @@ class ProfileScreen extends ConsumerWidget {
                 backgroundColor: Theme.of(context).scaffoldBackgroundColor,
                 elevation: 0,
                 pinned: true,
-                leading: IconButton(
-                  icon: Icon(Icons.arrow_back, color: Theme.of(context).colorScheme.onSurface),
-                  onPressed: () => context.pop(),
+                leading: GestureDetector(
+                  onTap: () => context.pop(),
+                  child: Center(
+                    child: Icon(Icons.arrow_back, color: Theme.of(context).colorScheme.onSurface),
+                  ),
                 ),
                 title: Text(
                   'Mi Perfil',
@@ -44,9 +46,14 @@ class ProfileScreen extends ConsumerWidget {
                   Container(
                     margin: EdgeInsets.symmetric(vertical: 8),
                     decoration: BoxDecoration(color: Theme.of(context).colorScheme.shadow.withValues(alpha: 0.05), shape: BoxShape.circle),
-                    child: IconButton(
-                      icon: Icon(Icons.tune, color: Theme.of(context).colorScheme.onSurface, size: 20),
-                      onPressed: () => context.push('/settings'),
+                    child: GestureDetector(
+                      onTap: () => context.push('/settings'),
+                      child: Center(
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                          child: Icon(Icons.tune, color: Theme.of(context).colorScheme.onSurface, size: 20),
+                        ),
+                      ),
                     ),
                   ),
                   SizedBox(width: 16),
@@ -351,7 +358,7 @@ class ProfileScreen extends ConsumerWidget {
                 style: TextStyle(color: Colors.white70, fontSize: 12, fontWeight: FontWeight.w600)
               ),
               Spacer(),
-              InkWell(
+              GestureDetector(
                 onTap: () {
                   // Navigate to ranking
                 },
