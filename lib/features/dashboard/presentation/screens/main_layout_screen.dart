@@ -23,7 +23,7 @@ class MainLayoutScreen extends StatelessWidget {
     final idx = navigationShell.currentIndex;
 
     return Scaffold(
-      extendBody: true,
+      extendBody: false,
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: navigationShell,
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
