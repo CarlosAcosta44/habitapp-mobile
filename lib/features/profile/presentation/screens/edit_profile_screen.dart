@@ -216,7 +216,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
                           ],
                         ),
                         const SizedBox(height: 16),
-                        _buildTextField('Teléfono móvil', _phoneController, prefixWidget: _buildPhonePrefix(), suffixIcon: Icons.phone_outlined),
+                        _buildTextField('Teléfono móvil', _phoneController, suffixIcon: Icons.phone_outlined),
                         const SizedBox(height: 16),
                         _buildTextField('Género', _genderController, prefixIcon: Icons.people_outline, suffixIcon: Icons.expand_more),
                         const SizedBox(height: 16),
@@ -425,22 +425,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
     );
   }
 
-  Widget _buildPhonePrefix() {
-    return Padding(
-      padding: const EdgeInsets.only(left: 12, right: 8),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Image.network('https://flagcdn.com/w20/es.png', width: 20, height: 15, errorBuilder: (c, e, s) => const Icon(Icons.flag, size: 16)),
-          const SizedBox(width: 4),
-          const Text('+34', style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold)),
-          const Icon(Icons.arrow_drop_down, color: _kTextGrey, size: 16),
-          const SizedBox(width: 8),
-          Container(width: 1, height: 16, color: _kBorder),
-        ],
-      ),
-    );
-  }
+
 
   Widget _buildTextField(String label, TextEditingController controller, {IconData? prefixIcon, IconData? suffixIcon, Widget? prefixWidget}) {
     return Column(

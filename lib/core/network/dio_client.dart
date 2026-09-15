@@ -1,6 +1,5 @@
 import 'package:dio/dio.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'auth_interceptor.dart';
 
@@ -19,7 +18,7 @@ Dio dioClient(Ref ref) {
   
   final dio = Dio(
     BaseOptions(
-      baseUrl: 'https://silver-chainsaw-77pwjr6rqx52xr4p-4000.app.github.dev/api/v1',
+      baseUrl: 'http://localhost:4000/api/v1',
       connectTimeout: const Duration(seconds: 10),
       receiveTimeout: const Duration(seconds: 10),
       headers: {

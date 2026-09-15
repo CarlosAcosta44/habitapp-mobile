@@ -52,8 +52,8 @@ class _CreateHabitScreenState extends ConsumerState<CreateHabitScreen> {
 
   final _nombreController = TextEditingController();
   final _descripcionController = TextEditingController();
-  final _metaDiariaController = TextEditingController(text: '8');
-  final _unidadMedidaController = TextEditingController(text: 'vasos');
+  final _metaDiariaController = TextEditingController();
+  final _unidadMedidaController = TextEditingController();
 
   String? _selectedCategoryId;
   final DateTime _fechaInicio = DateTime.now();
@@ -405,7 +405,7 @@ class _CreateHabitScreenState extends ConsumerState<CreateHabitScreen> {
                           controller: _metaDiariaController,
                           keyboardType: TextInputType.number,
                           style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: _kTextDark),
-                          decoration: const InputDecoration(border: InputBorder.none, isDense: true, contentPadding: EdgeInsets.zero),
+                          decoration: const InputDecoration(border: InputBorder.none, isDense: true, contentPadding: EdgeInsets.zero, hintText: 'cantidad', hintStyle: TextStyle(color: Colors.grey, fontWeight: FontWeight.normal)),
                         ),
                       ),
                       const Icon(Icons.unfold_more, color: Colors.grey, size: 16),
@@ -428,7 +428,7 @@ class _CreateHabitScreenState extends ConsumerState<CreateHabitScreen> {
                         child: TextFormField(
                           controller: _unidadMedidaController,
                           style: const TextStyle(fontSize: 12, color: _kTextDark),
-                          decoration: const InputDecoration(border: InputBorder.none, isDense: true, contentPadding: EdgeInsets.zero),
+                          decoration: const InputDecoration(border: InputBorder.none, isDense: true, contentPadding: EdgeInsets.zero, hintText: 'unidad de medida', hintStyle: TextStyle(color: Colors.grey)),
                         ),
                       ),
                       const Icon(Icons.expand_more, color: Colors.grey, size: 16),

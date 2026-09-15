@@ -274,9 +274,16 @@ class _HabitDetailScreenState extends ConsumerState<HabitDetailScreen> {
   Future<void> _updateState(String newState) async {
     try {
       await ref.read(habitsRepositoryProvider).updateHabit(widget.habitId, {'estado': newState});
-      ref.invalidate(habitStatsProvider(widget.habitId));
-      ref.read(habitsDashboardProvider.notifier).refresh();
-      if (mounted) ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Hábito movido a $newState')));
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Hábito movido a $newState')));
+        if (newState == 'Archivado' || newState == 'Inactivo' || newState == 'Completado') {
+          context.pop();
+        }
+      }
+      Future.delayed(const Duration(milliseconds: 300), () {
+        ref.invalidate(habitStatsProvider(widget.habitId));
+        ref.read(habitsDashboardProvider.notifier).refresh();
+      });
     } catch (e) {
       if (mounted) ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Error: $e')));
     }
@@ -403,19 +410,6 @@ class _HabitDetailScreenState extends ConsumerState<HabitDetailScreen> {
                               onPressed: () => _updateState('Archivado'),
                               icon: const Icon(Icons.archive, color: _kTextGrey, size: 18),
                               label: const Text('Archivar', style: TextStyle(color: _kTextDark)),
-                              style: OutlinedButton.styleFrom(
-                                padding: const EdgeInsets.symmetric(vertical: 14),
-                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-                                side: BorderSide(color: Colors.grey.shade300),
-                              ),
-                            ),
-                          ),
-                          const SizedBox(width: 12),
-                          Expanded(
-                            child: OutlinedButton.icon(
-                              onPressed: () => _updateState('Pausado'),
-                              icon: const Icon(Icons.pause_circle_outline, color: _kTextGrey, size: 18),
-                              label: const Text('Pausar', style: TextStyle(color: _kTextDark)),
                               style: OutlinedButton.styleFrom(
                                 padding: const EdgeInsets.symmetric(vertical: 14),
                                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
