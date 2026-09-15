@@ -35,7 +35,7 @@ class HabitCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(24),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.03),
+            color: Theme.of(context).colorScheme.shadow.withValues(alpha: 0.03),
             blurRadius: 15,
             offset: Offset(0, 5),
           ),
@@ -76,7 +76,7 @@ class HabitCard extends StatelessWidget {
                           style: TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.w700,
-                            color: isCompleted ? Colors.grey.shade400 : Color(0xFF1E1E1E),
+                            color: isCompleted ? Theme.of(context).colorScheme.outline : Theme.of(context).colorScheme.onSurface,
                             decoration: isCompleted ? TextDecoration.lineThrough : null,
                           ),
                           maxLines: 1,
@@ -110,7 +110,7 @@ class HabitCard extends StatelessWidget {
                     subtitle,
                     style: TextStyle(
                       fontSize: 12,
-                      color: isCompleted ? Colors.grey.shade400 : Color(0xFF6B6B6B),
+                      color: isCompleted ? Theme.of(context).colorScheme.outline : Theme.of(context).colorScheme.onSurfaceVariant,
                     ),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
@@ -136,7 +136,7 @@ class HabitCard extends StatelessWidget {
                         style: TextStyle(
                           fontSize: 18,
                           fontWeight: FontWeight.w800,
-                          color: Color(0xFF1E1E1E),
+                          color: Theme.of(context).colorScheme.onSurface,
                         ),
                       ),
                       if (rightText!.contains('\n')) ...[
@@ -146,7 +146,7 @@ class HabitCard extends StatelessWidget {
                           style: TextStyle(
                             fontSize: 14,
                             fontWeight: FontWeight.w600,
-                            color: Color(0xFF6B6B6B),
+                            color: Theme.of(context).colorScheme.onSurfaceVariant,
                           ),
                         ),
                       ],
@@ -167,7 +167,7 @@ class HabitCard extends StatelessWidget {
                     alignment: Alignment.center,
                     child: Icon(
                       Icons.check,
-                      color: isCompleted ? Colors.white : Color(0xFFA0A5B1),
+                      color: isCompleted ? Theme.of(context).colorScheme.surface : Theme.of(context).colorScheme.outline,
                       size: 24,
                     ),
                   ),

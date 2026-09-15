@@ -209,7 +209,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                     onPressed: _continueWithEmail,
                     style: ElevatedButton.styleFrom(
                       backgroundColor: _kHighlightBlue,
-                      foregroundColor: Colors.white,
+                      foregroundColor: Theme.of(context).colorScheme.surface,
                       elevation: 0,
                       minimumSize: Size(double.infinity, 56),
                       shape: RoundedRectangleBorder(

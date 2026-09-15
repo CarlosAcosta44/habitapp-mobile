@@ -136,7 +136,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
       decoration: BoxDecoration(
         color: Theme.of(context).colorScheme.surface,
         borderRadius: BorderRadius.circular(24),
-        boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.02), blurRadius: 10, offset: Offset(0, 4))],
+        boxShadow: [BoxShadow(color: Theme.of(context).colorScheme.shadow.withValues(alpha: 0.02), blurRadius: 10, offset: Offset(0, 4))],
       ),
       child: Column(
         children: [
@@ -147,9 +147,9 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                 children: [
                   CircleAvatar(
                     radius: 28,
-                    backgroundColor: Colors.grey.shade200,
+                    backgroundColor: Theme.of(context).colorScheme.surfaceContainerHighest,
                     backgroundImage: (profileState.value?.fotoperfil != null) ? NetworkImage(profileState.value!.fotoperfil!) : null,
-                    child: (profileState.value?.fotoperfil == null) ? Icon(Icons.person, color: Colors.grey, size: 28) : null,
+                    child: (profileState.value?.fotoperfil == null) ? Icon(Icons.person, color: Theme.of(context).colorScheme.onSurfaceVariant, size: 28) : null,
                   ),
                   Container(
                     width: 14,
@@ -244,7 +244,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
             title,
             style: TextStyle(color: Theme.of(context).colorScheme.onSurfaceVariant, fontSize: 10, fontWeight: FontWeight.w800, letterSpacing: 1),
           ),
-          Icon(trailingIcon, color: Colors.grey.shade400, size: 18),
+          Icon(trailingIcon, color: Theme.of(context).colorScheme.outline, size: 18),
         ],
       ),
     );
@@ -318,9 +318,9 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Icon(icon, size: 16, color: isSelected ? Colors.white : Theme.of(context).colorScheme.onSurface),
+              Icon(icon, size: 16, color: isSelected ? Theme.of(context).colorScheme.surface : Theme.of(context).colorScheme.onSurface),
               SizedBox(width: 6),
-              Text(text, style: TextStyle(color: isSelected ? Colors.white : Theme.of(context).colorScheme.onSurface, fontWeight: isSelected ? FontWeight.bold : FontWeight.w500, fontSize: 12)),
+              Text(text, style: TextStyle(color: isSelected ? Theme.of(context).colorScheme.surface : Theme.of(context).colorScheme.onSurface, fontWeight: isSelected ? FontWeight.bold : FontWeight.w500, fontSize: 12)),
             ],
           ),
         ),
@@ -352,10 +352,10 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
           Switch(
             value: value,
             onChanged: onChanged,
-            activeThumbColor: Colors.white,
+            activeThumbColor: Theme.of(context).colorScheme.surface,
             activeTrackColor: Theme.of(context).colorScheme.primary,
-            inactiveTrackColor: Colors.grey.shade300,
-            inactiveThumbColor: Colors.white,
+            inactiveTrackColor: Theme.of(context).colorScheme.outlineVariant,
+            inactiveThumbColor: Theme.of(context).colorScheme.surface,
           )
         ],
       ),
@@ -416,7 +416,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
           decoration: BoxDecoration(
             color: isSelected ? Theme.of(context).colorScheme.secondary.withValues(alpha: 0.05) : Colors.transparent,
             borderRadius: BorderRadius.circular(12),
-            border: Border.all(color: isSelected ? Theme.of(context).colorScheme.secondary : Colors.grey.shade300, width: 1.5),
+            border: Border.all(color: isSelected ? Theme.of(context).colorScheme.secondary : Theme.of(context).colorScheme.outlineVariant, width: 1.5),
           ),
           child: Column(
             children: [
@@ -499,10 +499,10 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
           Switch(
             value: value,
             onChanged: onChanged,
-            activeThumbColor: Colors.white,
+            activeThumbColor: Theme.of(context).colorScheme.surface,
             activeTrackColor: Theme.of(context).colorScheme.primary,
-            inactiveTrackColor: Colors.grey.shade300,
-            inactiveThumbColor: Colors.white,
+            inactiveTrackColor: Theme.of(context).colorScheme.outlineVariant,
+            inactiveThumbColor: Theme.of(context).colorScheme.surface,
           )
         ],
       ),
@@ -515,7 +515,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
       decoration: BoxDecoration(
         color: Theme.of(context).colorScheme.surface,
         borderRadius: BorderRadius.circular(24),
-        border: Border.all(color: Colors.grey.shade200),
+        border: Border.all(color: Theme.of(context).colorScheme.surfaceContainerHighest),
       ),
       child: Column(
         children: [
@@ -545,7 +545,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
             children: [
               CircleAvatar(
                 radius: 20,
-                backgroundColor: Colors.grey.shade300,
+                backgroundColor: Theme.of(context).colorScheme.outlineVariant,
                 backgroundImage: AssetImage('assets/images/paisaje-dashboard.png'), // placeholder
               ),
               SizedBox(width: 12),
@@ -614,7 +614,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
               ],
             ),
           ),
-          Icon(Icons.chevron_right, color: Colors.grey.shade400, size: 20),
+          Icon(Icons.chevron_right, color: Theme.of(context).colorScheme.outline, size: 20),
         ],
       ),
     );

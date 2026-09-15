@@ -33,7 +33,7 @@ class DailyProgressBar extends StatelessWidget {
                 CircularProgressIndicator(
                   value: percentage,
                   backgroundColor: Theme.of(context).colorScheme.surface.withValues(alpha: 0.3),
-                  valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                  valueColor: AlwaysStoppedAnimation<Color>(Theme.of(context).colorScheme.surface),
                   strokeWidth: 4,
                 ),
                 Center(

@@ -26,7 +26,7 @@ class ActionButtons extends StatelessWidget {
               onPressed: onRegisterPressed,
               style: ElevatedButton.styleFrom(
                 backgroundColor: Color(0xFF2563EB), // Primary Blue
-                foregroundColor: Colors.white,
+                foregroundColor: Theme.of(context).colorScheme.surface,
                 elevation: 0,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(16),

@@ -40,7 +40,7 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
                 shape: BoxShape.circle,
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withValues(alpha: 0.05),
+                    color: Theme.of(context).colorScheme.shadow.withValues(alpha: 0.05),
                     blurRadius: 4,
                     offset: Offset(0, 2),
                   )
@@ -112,7 +112,7 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
     return Container(
       padding: EdgeInsets.all(4),
       decoration: BoxDecoration(
-        color: Colors.grey.shade200,
+        color: Theme.of(context).colorScheme.surfaceContainerHighest,
         borderRadius: BorderRadius.circular(24),
       ),
       child: Row(
@@ -132,7 +132,7 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
                 child: Text(
                   entry.value,
                   style: TextStyle(
-                    color: isSelected ? Colors.white : Colors.grey.shade600,
+                    color: isSelected ? Theme.of(context).colorScheme.surface : Theme.of(context).colorScheme.onSurfaceVariant,
                     fontWeight: isSelected ? FontWeight.bold : FontWeight.w600,
                   ),
                 ),
@@ -158,7 +158,7 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text('CUMPLIMIENTO GLOBAL', style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: Colors.grey)),
+              Text('CUMPLIMIENTO GLOBAL', style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: Theme.of(context).colorScheme.onSurfaceVariant)),
               SizedBox(height: 8),
               Row(
                 crossAxisAlignment: CrossAxisAlignment.end,
@@ -176,7 +176,7 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
                 ],
               ),
               SizedBox(height: 8),
-              Text('${data['total_cumplido']} de ${data['total_esperado']} hábitos completados', style: TextStyle(fontSize: 14, color: Colors.grey.shade600)),
+              Text('${data['total_cumplido']} de ${data['total_esperado']} hábitos completados', style: TextStyle(fontSize: 14, color: Theme.of(context).colorScheme.onSurfaceVariant)),
             ],
           ),
           SizedBox(
@@ -188,7 +188,7 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
                 CircularProgressIndicator(
                   value: cumplimiento / 100,
                   strokeWidth: 8,
-                  backgroundColor: Colors.grey.shade200,
+                  backgroundColor: Theme.of(context).colorScheme.surfaceContainerHighest,
                   color: Theme.of(context).colorScheme.primary,
                 ),
                 Center(child: Text('${data['total_cumplido']}/${data['total_esperado']}', style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: Theme.of(context).colorScheme.primary))),
@@ -270,7 +270,7 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
                   Text('${constante['rate']}%', style: TextStyle(fontWeight: FontWeight.bold, color: _kGreen, fontSize: 14)),
-                  Text('cumplido', style: TextStyle(fontSize: 10, color: Colors.grey)),
+                  Text('cumplido', style: TextStyle(fontSize: 10, color: Theme.of(context).colorScheme.onSurfaceVariant)),
                 ],
               ),
             ),
@@ -295,7 +295,7 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
                   Text('${oportunidad['rate']}%', style: TextStyle(fontWeight: FontWeight.bold, color: _kOrange, fontSize: 14)),
-                  Text('cumplido', style: TextStyle(fontSize: 10, color: Colors.grey)),
+                  Text('cumplido', style: TextStyle(fontSize: 10, color: Theme.of(context).colorScheme.onSurfaceVariant)),
                 ],
               ),
             ),
@@ -326,7 +326,7 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
             ],
           ),
           SizedBox(height: 4),
-          Text('Hábitos completados por día', style: TextStyle(fontSize: 12, color: Colors.grey.shade600)),
+          Text('Hábitos completados por día', style: TextStyle(fontSize: 12, color: Theme.of(context).colorScheme.onSurfaceVariant)),
           SizedBox(height: 24),
           SizedBox(
             height: 150,
@@ -345,13 +345,13 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
                         bool isToday = DateTime.now().weekday == value.toInt() + 1;
                         return Padding(
                           padding: EdgeInsets.only(top: 8.0),
-                          child: Text(days[value.toInt()], style: TextStyle(color: isToday ? Theme.of(context).colorScheme.primary : Colors.grey, fontWeight: isToday ? FontWeight.bold : FontWeight.normal)),
+                          child: Text(days[value.toInt()], style: TextStyle(color: isToday ? Theme.of(context).colorScheme.primary : Theme.of(context).colorScheme.onSurfaceVariant, fontWeight: isToday ? FontWeight.bold : FontWeight.normal)),
                         );
                       },
                     ),
                   ),
                   leftTitles: AxisTitles(
-                    sideTitles: SideTitles(showTitles: true, reservedSize: 28, getTitlesWidget: (val, meta) => Text(val.toInt().toString(), style: TextStyle(color: Colors.grey, fontSize: 10))),
+                    sideTitles: SideTitles(showTitles: true, reservedSize: 28, getTitlesWidget: (val, meta) => Text(val.toInt().toString(), style: TextStyle(color: Theme.of(context).colorScheme.onSurfaceVariant, fontSize: 10))),
                   ),
                   topTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
                   rightTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
@@ -360,7 +360,7 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
                   show: true,
                   drawVerticalLine: false,
                   horizontalInterval: 3,
-                  getDrawingHorizontalLine: (value) => FlLine(color: Colors.grey.shade200, strokeWidth: 1),
+                  getDrawingHorizontalLine: (value) => FlLine(color: Theme.of(context).colorScheme.surfaceContainerHighest, strokeWidth: 1),
                 ),
                 borderData: FlBorderData(show: false),
                 barGroups: List.generate(7, (i) {
@@ -390,7 +390,7 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
           SizedBox(height: 8),
           Row(
             children: [
-              Text('Total semanal : ', style: TextStyle(color: Colors.grey.shade600, fontSize: 12)),
+              Text('Total semanal : ', style: TextStyle(color: Theme.of(context).colorScheme.onSurfaceVariant, fontSize: 12)),
               Text('$totalSemanal completados', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12)),
             ],
           )
@@ -420,7 +420,7 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
             ],
           ),
           SizedBox(height: 4),
-          Text('Mapa de actividad de hábitos', style: TextStyle(fontSize: 12, color: Colors.grey.shade600)),
+          Text('Mapa de actividad de hábitos', style: TextStyle(fontSize: 12, color: Theme.of(context).colorScheme.onSurfaceVariant)),
           SizedBox(height: 20),
           // Grilla heatmap simulada (idealmente construirla con los datos de consistencia_mes)
           GridView.builder(
@@ -445,7 +445,7 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
                   borderRadius: BorderRadius.circular(6),
                 ),
                 alignment: Alignment.center,
-                child: Text('${index+1}', style: TextStyle(color: intensity == 3 ? Colors.white : Colors.black54, fontSize: 12)),
+                child: Text('${index+1}', style: TextStyle(color: intensity == 3 ? Theme.of(context).colorScheme.surface : Colors.black54, fontSize: 12)),
               );
             },
           ),

@@ -45,7 +45,7 @@ class ProfileScreen extends ConsumerWidget {
                   actions: [
                     Container(
                       margin: EdgeInsets.symmetric(vertical: 8),
-                      decoration: BoxDecoration(color: Colors.black.withValues(alpha: 0.05), shape: BoxShape.circle),
+                      decoration: BoxDecoration(color: Theme.of(context).colorScheme.shadow.withValues(alpha: 0.05), shape: BoxShape.circle),
                       child: IconButton(
                         icon: Icon(Icons.tune, color: Theme.of(context).colorScheme.onSurface, size: 20),
                         onPressed: () => context.push('/settings'),
@@ -116,7 +116,7 @@ class ProfileScreen extends ConsumerWidget {
                         decoration: BoxDecoration(
                           color: Theme.of(context).colorScheme.surface,
                           borderRadius: BorderRadius.circular(16),
-                          border: Border.all(color: Colors.grey.shade200),
+                          border: Border.all(color: Theme.of(context).colorScheme.surfaceContainerHighest),
                         ),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
@@ -158,7 +158,7 @@ class ProfileScreen extends ConsumerWidget {
             color: Theme.of(context).colorScheme.surface,
             borderRadius: BorderRadius.circular(32),
             boxShadow: [
-              BoxShadow(color: Colors.black.withValues(alpha: 0.03), blurRadius: 20, offset: Offset(0, 10)),
+              BoxShadow(color: Theme.of(context).colorScheme.shadow.withValues(alpha: 0.03), blurRadius: 20, offset: Offset(0, 10)),
             ],
           ),
           child: Column(
@@ -232,9 +232,9 @@ class ProfileScreen extends ConsumerWidget {
               ),
               child: CircleAvatar(
                 radius: 44,
-                backgroundColor: Colors.grey.shade200,
+                backgroundColor: Theme.of(context).colorScheme.surfaceContainerHighest,
                 backgroundImage: profile.fotoperfil != null ? NetworkImage(profile.fotoperfil!) : null,
-                child: profile.fotoperfil == null ? Icon(Icons.person, color: Colors.grey, size: 40) : null,
+                child: profile.fotoperfil == null ? Icon(Icons.person, color: Theme.of(context).colorScheme.onSurfaceVariant, size: 40) : null,
               ),
             ),
           ],
@@ -276,7 +276,7 @@ class ProfileScreen extends ConsumerWidget {
         decoration: BoxDecoration(
           color: Theme.of(context).colorScheme.surface,
           borderRadius: BorderRadius.circular(20),
-          boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.02), blurRadius: 10, offset: Offset(0, 4))],
+          boxShadow: [BoxShadow(color: Theme.of(context).colorScheme.shadow.withValues(alpha: 0.02), blurRadius: 10, offset: Offset(0, 4))],
         ),
         child: Column(
           children: [
@@ -397,7 +397,7 @@ class ProfileScreen extends ConsumerWidget {
       decoration: BoxDecoration(
         color: Theme.of(context).colorScheme.surface,
         borderRadius: BorderRadius.circular(20),
-        boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.02), blurRadius: 10, offset: Offset(0, 4))],
+        boxShadow: [BoxShadow(color: Theme.of(context).colorScheme.shadow.withValues(alpha: 0.02), blurRadius: 10, offset: Offset(0, 4))],
       ),
       child: Column(
         children: [
@@ -433,7 +433,7 @@ class ProfileScreen extends ConsumerWidget {
       decoration: BoxDecoration(
         color: Theme.of(context).colorScheme.surface,
         borderRadius: BorderRadius.circular(16),
-        boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.02), blurRadius: 10, offset: Offset(0, 4))],
+        boxShadow: [BoxShadow(color: Theme.of(context).colorScheme.shadow.withValues(alpha: 0.02), blurRadius: 10, offset: Offset(0, 4))],
       ),
       child: Row(
         children: [
@@ -442,9 +442,9 @@ class ProfileScreen extends ConsumerWidget {
             children: [
               CircleAvatar(
                 radius: 24,
-                backgroundColor: Colors.grey.shade200,
+                backgroundColor: Theme.of(context).colorScheme.surfaceContainerHighest,
                 backgroundImage: avatarUrl != null ? NetworkImage(avatarUrl) : null,
-                child: avatarUrl == null ? Icon(Icons.person, color: Colors.grey) : null,
+                child: avatarUrl == null ? Icon(Icons.person, color: Theme.of(context).colorScheme.onSurfaceVariant) : null,
               ),
               if (isSaludar) // Mocking a badge for some
                 Container(

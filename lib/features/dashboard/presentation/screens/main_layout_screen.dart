@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-const _kGreen = Color(0xFF0F8A5D);
-const _kGrey = Color(0xFF6B6B6B);
 
 class MainLayoutScreen extends StatelessWidget {
   final StatefulNavigationShell navigationShell;
@@ -25,7 +23,7 @@ class MainLayoutScreen extends StatelessWidget {
     final idx = navigationShell.currentIndex;
 
     return Scaffold(
-      backgroundColor: Color(0xFFF7F7F9),
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: navigationShell,
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       floatingActionButton: Container(
@@ -53,7 +51,7 @@ class MainLayoutScreen extends StatelessWidget {
       bottomNavigationBar: BottomAppBar(
         color: Theme.of(context).colorScheme.surface,
         elevation: 20,
-        shadowColor: Colors.black.withValues(alpha: 0.1),
+        shadowColor: Theme.of(context).colorScheme.shadow.withValues(alpha: 0.1),
         shape: CircularNotchedRectangle(),
         notchMargin: 8,
         height: 70,
@@ -130,7 +128,7 @@ class _NavItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final color = isActive ? _kGreen : _kGrey;
+    final color = isActive ? Theme.of(context).colorScheme.primary : Theme.of(context).colorScheme.onSurfaceVariant;
     return GestureDetector(
       onTap: onTap,
       behavior: HitTestBehavior.opaque,

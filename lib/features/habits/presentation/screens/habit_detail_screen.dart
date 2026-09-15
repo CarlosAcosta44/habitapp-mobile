@@ -80,7 +80,7 @@ class _HabitDetailScreenState extends ConsumerState<HabitDetailScreen> {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Container(width: 40, height: 4, decoration: BoxDecoration(color: Colors.grey[300], borderRadius: BorderRadius.circular(2))),
+              Container(width: 40, height: 4, decoration: BoxDecoration(color: Theme.of(context).colorScheme.outlineVariant, borderRadius: BorderRadius.circular(2))),
               SizedBox(height: 16),
               Text('Editar Hábito', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
               SizedBox(height: 24),
@@ -105,7 +105,7 @@ class _HabitDetailScreenState extends ConsumerState<HabitDetailScreen> {
                     decoration: BoxDecoration(
                       color: Theme.of(context).colorScheme.surface,
                       borderRadius: BorderRadius.circular(24),
-                      border: Border.all(color: Colors.grey.shade200),
+                      border: Border.all(color: Theme.of(context).colorScheme.surfaceContainerHighest),
                     ),
                     child: Column(
                       children: [
@@ -114,7 +114,7 @@ class _HabitDetailScreenState extends ConsumerState<HabitDetailScreen> {
                           decoration: BoxDecoration(
                             color: Theme.of(context).scaffoldBackgroundColor,
                             borderRadius: BorderRadius.circular(20),
-                            border: Border.all(color: Colors.grey.shade300),
+                            border: Border.all(color: Theme.of(context).colorScheme.outlineVariant),
                           ),
                           child: Column(
                             children: [
@@ -150,15 +150,15 @@ class _HabitDetailScreenState extends ConsumerState<HabitDetailScreen> {
                                   margin: EdgeInsets.symmetric(horizontal: 4),
                                   padding: EdgeInsets.all(8),
                                   decoration: BoxDecoration(
-                                    color: isSelected ? Colors.white : Colors.transparent,
+                                    color: isSelected ? Theme.of(context).colorScheme.surface : Colors.transparent,
                                     shape: BoxShape.circle,
-                                    boxShadow: isSelected ? [BoxShadow(color: Colors.black.withValues(alpha: 0.05), blurRadius: 4, offset: Offset(0, 2))] : [],
+                                    boxShadow: isSelected ? [BoxShadow(color: Theme.of(context).colorScheme.shadow.withValues(alpha: 0.05), blurRadius: 4, offset: Offset(0, 2))] : [],
                                     border: isSelected ? Border.all(color: Theme.of(context).colorScheme.primary, width: 1.5) : null,
                                   ),
                                   child: Icon(
                                     _getCategoryIcon(cat.icono),
                                     size: 16,
-                                    color: isSelected ? Theme.of(context).colorScheme.primary : Colors.grey.shade400,
+                                    color: isSelected ? Theme.of(context).colorScheme.primary : Theme.of(context).colorScheme.outline,
                                   ),
                                 ),
                               );
@@ -175,24 +175,24 @@ class _HabitDetailScreenState extends ConsumerState<HabitDetailScreen> {
                 decoration: BoxDecoration(
                   color: Theme.of(context).colorScheme.surface,
                   borderRadius: BorderRadius.circular(16),
-                  border: Border.all(color: Colors.grey.shade200),
+                  border: Border.all(color: Theme.of(context).colorScheme.surfaceContainerHighest),
                 ),
                 padding: EdgeInsets.all(16),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text('META DIARIA', style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: Colors.grey, letterSpacing: 1)),
+                    Text('META DIARIA', style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: Theme.of(context).colorScheme.onSurfaceVariant, letterSpacing: 1)),
                     SizedBox(height: 8),
                     Row(
                       children: [
-                        Icon(Icons.flag_outlined, color: Colors.grey.shade400, size: 20),
+                        Icon(Icons.flag_outlined, color: Theme.of(context).colorScheme.outline, size: 20),
                         SizedBox(width: 12),
                         Expanded(
                           child: Container(
                             padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                             decoration: BoxDecoration(
                               color: Theme.of(context).scaffoldBackgroundColor,
-                              border: Border.all(color: Colors.grey.shade300),
+                              border: Border.all(color: Theme.of(context).colorScheme.outlineVariant),
                               borderRadius: BorderRadius.circular(8),
                             ),
                             child: TextFormField(
@@ -209,7 +209,7 @@ class _HabitDetailScreenState extends ConsumerState<HabitDetailScreen> {
                             padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                             decoration: BoxDecoration(
                               color: Theme.of(context).scaffoldBackgroundColor,
-                              border: Border.all(color: Colors.grey.shade300),
+                              border: Border.all(color: Theme.of(context).colorScheme.outlineVariant),
                               borderRadius: BorderRadius.circular(8),
                             ),
                             child: TextFormField(
@@ -220,7 +220,7 @@ class _HabitDetailScreenState extends ConsumerState<HabitDetailScreen> {
                           ),
                         ),
                         SizedBox(width: 8),
-                        Text('/ día', style: TextStyle(color: Colors.grey, fontSize: 12)),
+                        Text('/ día', style: TextStyle(color: Theme.of(context).colorScheme.onSurfaceVariant, fontSize: 12)),
                       ],
                     ),
                   ],
@@ -409,7 +409,7 @@ class _HabitDetailScreenState extends ConsumerState<HabitDetailScreen> {
                               style: OutlinedButton.styleFrom(
                                 padding: EdgeInsets.symmetric(vertical: 14),
                                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-                                side: BorderSide(color: Colors.grey.shade300),
+                                side: BorderSide(color: Theme.of(context).colorScheme.outlineVariant),
                               ),
                             ),
                           ),
@@ -444,7 +444,7 @@ class _HabitDetailScreenState extends ConsumerState<HabitDetailScreen> {
       decoration: BoxDecoration(
         color: Theme.of(context).colorScheme.surface,
         borderRadius: BorderRadius.circular(24),
-        border: Border.all(color: Colors.grey.shade200),
+        border: Border.all(color: Theme.of(context).colorScheme.surfaceContainerHighest),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -556,7 +556,7 @@ class _HabitDetailScreenState extends ConsumerState<HabitDetailScreen> {
                     icon: Icon(Icons.add, size: 16),
                     label: Text('+1 ${habit.unidadMedida}'),
                     style: FilledButton.styleFrom(
-                      backgroundColor: habit.diasSemana.contains(DateTime.now().weekday) ? Theme.of(context).colorScheme.primary : Colors.grey.shade400,
+                      backgroundColor: habit.diasSemana.contains(DateTime.now().weekday) ? Theme.of(context).colorScheme.primary : Theme.of(context).colorScheme.outline,
                       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
                       padding: EdgeInsets.symmetric(horizontal: 20, vertical: 12),
                     ),
@@ -586,7 +586,7 @@ class _HabitDetailScreenState extends ConsumerState<HabitDetailScreen> {
       decoration: BoxDecoration(
         color: Theme.of(context).colorScheme.surface,
         borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: Colors.grey.shade200),
+        border: Border.all(color: Theme.of(context).colorScheme.surfaceContainerHighest),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -616,7 +616,7 @@ class _HabitDetailScreenState extends ConsumerState<HabitDetailScreen> {
       decoration: BoxDecoration(
         color: Theme.of(context).colorScheme.surface,
         borderRadius: BorderRadius.circular(24),
-        border: Border.all(color: Colors.grey.shade200),
+        border: Border.all(color: Theme.of(context).colorScheme.surfaceContainerHighest),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -637,11 +637,11 @@ class _HabitDetailScreenState extends ConsumerState<HabitDetailScreen> {
                 height: 32,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  color: completed ? Theme.of(context).colorScheme.primary : Colors.grey.shade200,
+                  color: completed ? Theme.of(context).colorScheme.primary : Theme.of(context).colorScheme.surfaceContainerHighest,
                 ),
                 child: Icon(
                   completed ? Icons.check : Icons.close,
-                  color: completed ? Colors.white : Colors.grey,
+                  color: completed ? Theme.of(context).colorScheme.surface : Theme.of(context).colorScheme.onSurfaceVariant,
                   size: 16,
                 ),
               );
@@ -658,7 +658,7 @@ class _HabitDetailScreenState extends ConsumerState<HabitDetailScreen> {
       decoration: BoxDecoration(
         color: Theme.of(context).colorScheme.surface,
         borderRadius: BorderRadius.circular(24),
-        border: Border.all(color: Colors.grey.shade200),
+        border: Border.all(color: Theme.of(context).colorScheme.surfaceContainerHighest),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -686,7 +686,7 @@ class _HabitDetailScreenState extends ConsumerState<HabitDetailScreen> {
       decoration: BoxDecoration(
         color: Theme.of(context).colorScheme.surface,
         borderRadius: BorderRadius.circular(24),
-        border: Border.all(color: Colors.grey.shade200),
+        border: Border.all(color: Theme.of(context).colorScheme.surfaceContainerHighest),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -721,7 +721,7 @@ class _HabitDetailScreenState extends ConsumerState<HabitDetailScreen> {
                 avatar: Icon(Icons.add, size: 16, color: Theme.of(context).colorScheme.primary),
                 label: Text('Añadir recordatorio', style: TextStyle(color: Theme.of(context).colorScheme.primary, fontSize: 12, fontWeight: FontWeight.bold)),
                 backgroundColor: Theme.of(context).colorScheme.surface,
-                side: BorderSide(color: Colors.grey.shade300),
+                side: BorderSide(color: Theme.of(context).colorScheme.outlineVariant),
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
               )
             ],
@@ -731,7 +731,7 @@ class _HabitDetailScreenState extends ConsumerState<HabitDetailScreen> {
           SizedBox(height: 16),
           Row(
             children: [
-              Icon(Icons.music_note, color: Colors.grey, size: 16),
+              Icon(Icons.music_note, color: Theme.of(context).colorScheme.onSurfaceVariant, size: 16),
               SizedBox(width: 8),
               Text('Sonido de alerta:', style: TextStyle(color: Theme.of(context).colorScheme.onSurfaceVariant, fontSize: 12)),
               Spacer(),
@@ -749,7 +749,7 @@ class _HabitDetailScreenState extends ConsumerState<HabitDetailScreen> {
       decoration: BoxDecoration(
         color: Theme.of(context).scaffoldBackgroundColor,
         borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: Colors.grey.shade300),
+        border: Border.all(color: Theme.of(context).colorScheme.outlineVariant),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,

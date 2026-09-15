@@ -192,7 +192,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                         borderRadius: BorderRadius.circular(24),
                         boxShadow: [
                           BoxShadow(
-                            color: Colors.black.withValues(alpha: 0.03),
+                            color: Theme.of(context).colorScheme.shadow.withValues(alpha: 0.03),
                             blurRadius: 20,
                             offset: Offset(0, 8),
                           ),
@@ -251,7 +251,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                                 icon: Icon(
                                   _obscure ? Icons.visibility_outlined : Icons.visibility_off_outlined,
                                   size: 20,
-                                  color: Colors.grey.shade500,
+                                  color: Theme.of(context).colorScheme.onSurfaceVariant,
                                 ),
                                 onPressed: () => setState(() => _obscure = !_obscure),
                               ),
@@ -288,7 +288,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                                 icon: Icon(
                                   _obscureConfirm ? Icons.visibility_outlined : Icons.visibility_off_outlined,
                                   size: 20,
-                                  color: Colors.grey.shade500,
+                                  color: Theme.of(context).colorScheme.onSurfaceVariant,
                                 ),
                                 onPressed: () => setState(() => _obscureConfirm = !_obscureConfirm),
                               ),
@@ -309,7 +309,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                                   child: Checkbox(
                                     value: _acceptTerms,
                                     activeColor: Theme.of(context).colorScheme.primary,
-                                    side: BorderSide(color: Colors.grey.shade400, width: 1.5),
+                                    side: BorderSide(color: Theme.of(context).colorScheme.outline, width: 1.5),
                                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
                                     onChanged: (v) => setState(() => _acceptTerms = v!),
                                   ),
@@ -341,7 +341,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                                 onPressed: authState.isLoading ? null : _submit,
                                 style: ElevatedButton.styleFrom(
                                   backgroundColor: Theme.of(context).colorScheme.primary,
-                                  foregroundColor: Colors.white,
+                                  foregroundColor: Theme.of(context).colorScheme.surface,
                                   elevation: 0,
                                   shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(26),
@@ -368,12 +368,12 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                             // ── Separador "O regístrate con" ──
                             Row(
                               children: [
-                                Expanded(child: Divider(color: Colors.grey.shade300)),
+                                Expanded(child: Divider(color: Theme.of(context).colorScheme.outlineVariant)),
                                 Padding(
                                   padding: EdgeInsets.symmetric(horizontal: 12),
                                   child: Text('O regístrate con', style: TextStyle(fontSize: 11, color: Theme.of(context).colorScheme.onSurfaceVariant, fontWeight: FontWeight.w600)),
                                 ),
-                                Expanded(child: Divider(color: Colors.grey.shade300)),
+                                Expanded(child: Divider(color: Theme.of(context).colorScheme.outlineVariant)),
                               ],
                             ),
                             SizedBox(height: 20),
@@ -484,8 +484,8 @@ class _StyledField extends StatelessWidget {
       style: TextStyle(fontSize: 14, color: Theme.of(context).colorScheme.onSurface),
       decoration: InputDecoration(
         hintText: hint,
-        hintStyle: TextStyle(color: Colors.grey.shade500, fontSize: 14),
-        prefixIcon: Icon(prefixIcon, size: 20, color: Colors.grey.shade600),
+        hintStyle: TextStyle(color: Theme.of(context).colorScheme.onSurfaceVariant, fontSize: 14),
+        prefixIcon: Icon(prefixIcon, size: 20, color: Theme.of(context).colorScheme.onSurfaceVariant),
         suffixIcon: suffix,
         filled: true,
         fillColor: _kFieldBg,

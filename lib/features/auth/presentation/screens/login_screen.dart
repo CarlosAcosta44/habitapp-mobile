@@ -107,7 +107,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                             shape: BoxShape.circle,
                             boxShadow: [
                               BoxShadow(
-                                color: Colors.black.withValues(alpha: 0.05),
+                                color: Theme.of(context).colorScheme.shadow.withValues(alpha: 0.05),
                                 blurRadius: 10,
                                 offset: Offset(0, 4),
                               ),
@@ -166,7 +166,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                         borderRadius: BorderRadius.circular(24),
                         boxShadow: [
                           BoxShadow(
-                            color: Colors.black.withValues(alpha: 0.03),
+                            color: Theme.of(context).colorScheme.shadow.withValues(alpha: 0.03),
                             blurRadius: 20,
                             offset: Offset(0, 8),
                           ),
@@ -221,7 +221,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                                       ? Icons.visibility_outlined
                                       : Icons.visibility_off_outlined,
                                   size: 20,
-                                  color: Colors.grey.shade500,
+                                  color: Theme.of(context).colorScheme.onSurfaceVariant,
                                 ),
                                 onPressed: () => setState(() => _obscure = !_obscure),
                               ),
@@ -242,7 +242,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                                   child: Checkbox(
                                     value: _rememberMe,
                                     activeColor: Theme.of(context).colorScheme.primary,
-                                    side: BorderSide(color: Colors.grey.shade400, width: 1.5),
+                                    side: BorderSide(color: Theme.of(context).colorScheme.outline, width: 1.5),
                                     shape: RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(4),
                                     ),
@@ -278,7 +278,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                                 onPressed: authState.isLoading ? null : _submit,
                                 style: ElevatedButton.styleFrom(
                                   backgroundColor: Theme.of(context).colorScheme.primary,
-                                  foregroundColor: Colors.white,
+                                  foregroundColor: Theme.of(context).colorScheme.surface,
                                   elevation: 0,
                                   shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(26),
@@ -314,7 +314,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                             // ── Separador "O continúa con" ──
                             Row(
                               children: [
-                                Expanded(child: Divider(color: Colors.grey.shade300)),
+                                Expanded(child: Divider(color: Theme.of(context).colorScheme.outlineVariant)),
                                 Padding(
                                   padding: EdgeInsets.symmetric(horizontal: 12),
                                   child: Text(
@@ -322,7 +322,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                                     style: TextStyle(fontSize: 12, color: Theme.of(context).colorScheme.onSurfaceVariant),
                                   ),
                                 ),
-                                Expanded(child: Divider(color: Colors.grey.shade300)),
+                                Expanded(child: Divider(color: Theme.of(context).colorScheme.outlineVariant)),
                               ],
                             ),
                             SizedBox(height: 20),
@@ -463,8 +463,8 @@ class _StyledField extends StatelessWidget {
       style: TextStyle(fontSize: 14, color: Theme.of(context).colorScheme.onSurface),
       decoration: InputDecoration(
         hintText: hint,
-        hintStyle: TextStyle(color: Colors.grey.shade500, fontSize: 14),
-        prefixIcon: Icon(prefixIcon, size: 20, color: Colors.grey.shade600),
+        hintStyle: TextStyle(color: Theme.of(context).colorScheme.onSurfaceVariant, fontSize: 14),
+        prefixIcon: Icon(prefixIcon, size: 20, color: Theme.of(context).colorScheme.onSurfaceVariant),
         suffixIcon: suffix,
         filled: true,
         fillColor: _kFieldBg,

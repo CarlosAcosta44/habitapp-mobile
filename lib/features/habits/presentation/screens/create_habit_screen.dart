@@ -260,7 +260,7 @@ class _CreateHabitScreenState extends ConsumerState<CreateHabitScreen> {
       decoration: BoxDecoration(
         color: Theme.of(context).colorScheme.surface,
         borderRadius: BorderRadius.circular(24),
-        border: Border.all(color: Colors.grey.shade200),
+        border: Border.all(color: Theme.of(context).colorScheme.surfaceContainerHighest),
       ),
       child: Column(
         children: [
@@ -269,7 +269,7 @@ class _CreateHabitScreenState extends ConsumerState<CreateHabitScreen> {
             decoration: BoxDecoration(
               color: Theme.of(context).scaffoldBackgroundColor,
               borderRadius: BorderRadius.circular(20),
-              border: Border.all(color: Colors.grey.shade300),
+              border: Border.all(color: Theme.of(context).colorScheme.outlineVariant),
             ),
             child: Column(
               children: [
@@ -305,15 +305,15 @@ class _CreateHabitScreenState extends ConsumerState<CreateHabitScreen> {
                     margin: EdgeInsets.symmetric(horizontal: 4),
                     padding: EdgeInsets.all(8),
                     decoration: BoxDecoration(
-                      color: isSelected ? Colors.white : Colors.transparent,
+                      color: isSelected ? Theme.of(context).colorScheme.surface : Colors.transparent,
                       shape: BoxShape.circle,
-                      boxShadow: isSelected ? [BoxShadow(color: Colors.black.withValues(alpha: 0.05), blurRadius: 4, offset: Offset(0, 2))] : [],
+                      boxShadow: isSelected ? [BoxShadow(color: Theme.of(context).colorScheme.shadow.withValues(alpha: 0.05), blurRadius: 4, offset: Offset(0, 2))] : [],
                       border: isSelected ? Border.all(color: Theme.of(context).colorScheme.primary, width: 1.5) : null,
                     ),
                     child: Icon(
                       getCategoryIcon(cat.icono),
                       size: 16,
-                      color: isSelected ? Theme.of(context).colorScheme.primary : Colors.grey.shade400,
+                      color: isSelected ? Theme.of(context).colorScheme.primary : Theme.of(context).colorScheme.outline,
                     ),
                   ),
                 );
@@ -330,18 +330,18 @@ class _CreateHabitScreenState extends ConsumerState<CreateHabitScreen> {
       decoration: BoxDecoration(
         color: Theme.of(context).colorScheme.surface,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: Colors.grey.shade200),
+        border: Border.all(color: Theme.of(context).colorScheme.surfaceContainerHighest),
       ),
       padding: EdgeInsets.all(16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(label, style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: Colors.grey, letterSpacing: 1)),
+          Text(label, style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: Theme.of(context).colorScheme.onSurfaceVariant, letterSpacing: 1)),
           SizedBox(height: 8),
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Icon(icon, color: Colors.grey.shade400, size: 20),
+              Icon(icon, color: Theme.of(context).colorScheme.outline, size: 20),
               SizedBox(width: 12),
               Expanded(
                 child: TextFormField(
@@ -350,7 +350,7 @@ class _CreateHabitScreenState extends ConsumerState<CreateHabitScreen> {
                   style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: Theme.of(context).colorScheme.onSurface),
                   decoration: InputDecoration(
                     hintText: hint,
-                    hintStyle: TextStyle(color: Colors.grey.shade400, fontWeight: FontWeight.normal),
+                    hintStyle: TextStyle(color: Theme.of(context).colorScheme.outline, fontWeight: FontWeight.normal),
                     border: InputBorder.none,
                     isDense: true,
                     contentPadding: EdgeInsets.zero,
@@ -373,24 +373,24 @@ class _CreateHabitScreenState extends ConsumerState<CreateHabitScreen> {
       decoration: BoxDecoration(
         color: Theme.of(context).colorScheme.surface,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: Colors.grey.shade200),
+        border: Border.all(color: Theme.of(context).colorScheme.surfaceContainerHighest),
       ),
       padding: EdgeInsets.all(16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text('META DIARIA', style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: Colors.grey, letterSpacing: 1)),
+          Text('META DIARIA', style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: Theme.of(context).colorScheme.onSurfaceVariant, letterSpacing: 1)),
           SizedBox(height: 8),
           Row(
             children: [
-              Icon(Icons.flag_outlined, color: Colors.grey.shade400, size: 20),
+              Icon(Icons.flag_outlined, color: Theme.of(context).colorScheme.outline, size: 20),
               SizedBox(width: 12),
               Expanded(
                 child: Container(
                   padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                   decoration: BoxDecoration(
                     color: Theme.of(context).scaffoldBackgroundColor,
-                    border: Border.all(color: Colors.grey.shade300),
+                    border: Border.all(color: Theme.of(context).colorScheme.outlineVariant),
                     borderRadius: BorderRadius.circular(8),
                   ),
                   child: Row(
@@ -400,10 +400,10 @@ class _CreateHabitScreenState extends ConsumerState<CreateHabitScreen> {
                           controller: _metaDiariaController,
                           keyboardType: TextInputType.number,
                           style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Theme.of(context).colorScheme.onSurface),
-                          decoration: InputDecoration(border: InputBorder.none, isDense: true, contentPadding: EdgeInsets.zero, hintText: 'cantidad', hintStyle: TextStyle(color: Colors.grey, fontWeight: FontWeight.normal)),
+                          decoration: InputDecoration(border: InputBorder.none, isDense: true, contentPadding: EdgeInsets.zero, hintText: 'cantidad', hintStyle: TextStyle(color: Theme.of(context).colorScheme.onSurfaceVariant, fontWeight: FontWeight.normal)),
                         ),
                       ),
-                      Icon(Icons.unfold_more, color: Colors.grey, size: 16),
+                      Icon(Icons.unfold_more, color: Theme.of(context).colorScheme.onSurfaceVariant, size: 16),
                     ],
                   ),
                 ),
@@ -414,7 +414,7 @@ class _CreateHabitScreenState extends ConsumerState<CreateHabitScreen> {
                   padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                   decoration: BoxDecoration(
                     color: Theme.of(context).scaffoldBackgroundColor,
-                    border: Border.all(color: Colors.grey.shade300),
+                    border: Border.all(color: Theme.of(context).colorScheme.outlineVariant),
                     borderRadius: BorderRadius.circular(8),
                   ),
                   child: Row(
@@ -423,16 +423,16 @@ class _CreateHabitScreenState extends ConsumerState<CreateHabitScreen> {
                         child: TextFormField(
                           controller: _unidadMedidaController,
                           style: TextStyle(fontSize: 12, color: Theme.of(context).colorScheme.onSurface),
-                          decoration: InputDecoration(border: InputBorder.none, isDense: true, contentPadding: EdgeInsets.zero, hintText: 'unidad de medida', hintStyle: TextStyle(color: Colors.grey)),
+                          decoration: InputDecoration(border: InputBorder.none, isDense: true, contentPadding: EdgeInsets.zero, hintText: 'unidad de medida', hintStyle: TextStyle(color: Theme.of(context).colorScheme.onSurfaceVariant)),
                         ),
                       ),
-                      Icon(Icons.expand_more, color: Colors.grey, size: 16),
+                      Icon(Icons.expand_more, color: Theme.of(context).colorScheme.onSurfaceVariant, size: 16),
                     ],
                   ),
                 ),
               ),
               SizedBox(width: 8),
-              Text('/ dia', style: TextStyle(color: Colors.grey, fontSize: 12)),
+              Text('/ dia', style: TextStyle(color: Theme.of(context).colorScheme.onSurfaceVariant, fontSize: 12)),
             ],
           )
         ],
@@ -445,7 +445,7 @@ class _CreateHabitScreenState extends ConsumerState<CreateHabitScreen> {
       decoration: BoxDecoration(
         color: Theme.of(context).colorScheme.surface,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: Colors.grey.shade200),
+        border: Border.all(color: Theme.of(context).colorScheme.surfaceContainerHighest),
       ),
       padding: EdgeInsets.all(16),
       child: Row(
@@ -467,7 +467,7 @@ class _CreateHabitScreenState extends ConsumerState<CreateHabitScreen> {
           ),
           Text('08:00', style: TextStyle(color: Theme.of(context).colorScheme.onSurfaceVariant, fontWeight: FontWeight.bold, fontSize: 12)),
           SizedBox(width: 4),
-          Icon(Icons.chevron_right, color: Colors.grey, size: 16),
+          Icon(Icons.chevron_right, color: Theme.of(context).colorScheme.onSurfaceVariant, size: 16),
         ],
       ),
     );
@@ -478,7 +478,7 @@ class _CreateHabitScreenState extends ConsumerState<CreateHabitScreen> {
       decoration: BoxDecoration(
         color: Theme.of(context).colorScheme.surface,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: Colors.grey.shade200),
+        border: Border.all(color: Theme.of(context).colorScheme.surfaceContainerHighest),
       ),
       padding: EdgeInsets.all(20),
       child: Column(
@@ -519,7 +519,7 @@ class _CreateHabitScreenState extends ConsumerState<CreateHabitScreen> {
                     child: Text(
                       day['label'] as String,
                       style: TextStyle(
-                        color: isSelected ? Colors.white : Theme.of(context).colorScheme.primary,
+                        color: isSelected ? Theme.of(context).colorScheme.surface : Theme.of(context).colorScheme.primary,
                         fontWeight: FontWeight.bold,
                         fontSize: 12,
                       ),
@@ -576,7 +576,7 @@ class _CreateHabitScreenState extends ConsumerState<CreateHabitScreen> {
           decoration: BoxDecoration(
             color: isSelected ? Theme.of(context).colorScheme.primary.withValues(alpha: 0.05) : Colors.transparent,
             borderRadius: BorderRadius.circular(8),
-            border: Border.all(color: isSelected ? Theme.of(context).colorScheme.primary : Colors.grey.shade300),
+            border: Border.all(color: isSelected ? Theme.of(context).colorScheme.primary : Theme.of(context).colorScheme.outlineVariant),
           ),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,

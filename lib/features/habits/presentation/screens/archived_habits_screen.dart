@@ -73,7 +73,7 @@ class _ArchivedHabitCard extends ConsumerWidget {
         borderRadius: BorderRadius.circular(20),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.03),
+            color: Theme.of(context).colorScheme.shadow.withValues(alpha: 0.03),
             blurRadius: 10,
             offset: Offset(0, 4),
           )

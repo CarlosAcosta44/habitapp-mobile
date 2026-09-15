@@ -132,7 +132,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                   ),
                 ),
                 
-                Divider(color: Colors.grey.shade200, height: 1),
+                Divider(color: Theme.of(context).colorScheme.outline, height: 1),
                 
                 habitsAsync.when(
                   data: (allHabits) {
@@ -197,7 +197,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                                         borderRadius: BorderRadius.circular(4),
                                         child: LinearProgressIndicator(
                                           value: totalCount > 0 ? completedCount / totalCount : 0,
-                                          backgroundColor: Colors.grey.shade200,
+                                          backgroundColor: Theme.of(context).colorScheme.surfaceContainerHighest,
                                           valueColor: AlwaysStoppedAnimation(Theme.of(context).colorScheme.primary),
                                         ),
                                       ),
@@ -216,7 +216,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                               color: Theme.of(context).colorScheme.surface,
                               borderRadius: BorderRadius.circular(24),
                               boxShadow: [
-                                BoxShadow(color: Colors.black.withValues(alpha: 0.02), blurRadius: 10, offset: Offset(0, 4)),
+                                BoxShadow(color: Theme.of(context).colorScheme.shadow.withValues(alpha: 0.02), blurRadius: 10, offset: Offset(0, 4)),
                               ],
                             ),
                             child: Row(
@@ -243,7 +243,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                                           style: TextStyle(
                                             fontSize: 12,
                                             fontWeight: FontWeight.w600,
-                                            color: isSelected ? Colors.white : Theme.of(context).colorScheme.onSurfaceVariant,
+                                            color: isSelected ? Theme.of(context).colorScheme.surface : Theme.of(context).colorScheme.onSurfaceVariant,
                                           ),
                                         ),
                                         SizedBox(height: 4),
@@ -252,7 +252,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                                           style: TextStyle(
                                             fontSize: 20,
                                             fontWeight: isSelected ? FontWeight.w900 : FontWeight.w600,
-                                            color: isSelected ? Colors.white : Theme.of(context).colorScheme.onSurface,
+                                            color: isSelected ? Theme.of(context).colorScheme.surface : Theme.of(context).colorScheme.onSurface,
                                           ),
                                         ),
                                         SizedBox(height: 6),
@@ -262,7 +262,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                                           decoration: BoxDecoration(
                                             shape: BoxShape.circle,
                                             color: isSelected 
-                                                ? Colors.white 
+                                                ? Theme.of(context).colorScheme.surface 
                                                 : (offsetFromToday == 0 ? Color(0xFF0F8A5D) : Colors.transparent),
                                           ),
                                         )
@@ -330,7 +330,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                               data: (retos) {
                                 if (retos.isEmpty) {
                                   return Center(
-                                    child: Text('No hay retos activos.', style: TextStyle(color: Colors.grey)),
+                                    child: Text('No hay retos activos.', style: TextStyle(color: Theme.of(context).colorScheme.onSurfaceVariant)),
                                   );
                                 }
                                 return ListView.separated(
@@ -370,7 +370,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                               Container(
                                 padding: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                                 decoration: BoxDecoration(
-                                  color: Colors.grey.shade200,
+                                  color: Theme.of(context).colorScheme.surfaceContainerHighest,
                                   borderRadius: BorderRadius.circular(16),
                                 ),
                                 child: Text(
@@ -388,7 +388,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                             Center(
                               child: Padding(
                                 padding: EdgeInsets.all(24.0),
-                                child: Text('No hay hábitos programados para hoy.', style: TextStyle(color: Colors.grey)),
+                                child: Text('No hay hábitos programados para hoy.', style: TextStyle(color: Theme.of(context).colorScheme.onSurfaceVariant)),
                               ),
                             )
                           else
@@ -439,7 +439,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                               style: OutlinedButton.styleFrom(
                                 padding: EdgeInsets.symmetric(vertical: 16),
                                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-                                side: BorderSide(color: Colors.grey.shade300),
+                                side: BorderSide(color: Theme.of(context).colorScheme.outlineVariant),
                               ),
                             ),
                           ),
@@ -532,7 +532,7 @@ class _ChallengeCard extends StatelessWidget {
         color: Theme.of(context).colorScheme.surface,
         borderRadius: BorderRadius.circular(24),
         boxShadow: [
-          BoxShadow(color: Colors.black.withValues(alpha: 0.03), blurRadius: 10, offset: Offset(0, 4)),
+          BoxShadow(color: Theme.of(context).colorScheme.shadow.withValues(alpha: 0.03), blurRadius: 10, offset: Offset(0, 4)),
         ],
       ),
       child: Column(

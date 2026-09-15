@@ -167,9 +167,9 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
                       children: [
                         CircleAvatar(
                           radius: 50,
-                          backgroundColor: Colors.grey.shade300,
+                          backgroundColor: Theme.of(context).colorScheme.outlineVariant,
                           backgroundImage: profile.fotoperfil != null ? NetworkImage(profile.fotoperfil!) : null,
-                          child: profile.fotoperfil == null ? Icon(Icons.person, color: Colors.grey, size: 50) : null,
+                          child: profile.fotoperfil == null ? Icon(Icons.person, color: Theme.of(context).colorScheme.onSurfaceVariant, size: 50) : null,
                         ),
                         Container(
                           padding: EdgeInsets.all(6),
