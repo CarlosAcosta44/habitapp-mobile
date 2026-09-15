@@ -4,12 +4,8 @@ import 'package:go_router/go_router.dart';
 
 import '../../../auth/providers/auth_provider.dart';
 import '../../../profile/providers/profile_provider.dart';
+import '../../../../core/theme/theme_provider.dart';
 
-const _kBlue = Color(0xFF2D82FA);
-const _kPink = Color(0xFFF94C84);
-const _kBg = Color(0xFFF7F7F9);
-const _kTextDark = Color(0xFF1E1E1E);
-const _kTextGrey = Color(0xFF6B6B6B);
 
 class SettingsScreen extends ConsumerStatefulWidget {
   const SettingsScreen({super.key});
@@ -20,7 +16,6 @@ class SettingsScreen extends ConsumerStatefulWidget {
 
 class _SettingsScreenState extends ConsumerState<SettingsScreen> {
   // Estados locales (Mockup) para los selectores
-  int _selectedTheme = 1; // 0: Oscuro, 1: Claro, 2: Auto
   bool _notificationsEnabled = true;
   int _selectedSound = 0; // 0: Campanas, 1: Naturaleza, 2: Silencio
   bool _appleHealthEnabled = true;
@@ -30,21 +25,21 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: const Text('Cerrar Sesión', style: TextStyle(fontWeight: FontWeight.bold)),
-        content: const Text('¿Estás seguro de que deseas salir de tu cuenta?'),
+        title: Text('Cerrar Sesión', style: TextStyle(fontWeight: FontWeight.bold)),
+        content: Text('¿Estás seguro de que deseas salir de tu cuenta?'),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(ctx).pop(),
-            child: const Text('Cancelar', style: TextStyle(color: _kTextGrey)),
+            child: Text('Cancelar', style: TextStyle(color: Theme.of(context).colorScheme.onSurfaceVariant)),
           ),
           FilledButton(
             onPressed: () {
               Navigator.of(ctx).pop();
               ref.read(authProvider.notifier).logout();
             },
-            style: FilledButton.styleFrom(backgroundColor: _kPink, shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12))),
-            child: const Text('Cerrar Sesión'),
+            style: FilledButton.styleFrom(backgroundColor: Theme.of(context).colorScheme.secondary, shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12))),
+            child: Text('Cerrar Sesión'),
           ),
         ],
       ),
@@ -55,11 +50,12 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
   Widget build(BuildContext context) {
     final profileState = ref.watch(profileProvider);
     final userStatsAsync = ref.watch(profileStatsProvider);
+    final themeMode = ref.watch(themeProvider);
 
     return Scaffold(
-      backgroundColor: _kBg,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: AppBar(
-        backgroundColor: _kBg,
+        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         elevation: 0,
         title: Row(
           children: [
@@ -68,66 +64,66 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
               width: 24,
               height: 24,
               errorBuilder: (context, error, stackTrace) =>
-                  const Icon(Icons.extension, color: _kBlue, size: 24),
+                  Icon(Icons.extension, color: Theme.of(context).colorScheme.primary, size: 24),
             ),
-            const SizedBox(width: 8),
-            const Text(
+            SizedBox(width: 8),
+            Text(
               'HabitApp',
-              style: TextStyle(color: _kTextDark, fontWeight: FontWeight.bold, fontSize: 18),
+              style: TextStyle(color: Theme.of(context).colorScheme.onSurface, fontWeight: FontWeight.bold, fontSize: 18),
             ),
-            const SizedBox(width: 4),
-            const Text(
+            SizedBox(width: 4),
+            Text(
               'Ajustes',
-              style: TextStyle(color: _kTextGrey, fontWeight: FontWeight.normal, fontSize: 16),
+              style: TextStyle(color: Theme.of(context).colorScheme.onSurfaceVariant, fontWeight: FontWeight.normal, fontSize: 16),
             ),
           ],
         ),
         actions: [],
       ),
       body: SingleChildScrollView(
-        padding: const EdgeInsets.all(20.0),
+        padding: EdgeInsets.all(20.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             _buildProfileCard(profileState, userStatsAsync),
-            const SizedBox(height: 24),
+            SizedBox(height: 24),
             _buildSectionHeader('PREFERENCIAS DE LA APP', Icons.tune),
-            _buildThemeCard(),
-            const SizedBox(height: 12),
+            _buildThemeCard(themeMode),
+            SizedBox(height: 12),
             _buildToggleCard('Activar notificaciones', 'Recibir avisos y recordatorios de\nhábitos', Icons.notifications_active_outlined, _notificationsEnabled, (v) => setState(() => _notificationsEnabled = v)),
-            const SizedBox(height: 12),
+            SizedBox(height: 12),
             _buildSoundCard(),
-            const SizedBox(height: 24),
+            SizedBox(height: 24),
             _buildSectionHeader('BIENESTAR Y PRIVACIDAD', Icons.shield_outlined),
             _buildPrivacyContainer(),
-            const SizedBox(height: 24),
+            SizedBox(height: 24),
             _buildSectionHeader('ACOMPAÑAMIENTO', Icons.psychology_outlined),
             _buildCoachCard(),
-            const SizedBox(height: 12),
+            SizedBox(height: 12),
             _buildHelpCard(),
-            const SizedBox(height: 32),
+            SizedBox(height: 32),
             SizedBox(
               width: double.infinity,
               child: OutlinedButton.icon(
                 onPressed: () => _confirmLogout(context, ref),
-                icon: const Icon(Icons.logout, color: _kPink),
-                label: const Text('Cerrar sesión', style: TextStyle(color: _kPink, fontWeight: FontWeight.bold)),
+                icon: Icon(Icons.logout, color: Theme.of(context).colorScheme.secondary),
+                label: Text('Cerrar sesión', style: TextStyle(color: Theme.of(context).colorScheme.secondary, fontWeight: FontWeight.bold)),
                 style: OutlinedButton.styleFrom(
-                  side: const BorderSide(color: _kPink),
-                  padding: const EdgeInsets.symmetric(vertical: 16),
+                  side: BorderSide(color: Theme.of(context).colorScheme.secondary),
+                  padding: EdgeInsets.symmetric(vertical: 16),
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
                 ),
               ),
             ),
-            const SizedBox(height: 16),
-            const Center(
+            SizedBox(height: 16),
+            Center(
               child: Text(
                 'HabitApp versión 2.4.1 (Build 418)\n© 2026 HabitApp Inc. Hecho con serenidad.',
                 textAlign: TextAlign.center,
-                style: TextStyle(color: _kTextGrey, fontSize: 10),
+                style: TextStyle(color: Theme.of(context).colorScheme.onSurfaceVariant, fontSize: 10),
               ),
             ),
-            const SizedBox(height: 48), // Padding bottom for the BottomAppBar
+            SizedBox(height: 48), // Padding bottom for the BottomAppBar
           ],
         ),
       ),
@@ -136,11 +132,11 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
 
   Widget _buildProfileCard(AsyncValue profileState, AsyncValue userStatsAsync) {
     return Container(
-      padding: const EdgeInsets.all(20),
+      padding: EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Theme.of(context).colorScheme.surface,
         borderRadius: BorderRadius.circular(24),
-        boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.02), blurRadius: 10, offset: const Offset(0, 4))],
+        boxShadow: [BoxShadow(color: Theme.of(context).colorScheme.shadow.withValues(alpha: 0.02), blurRadius: 10, offset: Offset(0, 4))],
       ),
       child: Column(
         children: [
@@ -151,84 +147,84 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                 children: [
                   CircleAvatar(
                     radius: 28,
-                    backgroundColor: Colors.grey.shade200,
+                    backgroundColor: Theme.of(context).colorScheme.surfaceContainerHighest,
                     backgroundImage: (profileState.value?.fotoperfil != null) ? NetworkImage(profileState.value!.fotoperfil!) : null,
-                    child: (profileState.value?.fotoperfil == null) ? const Icon(Icons.person, color: Colors.grey, size: 28) : null,
+                    child: (profileState.value?.fotoperfil == null) ? Icon(Icons.person, color: Theme.of(context).colorScheme.onSurfaceVariant, size: 28) : null,
                   ),
                   Container(
                     width: 14,
                     height: 14,
                     decoration: BoxDecoration(
-                      color: const Color(0xFF0F8A5D),
+                      color: Color(0xFF0F8A5D),
                       shape: BoxShape.circle,
-                      border: Border.all(color: Colors.white, width: 2),
+                      border: Border.all(color: Theme.of(context).colorScheme.surface, width: 2),
                     ),
                   )
                 ],
               ),
-              const SizedBox(width: 16),
+              SizedBox(width: 16),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
                       (profileState.value != null) ? '${profileState.value!.nombre} ${profileState.value!.apellido}' : 'Cargando...',
-                      style: const TextStyle(fontWeight: FontWeight.w800, fontSize: 18, color: _kTextDark),
+                      style: TextStyle(fontWeight: FontWeight.w800, fontSize: 18, color: Theme.of(context).colorScheme.onSurface),
                     ),
                     Row(
                       children: [
-                        Container(width: 6, height: 6, decoration: const BoxDecoration(color: _kPink, shape: BoxShape.circle)),
-                        const SizedBox(width: 6),
-                        Text(profileState.value?.nombrerol ?? 'Nivel 4 - Serenidad', style: const TextStyle(fontSize: 12, color: _kTextGrey)),
+                        Container(width: 6, height: 6, decoration: BoxDecoration(color: Theme.of(context).colorScheme.secondary, shape: BoxShape.circle)),
+                        SizedBox(width: 6),
+                        Text(profileState.value?.nombrerol ?? 'Nivel 4 - Serenidad', style: TextStyle(fontSize: 12, color: Theme.of(context).colorScheme.onSurfaceVariant)),
                       ],
                     ),
                   ],
                 ),
               ),
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                padding: EdgeInsets.symmetric(horizontal: 10, vertical: 6),
                 decoration: BoxDecoration(
-                  color: _kBlue.withValues(alpha: 0.1),
+                  color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(20),
                 ),
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    const Icon(Icons.local_fire_department, color: _kBlue, size: 14),
-                    const SizedBox(width: 4),
-                    Text('${userStatsAsync.value?.rachaActual ?? 0} días', style: const TextStyle(color: _kBlue, fontSize: 10, fontWeight: FontWeight.bold)),
+                    Icon(Icons.local_fire_department, color: Theme.of(context).colorScheme.primary, size: 14),
+                    SizedBox(width: 4),
+                    Text('${userStatsAsync.value?.rachaActual ?? 0} días', style: TextStyle(color: Theme.of(context).colorScheme.primary, fontSize: 10, fontWeight: FontWeight.bold)),
                   ],
                 ),
               ),
             ],
           ),
-          const SizedBox(height: 20),
+          SizedBox(height: 20),
           Row(
             children: [
               Expanded(
                 child: FilledButton.icon(
                   onPressed: () => context.push('/profile'),
-                  icon: const Icon(Icons.visibility_outlined, size: 16, color: _kTextDark),
-                  label: const Text('Ver perfil', style: TextStyle(color: _kTextDark, fontWeight: FontWeight.bold)),
+                  icon: Icon(Icons.visibility_outlined, size: 16, color: Theme.of(context).colorScheme.onSurface),
+                  label: Text('Ver perfil', style: TextStyle(color: Theme.of(context).colorScheme.onSurface, fontWeight: FontWeight.bold)),
                   style: FilledButton.styleFrom(
-                    backgroundColor: _kBg,
-                    padding: const EdgeInsets.symmetric(vertical: 12),
+                    backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+                    padding: EdgeInsets.symmetric(vertical: 12),
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
                     elevation: 0,
                   ),
                 ),
               ),
-              const SizedBox(width: 12),
+              SizedBox(width: 12),
               Container(
                 width: 44,
                 height: 44,
                 decoration: BoxDecoration(
-                  color: _kBg,
+                  color: Theme.of(context).scaffoldBackgroundColor,
                   borderRadius: BorderRadius.circular(16),
                 ),
                 child: IconButton(
                   onPressed: () {},
-                  icon: const Icon(Icons.share_outlined, color: _kTextDark, size: 20),
+                  icon: Icon(Icons.share_outlined, color: Theme.of(context).colorScheme.onSurface, size: 20),
                 ),
               )
             ],
@@ -240,25 +236,29 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
 
   Widget _buildSectionHeader(String title, IconData trailingIcon) {
     return Padding(
-      padding: const EdgeInsets.only(bottom: 12, left: 4, right: 4),
+      padding: EdgeInsets.only(bottom: 12, left: 4, right: 4),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Text(
             title,
-            style: const TextStyle(color: _kTextGrey, fontSize: 10, fontWeight: FontWeight.w800, letterSpacing: 1),
+            style: TextStyle(color: Theme.of(context).colorScheme.onSurfaceVariant, fontSize: 10, fontWeight: FontWeight.w800, letterSpacing: 1),
           ),
-          Icon(trailingIcon, color: Colors.grey.shade400, size: 18),
+          Icon(trailingIcon, color: Theme.of(context).colorScheme.onSurfaceVariant, size: 18),
         ],
       ),
     );
   }
 
-  Widget _buildThemeCard() {
+  Widget _buildThemeCard(ThemeMode currentThemeMode) {
+    int selectedIndex = currentThemeMode == ThemeMode.dark ? 0 
+                      : currentThemeMode == ThemeMode.light ? 1 
+                      : 2;
+
     return Container(
-      padding: const EdgeInsets.all(20),
+      padding: EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Theme.of(context).colorScheme.surface,
         borderRadius: BorderRadius.circular(24),
       ),
       child: Column(
@@ -268,33 +268,33 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
             children: [
               CircleAvatar(
                 radius: 18,
-                backgroundColor: _kPink.withValues(alpha: 0.1),
-                child: const Icon(Icons.light_mode_outlined, color: _kPink, size: 18),
+                backgroundColor: Theme.of(context).colorScheme.secondary.withValues(alpha: 0.1),
+                child: Icon(Icons.light_mode_outlined, color: Theme.of(context).colorScheme.secondary, size: 18),
               ),
-              const SizedBox(width: 16),
-              const Expanded(
+              SizedBox(width: 16),
+              Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text('Tema y Apariencia', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15, color: _kTextDark)),
-                    Text('Personaliza el contraste visual', style: TextStyle(fontSize: 12, color: _kTextGrey)),
+                    Text('Tema y Apariencia', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15, color: Theme.of(context).colorScheme.onSurface)),
+                    Text('Personaliza el contraste visual', style: TextStyle(fontSize: 12, color: Theme.of(context).colorScheme.onSurfaceVariant)),
                   ],
                 ),
               ),
             ],
           ),
-          const SizedBox(height: 16),
+          SizedBox(height: 16),
           Container(
-            padding: const EdgeInsets.all(4),
+            padding: EdgeInsets.all(4),
             decoration: BoxDecoration(
-              color: _kBg,
+              color: Theme.of(context).scaffoldBackgroundColor,
               borderRadius: BorderRadius.circular(20),
             ),
             child: Row(
               children: [
-                _buildSegmentButton('Oscuro', Icons.dark_mode_outlined, 0, _selectedTheme, (i) => setState(() => _selectedTheme = i)),
-                _buildSegmentButton('Claro', Icons.light_mode, 1, _selectedTheme, (i) => setState(() => _selectedTheme = i)),
-                _buildSegmentButton('Auto', Icons.settings_suggest_outlined, 2, _selectedTheme, (i) => setState(() => _selectedTheme = i)),
+                _buildSegmentButton('Oscuro', Icons.dark_mode_outlined, 0, selectedIndex, (i) => ref.read(themeProvider.notifier).updateTheme(ThemeMode.dark)),
+                _buildSegmentButton('Claro', Icons.light_mode, 1, selectedIndex, (i) => ref.read(themeProvider.notifier).updateTheme(ThemeMode.light)),
+                _buildSegmentButton('Auto', Icons.settings_suggest_outlined, 2, selectedIndex, (i) => ref.read(themeProvider.notifier).updateTheme(ThemeMode.system)),
               ],
             ),
           )
@@ -309,18 +309,18 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
       child: GestureDetector(
         onTap: () => onTap(index),
         child: Container(
-          padding: const EdgeInsets.symmetric(vertical: 8),
+          padding: EdgeInsets.symmetric(vertical: 8),
           decoration: BoxDecoration(
-            color: isSelected ? _kBlue : Colors.transparent,
+            color: isSelected ? Theme.of(context).colorScheme.primary : Colors.transparent,
             borderRadius: BorderRadius.circular(16),
-            boxShadow: isSelected ? [BoxShadow(color: _kBlue.withValues(alpha: 0.3), blurRadius: 4, offset: const Offset(0, 2))] : [],
+            boxShadow: isSelected ? [BoxShadow(color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.3), blurRadius: 4, offset: Offset(0, 2))] : [],
           ),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Icon(icon, size: 16, color: isSelected ? Colors.white : _kTextDark),
-              const SizedBox(width: 6),
-              Text(text, style: TextStyle(color: isSelected ? Colors.white : _kTextDark, fontWeight: isSelected ? FontWeight.bold : FontWeight.w500, fontSize: 12)),
+              Icon(icon, size: 16, color: isSelected ? Theme.of(context).colorScheme.surface : Theme.of(context).colorScheme.onSurface),
+              SizedBox(width: 6),
+              Text(text, style: TextStyle(color: isSelected ? Theme.of(context).colorScheme.surface : Theme.of(context).colorScheme.onSurface, fontWeight: isSelected ? FontWeight.bold : FontWeight.w500, fontSize: 12)),
             ],
           ),
         ),
@@ -330,32 +330,32 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
 
   Widget _buildToggleCard(String title, String subtitle, IconData icon, bool value, Function(bool) onChanged) {
     return Container(
-      padding: const EdgeInsets.all(20),
-      decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(24)),
+      padding: EdgeInsets.all(20),
+      decoration: BoxDecoration(color: Theme.of(context).colorScheme.surface, borderRadius: BorderRadius.circular(24)),
       child: Row(
         children: [
           CircleAvatar(
             radius: 18,
-            backgroundColor: const Color(0xFFE8F5E9),
-            child: Icon(icon, color: const Color(0xFF0F8A5D), size: 18),
+            backgroundColor: Color(0xFFE8F5E9),
+            child: Icon(icon, color: Color(0xFF0F8A5D), size: 18),
           ),
-          const SizedBox(width: 16),
+          SizedBox(width: 16),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(title, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 15, color: _kTextDark)),
-                Text(subtitle, style: const TextStyle(fontSize: 12, color: _kTextGrey)),
+                Text(title, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15, color: Theme.of(context).colorScheme.onSurface)),
+                Text(subtitle, style: TextStyle(fontSize: 12, color: Theme.of(context).colorScheme.onSurfaceVariant)),
               ],
             ),
           ),
           Switch(
             value: value,
             onChanged: onChanged,
-            activeThumbColor: Colors.white,
-            activeTrackColor: _kBlue,
-            inactiveTrackColor: Colors.grey.shade300,
-            inactiveThumbColor: Colors.white,
+            activeThumbColor: Theme.of(context).colorScheme.surface,
+            activeTrackColor: Theme.of(context).colorScheme.primary,
+            inactiveTrackColor: Theme.of(context).colorScheme.outlineVariant,
+            inactiveThumbColor: Theme.of(context).colorScheme.surface,
           )
         ],
       ),
@@ -364,9 +364,9 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
 
   Widget _buildSoundCard() {
     return Container(
-      padding: const EdgeInsets.all(20),
+      padding: EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Theme.of(context).colorScheme.surface,
         borderRadius: BorderRadius.circular(24),
       ),
       child: Column(
@@ -377,27 +377,27 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
               CircleAvatar(
                 radius: 18,
                 backgroundColor: Colors.orange.withValues(alpha: 0.1),
-                child: const Icon(Icons.hearing_outlined, color: Colors.orange, size: 18),
+                child: Icon(Icons.hearing_outlined, color: Colors.orange, size: 18),
               ),
-              const SizedBox(width: 16),
-              const Expanded(
+              SizedBox(width: 16),
+              Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text('Sonidos de Bienestar', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15, color: _kTextDark)),
-                    Text('Tono de confirmación al completar hábitos', style: TextStyle(fontSize: 12, color: _kTextGrey)),
+                    Text('Sonidos de Bienestar', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15, color: Theme.of(context).colorScheme.onSurface)),
+                    Text('Tono de confirmación al completar hábitos', style: TextStyle(fontSize: 12, color: Theme.of(context).colorScheme.onSurfaceVariant)),
                   ],
                 ),
               ),
             ],
           ),
-          const SizedBox(height: 16),
+          SizedBox(height: 16),
           Row(
             children: [
               _buildSoundButton('Campanas', Icons.graphic_eq, 0),
-              const SizedBox(width: 10),
+              SizedBox(width: 10),
               _buildSoundButton('Naturaleza', Icons.park_outlined, 1),
-              const SizedBox(width: 10),
+              SizedBox(width: 10),
               _buildSoundButton('Silencio', Icons.volume_off_outlined, 2),
             ],
           )
@@ -412,20 +412,20 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
       child: GestureDetector(
         onTap: () => setState(() => _selectedSound = index),
         child: Container(
-          padding: const EdgeInsets.symmetric(vertical: 12),
+          padding: EdgeInsets.symmetric(vertical: 12),
           decoration: BoxDecoration(
-            color: isSelected ? _kPink.withValues(alpha: 0.05) : Colors.transparent,
+            color: isSelected ? Theme.of(context).colorScheme.secondary.withValues(alpha: 0.05) : Colors.transparent,
             borderRadius: BorderRadius.circular(12),
-            border: Border.all(color: isSelected ? _kPink : Colors.grey.shade300, width: 1.5),
+            border: Border.all(color: isSelected ? Theme.of(context).colorScheme.secondary : Theme.of(context).colorScheme.outlineVariant, width: 1.5),
           ),
           child: Column(
             children: [
-              Icon(icon, size: 20, color: isSelected ? _kPink : _kTextGrey),
-              const SizedBox(height: 6),
+              Icon(icon, size: 20, color: isSelected ? Theme.of(context).colorScheme.secondary : Theme.of(context).colorScheme.onSurfaceVariant),
+              SizedBox(height: 6),
               Text(
                 text,
                 style: TextStyle(
-                  color: isSelected ? _kPink : _kTextGrey,
+                  color: isSelected ? Theme.of(context).colorScheme.secondary : Theme.of(context).colorScheme.onSurfaceVariant,
                   fontWeight: isSelected ? FontWeight.bold : FontWeight.w600,
                   fontSize: 11,
                 ),
@@ -440,7 +440,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
   Widget _buildPrivacyContainer() {
     return Container(
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Theme.of(context).colorScheme.surface,
         borderRadius: BorderRadius.circular(24),
       ),
       child: Column(
@@ -449,17 +449,17 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
             'Apple Health / Google Fit',
             'Conectado - Pasos y sueño',
             Icons.favorite_border,
-            Colors.blue,
+            Theme.of(context).colorScheme.primary,
             _appleHealthEnabled,
             (v) => setState(() => _appleHealthEnabled = v),
-            subtitleDotColor: _kBlue,
+            subtitleDotColor: Theme.of(context).colorScheme.primary,
           ),
-          const Divider(height: 1, indent: 70, color: Color(0xFFF3F3F3)),
+          Divider(height: 1, indent: 24, endIndent: 24, color: Theme.of(context).colorScheme.outlineVariant),
           _buildPrivacyTile(
             'Modo Privado en Comunidad',
             'Compartir hábitos de forma anónima',
             Icons.visibility_off_outlined,
-            Colors.black54,
+            Theme.of(context).colorScheme.primary,
             _privateModeEnabled,
             (v) => setState(() => _privateModeEnabled = v),
           ),
@@ -470,7 +470,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
 
   Widget _buildPrivacyTile(String title, String subtitle, IconData icon, Color iconColor, bool value, Function(bool) onChanged, {Color? subtitleDotColor}) {
     return Padding(
-      padding: const EdgeInsets.all(20),
+      padding: EdgeInsets.all(20),
       child: Row(
         children: [
           CircleAvatar(
@@ -478,19 +478,19 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
             backgroundColor: iconColor.withValues(alpha: 0.1),
             child: Icon(icon, color: iconColor, size: 18),
           ),
-          const SizedBox(width: 16),
+          SizedBox(width: 16),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(title, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14, color: _kTextDark)),
+                Text(title, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14, color: Theme.of(context).colorScheme.onSurface)),
                 Row(
                   children: [
                     if (subtitleDotColor != null) ...[
                       Container(width: 4, height: 4, decoration: BoxDecoration(color: subtitleDotColor, shape: BoxShape.circle)),
-                      const SizedBox(width: 4),
+                      SizedBox(width: 4),
                     ],
-                    Expanded(child: Text(subtitle, style: const TextStyle(fontSize: 11, color: _kTextGrey))),
+                    Expanded(child: Text(subtitle, style: TextStyle(fontSize: 11, color: Theme.of(context).colorScheme.onSurfaceVariant))),
                   ],
                 ),
               ],
@@ -499,10 +499,10 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
           Switch(
             value: value,
             onChanged: onChanged,
-            activeThumbColor: Colors.white,
-            activeTrackColor: _kBlue,
-            inactiveTrackColor: Colors.grey.shade300,
-            inactiveThumbColor: Colors.white,
+            activeThumbColor: Theme.of(context).colorScheme.surface,
+            activeTrackColor: Theme.of(context).colorScheme.primary,
+            inactiveTrackColor: Theme.of(context).colorScheme.outlineVariant,
+            inactiveThumbColor: Theme.of(context).colorScheme.surface,
           )
         ],
       ),
@@ -511,11 +511,11 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
 
   Widget _buildCoachCard() {
     return Container(
-      padding: const EdgeInsets.all(20),
+      padding: EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Theme.of(context).colorScheme.surface,
         borderRadius: BorderRadius.circular(24),
-        border: Border.all(color: Colors.grey.shade200),
+        border: Border.all(color: Theme.of(context).colorScheme.surfaceContainerHighest),
       ),
       child: Column(
         children: [
@@ -523,7 +523,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                padding: EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                 decoration: BoxDecoration(
                   color: Colors.orange.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(12),
@@ -532,52 +532,52 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                 child: Row(
                   children: [
                     Icon(Icons.calendar_today_outlined, size: 12, color: Colors.orange.shade800),
-                    const SizedBox(width: 4),
+                    SizedBox(width: 4),
                     Text('Próxima sesión', style: TextStyle(color: Colors.orange.shade800, fontSize: 10, fontWeight: FontWeight.bold)),
                   ],
                 ),
               ),
-              const Text('En 2 días', style: TextStyle(color: _kTextGrey, fontSize: 11, fontWeight: FontWeight.bold)),
+              Text('En 2 días', style: TextStyle(color: Theme.of(context).colorScheme.onSurfaceVariant, fontSize: 11, fontWeight: FontWeight.bold)),
             ],
           ),
-          const SizedBox(height: 16),
+          SizedBox(height: 16),
           Row(
             children: [
               CircleAvatar(
                 radius: 20,
-                backgroundColor: Colors.grey.shade300,
-                backgroundImage: const AssetImage('assets/images/paisaje-dashboard.png'), // placeholder
+                backgroundColor: Theme.of(context).colorScheme.outlineVariant,
+                backgroundImage: AssetImage('assets/images/paisaje-dashboard.png'), // placeholder
               ),
-              const SizedBox(width: 12),
-              const Expanded(
+              SizedBox(width: 12),
+              Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text('Dra. Elena Vidal', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15, color: _kTextDark)),
-                    Text('Especialista en hábitos - Mindfulness', style: TextStyle(fontSize: 11, color: _kTextGrey)),
+                    Text('Dra. Elena Vidal', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15, color: Theme.of(context).colorScheme.onSurface)),
+                    Text('Especialista en hábitos - Mindfulness', style: TextStyle(fontSize: 11, color: Theme.of(context).colorScheme.onSurfaceVariant)),
                   ],
                 ),
               ),
             ],
           ),
-          const SizedBox(height: 16),
+          SizedBox(height: 16),
           Container(
-            padding: const EdgeInsets.all(12),
+            padding: EdgeInsets.all(12),
             decoration: BoxDecoration(
-              color: _kBg,
+              color: Theme.of(context).scaffoldBackgroundColor,
               borderRadius: BorderRadius.circular(12),
             ),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                const Row(
+                Row(
                   children: [
-                    Icon(Icons.event, color: _kBlue, size: 16),
+                    Icon(Icons.event, color: Theme.of(context).colorScheme.primary, size: 16),
                     SizedBox(width: 8),
-                    Text('Jueves, 18:00 hrs (45 min)', style: TextStyle(color: _kTextDark, fontSize: 12, fontWeight: FontWeight.bold)),
+                    Text('Jueves, 18:00 hrs (45 min)', style: TextStyle(color: Theme.of(context).colorScheme.onSurface, fontSize: 12, fontWeight: FontWeight.bold)),
                   ],
                 ),
-                Text('Ver enlace', style: TextStyle(color: _kPink, fontSize: 11, fontWeight: FontWeight.bold)),
+                Text('Ver enlace', style: TextStyle(color: Theme.of(context).colorScheme.secondary, fontSize: 11, fontWeight: FontWeight.bold)),
               ],
             ),
           )
@@ -588,9 +588,9 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
 
   Widget _buildHelpCard() {
     return Container(
-      padding: const EdgeInsets.all(20),
+      padding: EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Theme.of(context).colorScheme.surface,
         borderRadius: BorderRadius.circular(24),
       ),
       child: Row(
@@ -599,22 +599,22 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
             width: 40,
             height: 40,
             decoration: BoxDecoration(
-              color: _kBg,
+              color: Theme.of(context).scaffoldBackgroundColor,
               borderRadius: BorderRadius.circular(12),
             ),
-            child: const Icon(Icons.help_outline, color: _kTextDark, size: 20),
+            child: Icon(Icons.help_outline, color: Theme.of(context).colorScheme.onSurface, size: 20),
           ),
-          const SizedBox(width: 16),
-          const Expanded(
+          SizedBox(width: 16),
+          Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('Centro de Ayuda y\nPreguntas', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14, color: _kTextDark, height: 1.2)),
-                Text('Guías rápidas, FAQs y soporte técnico', style: TextStyle(fontSize: 11, color: _kTextGrey)),
+                Text('Centro de Ayuda y\nPreguntas', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14, color: Theme.of(context).colorScheme.onSurface, height: 1.2)),
+                Text('Guías rápidas, FAQs y soporte técnico', style: TextStyle(fontSize: 11, color: Theme.of(context).colorScheme.onSurfaceVariant)),
               ],
             ),
           ),
-          Icon(Icons.chevron_right, color: Colors.grey.shade400, size: 20),
+          Icon(Icons.chevron_right, color: Theme.of(context).colorScheme.onSurfaceVariant, size: 20),
         ],
       ),
     );

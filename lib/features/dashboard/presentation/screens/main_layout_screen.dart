@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-const _kBlue = Color(0xFF2D82FA);
-const _kGreen = Color(0xFF0F8A5D);
-const _kGrey = Color(0xFF6B6B6B);
 
 class MainLayoutScreen extends StatelessWidget {
   final StatefulNavigationShell navigationShell;
@@ -26,36 +23,37 @@ class MainLayoutScreen extends StatelessWidget {
     final idx = navigationShell.currentIndex;
 
     return Scaffold(
-      backgroundColor: const Color(0xFFF7F7F9),
+      extendBody: false,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: navigationShell,
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       floatingActionButton: Container(
         width: 64,
         height: 64,
-        margin: const EdgeInsets.only(top: 32),
+        margin: EdgeInsets.only(top: 32),
         decoration: BoxDecoration(
           shape: BoxShape.circle,
           boxShadow: [
             BoxShadow(
-              color: _kBlue.withValues(alpha: 0.3),
+              color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.3),
               blurRadius: 16,
-              offset: const Offset(0, 8),
+              offset: Offset(0, 8),
             ),
           ],
         ),
         child: FloatingActionButton(
           onPressed: () => context.push('/create-habit'),
-          backgroundColor: _kBlue,
+          backgroundColor: Theme.of(context).colorScheme.primary,
           elevation: 0,
-          shape: const CircleBorder(),
-          child: const Icon(Icons.add, color: Colors.white, size: 32),
+          shape: CircleBorder(),
+          child: Icon(Icons.add, color: Theme.of(context).colorScheme.surface, size: 32),
         ),
       ),
       bottomNavigationBar: BottomAppBar(
-        color: Colors.white,
+        color: Theme.of(context).colorScheme.surface,
         elevation: 20,
-        shadowColor: Colors.black.withValues(alpha: 0.1),
-        shape: const CircularNotchedRectangle(),
+        shadowColor: Theme.of(context).colorScheme.shadow.withValues(alpha: 0.1),
+        shape: CircularNotchedRectangle(),
         notchMargin: 8,
         height: 70,
         child: Row(
@@ -84,7 +82,7 @@ class MainLayoutScreen extends StatelessWidget {
               ),
             ),
             // Spacer for FAB
-            const SizedBox(width: 48),
+            SizedBox(width: 48),
             // Right side
             Expanded(
               child: Row(
@@ -131,7 +129,7 @@ class _NavItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final color = isActive ? _kGreen : _kGrey;
+    final color = isActive ? Theme.of(context).colorScheme.primary : Theme.of(context).colorScheme.onSurfaceVariant;
     return GestureDetector(
       onTap: onTap,
       behavior: HitTestBehavior.opaque,
@@ -140,7 +138,7 @@ class _NavItem extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Icon(isActive ? activeIcon : icon, color: color, size: 24),
-          const SizedBox(height: 2),
+          SizedBox(height: 2),
           Text(
             label,
             style: TextStyle(

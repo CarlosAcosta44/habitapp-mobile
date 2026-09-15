@@ -9,7 +9,7 @@ class SplashScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
+    return Scaffold(
       backgroundColor: Color(0xFF4B4EFC),
       body: Center(
         child: Column(
@@ -18,13 +18,13 @@ class SplashScreen extends StatelessWidget {
             Icon(
               Icons.check_circle_outline_rounded,
               size: 80,
-              color: Colors.white,
+              color: Theme.of(context).colorScheme.surface,
             ),
             SizedBox(height: 20),
             Text(
               'HabitApp',
               style: TextStyle(
-                color: Colors.white,
+                color: Theme.of(context).colorScheme.surface,
                 fontSize: 32,
                 fontWeight: FontWeight.w900,
                 letterSpacing: 1,

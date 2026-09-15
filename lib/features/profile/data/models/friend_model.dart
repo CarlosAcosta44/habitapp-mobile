@@ -6,7 +6,7 @@ class FriendModel {
   final int rachaDias;
   final int puntosTotales;
 
-  const FriendModel({
+  FriendModel({
     required this.idusuario,
     required this.nombre,
     required this.apellido,

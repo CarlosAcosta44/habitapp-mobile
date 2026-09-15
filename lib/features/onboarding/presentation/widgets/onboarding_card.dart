@@ -7,7 +7,7 @@ class OnboardingData {
   final IconData icon;
   final Color primaryColor;
 
-  const OnboardingData({
+  OnboardingData({
     required this.title,
     required this.description,
     required this.icon,
@@ -31,11 +31,11 @@ class OnboardingCard extends StatelessWidget {
     return LayoutBuilder(
       builder: (context, constraints) {
         return SingleChildScrollView(
-          physics: const ClampingScrollPhysics(),
+          physics: ClampingScrollPhysics(),
           child: ConstrainedBox(
             constraints: BoxConstraints(minHeight: constraints.maxHeight),
             child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 12.0),
+              padding: EdgeInsets.symmetric(horizontal: 24.0, vertical: 12.0),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -51,7 +51,7 @@ class OnboardingCard extends StatelessWidget {
                           color: data.primaryColor.withValues(alpha: 0.08),
                           blurRadius: 24,
                           spreadRadius: 6,
-                          offset: const Offset(0, 6),
+                          offset: Offset(0, 6),
                         ),
                       ],
                     ),
@@ -61,24 +61,24 @@ class OnboardingCard extends StatelessWidget {
                       color: data.primaryColor,
                     ),
                   ),
-                  const SizedBox(height: 24),
+                  SizedBox(height: 24),
                   // Título principal
                   Text(
                     data.title,
                     textAlign: TextAlign.center,
                     style: theme.textTheme.titleLarge?.copyWith(
                       fontWeight: FontWeight.bold,
-                      color: const Color(0xFF1E293B), // Dark Slate
+                      color: Color(0xFF1E293B), // Dark Slate
                       height: 1.2,
                     ),
                   ),
-                  const SizedBox(height: 12),
+                  SizedBox(height: 12),
                   // Descripción explicativa
                   Text(
                     data.description,
                     textAlign: TextAlign.center,
                     style: theme.textTheme.bodyMedium?.copyWith(
-                      color: const Color(0xFF64748B), // Muted Text Color
+                      color: Color(0xFF64748B), // Muted Text Color
                       height: 1.4,
                       fontSize: 14,
                     ),

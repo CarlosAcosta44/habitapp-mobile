@@ -30,19 +30,19 @@ GoRouter appRouter(Ref ref) {
     routes: [
       GoRoute(
         path: '/splash',
-        builder: (context, state) => const SplashScreen(),
+        builder: (context, state) => SplashScreen(),
       ),
       GoRoute(
         path: '/onboarding',
-        builder: (context, state) => const OnboardingScreen(),
+        builder: (context, state) => OnboardingScreen(),
       ),
       GoRoute(
         path: '/login',
-        builder: (context, state) => const LoginScreen(),
+        builder: (context, state) => LoginScreen(),
       ),
       GoRoute(
         path: '/register',
-        builder: (context, state) => const RegisterScreen(),
+        builder: (context, state) => RegisterScreen(),
       ),
       StatefulShellRoute.indexedStack(
         builder: (context, state, navigationShell) {
@@ -54,7 +54,7 @@ GoRouter appRouter(Ref ref) {
             routes: [
               GoRoute(
                 path: '/',
-                builder: (context, state) => const DashboardScreen(),
+                builder: (context, state) => DashboardScreen(),
               ),
             ],
           ),
@@ -63,7 +63,7 @@ GoRouter appRouter(Ref ref) {
             routes: [
               GoRoute(
                 path: '/community',
-                builder: (context, state) => const Scaffold(body: Center(child: Text('Comunidad'))),
+                builder: (context, state) => Scaffold(body: Center(child: Text('Comunidad'))),
               ),
             ],
           ),
@@ -72,7 +72,7 @@ GoRouter appRouter(Ref ref) {
             routes: [
               GoRoute(
                 path: '/add',
-                builder: (context, state) => const Scaffold(),
+                builder: (context, state) => Scaffold(),
               ),
             ],
           ),
@@ -81,7 +81,7 @@ GoRouter appRouter(Ref ref) {
             routes: [
               GoRoute(
                 path: '/reports',
-                builder: (context, state) => const ReportsScreen(),
+                builder: (context, state) => ReportsScreen(),
               ),
             ],
           ),
@@ -90,7 +90,7 @@ GoRouter appRouter(Ref ref) {
             routes: [
               GoRoute(
                 path: '/settings',
-                builder: (context, state) => const SettingsScreen(),
+                builder: (context, state) => SettingsScreen(),
               ),
             ],
           ),
@@ -98,7 +98,7 @@ GoRouter appRouter(Ref ref) {
       ),
       GoRoute(
         path: '/profile/edit',
-        builder: (context, state) => const EditProfileScreen(),
+        builder: (context, state) => EditProfileScreen(),
       ),
       GoRoute(
         path: '/habit/:id',
@@ -109,15 +109,15 @@ GoRouter appRouter(Ref ref) {
       ),
       GoRoute(
         path: '/profile',
-        builder: (context, state) => const ProfileScreen(),
+        builder: (context, state) => ProfileScreen(),
       ),
       GoRoute(
         path: '/create-habit',
-        builder: (context, state) => const CreateHabitScreen(),
+        builder: (context, state) => CreateHabitScreen(),
       ),
       GoRoute(
         path: '/archived-habits',
-        builder: (context, state) => const ArchivedHabitsScreen(),
+        builder: (context, state) => ArchivedHabitsScreen(),
       ),
     ],
     redirect: (context, state) {

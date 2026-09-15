@@ -40,14 +40,14 @@ class DefaultFirebaseOptions {
     }
   }
 
-  static const FirebaseOptions android = FirebaseOptions(
+  static FirebaseOptions android = FirebaseOptions(
     apiKey: 'AIzaSyAmRTuioctyhL4jy6MpWkspZckIM6Z_f-A',
     appId: '1:964868283203:android:a063347e9e8aa20e8b6df6',
     messagingSenderId: '964868283203',
     projectId: 'habitapp-20506',
     storageBucket: 'habitapp-20506.firebasestorage.app',
   );
-  static const FirebaseOptions ios = FirebaseOptions(
+  static FirebaseOptions ios = FirebaseOptions(
     apiKey: 'AIzaSyAvYNNXw7LaLo4wVRDWsVoIU4IuQ3vR3nw',
     appId: '1:964868283203:ios:4c99aabfa6e0def28b6df6',
     messagingSenderId: '964868283203',
@@ -55,7 +55,7 @@ class DefaultFirebaseOptions {
     storageBucket: 'habitapp-20506.firebasestorage.app',
     iosBundleId: 'com.example.habitappFrontend',
   );
-  static const FirebaseOptions web = FirebaseOptions(
+  static FirebaseOptions web = FirebaseOptions(
     apiKey: 'AIzaSyCn7MpgXJnHdsYNusAmM1BP0P1BexLcsiI',
     appId: '1:964868283203:web:eb1594068f04d8088b6df6',
     messagingSenderId: '964868283203',
@@ -65,7 +65,7 @@ class DefaultFirebaseOptions {
     measurementId: 'G-3E2Q3M432R',
   );
 
-  static const FirebaseOptions macos = FirebaseOptions(
+  static FirebaseOptions macos = FirebaseOptions(
     apiKey: 'AIzaSyAvYNNXw7LaLo4wVRDWsVoIU4IuQ3vR3nw',
     appId: '1:964868283203:ios:4c99aabfa6e0def28b6df6',
     messagingSenderId: '964868283203',
@@ -74,7 +74,7 @@ class DefaultFirebaseOptions {
     iosBundleId: 'com.example.habitappFrontend',
   );
 
-  static const FirebaseOptions windows = FirebaseOptions(
+  static FirebaseOptions windows = FirebaseOptions(
     apiKey: 'AIzaSyCn7MpgXJnHdsYNusAmM1BP0P1BexLcsiI',
     appId: '1:964868283203:web:6cae9faaa77d58f48b6df6',
     messagingSenderId: '964868283203',

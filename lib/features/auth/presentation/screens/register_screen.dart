@@ -4,11 +4,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../providers/auth_provider.dart';
 
-const _kBlue = Color(0xFF2D82FA);
-const _kBg = Color(0xFFF7F7F9);
-const _kTextDark = Color(0xFF1E1E1E);
-const _kTextGrey = Color(0xFF6B6B6B);
-const _kFieldBg = Color(0xFFF3F3F3);
+
 const _kGreenBadge = Color(0xFF0F8A5D);
 const _kGreenBadgeBg = Color(0xFFE6F4EE);
 
@@ -44,7 +40,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
       if (!_acceptTerms) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: const Text('Debes aceptar los Términos de Servicio.'),
+            content: Text('Debes aceptar los Términos de Servicio.'),
             backgroundColor: Colors.red.shade600,
           ),
         );
@@ -76,7 +72,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
             content: Text(e.toString().replaceAll('Exception: ', '')),
             backgroundColor: Colors.red.shade600,
             behavior: SnackBarBehavior.floating,
-            margin: const EdgeInsets.all(16),
+            margin: EdgeInsets.all(16),
             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
           ),
         ),
@@ -84,29 +80,29 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
     });
 
     return Scaffold(
-      backgroundColor: _kBg,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: SafeArea(
         child: Column(
           children: [
             // ── AppBar (Personalizado) ──
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+              padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
               child: Stack(
                 alignment: Alignment.center,
                 children: [
                   Align(
                     alignment: Alignment.centerLeft,
                     child: IconButton(
-                      icon: const Icon(Icons.arrow_back, color: _kTextDark),
+                      icon: Icon(Icons.arrow_back, color: Theme.of(context).colorScheme.onSurface),
                       onPressed: () => context.go('/login'),
                     ),
                   ),
-                  const Text(
+                  Text(
                     'Register',
                     style: TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.w600,
-                      color: _kTextDark,
+                      color: Theme.of(context).colorScheme.onSurface,
                     ),
                   ),
                 ],
@@ -116,7 +112,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
             // ── Contenido ──
             Expanded(
               child: SingleChildScrollView(
-                padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+                padding: EdgeInsets.symmetric(horizontal: 24, vertical: 16),
                 child: Column(
                   children: [
                     // Icono Superior
@@ -124,7 +120,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                       width: 64,
                       height: 64,
                       decoration: BoxDecoration(
-                        color: Colors.white,
+                        color: Theme.of(context).colorScheme.surface,
                         shape: BoxShape.circle,
                         boxShadow: [
                           BoxShadow(
@@ -140,19 +136,19 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                         width: 40,
                         height: 40,
                         errorBuilder: (context, error, stackTrace) =>
-                            const Icon(Icons.extension, color: _kBlue, size: 32),
+                            Icon(Icons.extension, color: Theme.of(context).colorScheme.primary, size: 32),
                       ),
                     ),
-                    const SizedBox(height: 16),
+                    SizedBox(height: 16),
                     
                     // Badge Verde
                     Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                      padding: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                       decoration: BoxDecoration(
                         color: _kGreenBadgeBg,
                         borderRadius: BorderRadius.circular(20),
                       ),
-                      child: const Row(
+                      child: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           Icon(Icons.eco, color: _kGreenBadge, size: 14),
@@ -168,37 +164,37 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                         ],
                       ),
                     ),
-                    const SizedBox(height: 16),
+                    SizedBox(height: 16),
 
                     // Títulos
-                    const Text(
+                    Text(
                       'Crea tu cuenta',
                       style: TextStyle(
                         fontSize: 24,
                         fontWeight: FontWeight.w900,
-                        color: _kTextDark,
+                        color: Theme.of(context).colorScheme.onSurface,
                         letterSpacing: -0.5,
                       ),
                     ),
-                    const SizedBox(height: 8),
-                    const Text(
+                    SizedBox(height: 8),
+                    Text(
                       'Empieza hoy tu camino hacia una vida más plena\ny hábitos conscientes.',
                       textAlign: TextAlign.center,
-                      style: TextStyle(fontSize: 14, color: _kTextGrey, height: 1.4),
+                      style: TextStyle(fontSize: 14, color: Theme.of(context).colorScheme.onSurfaceVariant, height: 1.4),
                     ),
-                    const SizedBox(height: 28),
+                    SizedBox(height: 28),
 
                     // Card del Formulario
                     Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
+                      padding: EdgeInsets.symmetric(horizontal: 20, vertical: 24),
                       decoration: BoxDecoration(
-                        color: Colors.white,
+                        color: Theme.of(context).colorScheme.surface,
                         borderRadius: BorderRadius.circular(24),
                         boxShadow: [
                           BoxShadow(
-                            color: Colors.black.withValues(alpha: 0.03),
+                            color: Theme.of(context).colorScheme.shadow.withValues(alpha: 0.03),
                             blurRadius: 20,
-                            offset: const Offset(0, 8),
+                            offset: Offset(0, 8),
                           ),
                         ],
                       ),
@@ -208,25 +204,25 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             // ── Campo Nombre ──
-                            const Text(
+                            Text(
                               'Nombre completo',
-                              style: TextStyle(fontWeight: FontWeight.w700, fontSize: 13, color: _kTextDark),
+                              style: TextStyle(fontWeight: FontWeight.w700, fontSize: 13, color: Theme.of(context).colorScheme.onSurface),
                             ),
-                            const SizedBox(height: 8),
+                            SizedBox(height: 8),
                             _StyledField(
                               controller: _nameCtrl,
                               hint: 'Marina Soler',
                               prefixIcon: Icons.person_outline_rounded,
                               validator: (v) => v!.isEmpty ? 'Ingresa tu nombre' : null,
                             ),
-                            const SizedBox(height: 16),
+                            SizedBox(height: 16),
 
                             // ── Campo Correo ──
-                            const Text(
+                            Text(
                               'Correo electrónico',
-                              style: TextStyle(fontWeight: FontWeight.w700, fontSize: 13, color: _kTextDark),
+                              style: TextStyle(fontWeight: FontWeight.w700, fontSize: 13, color: Theme.of(context).colorScheme.onSurface),
                             ),
-                            const SizedBox(height: 8),
+                            SizedBox(height: 8),
                             _StyledField(
                               controller: _emailCtrl,
                               hint: 'marina@ejemplo.com',
@@ -238,14 +234,14 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                                 return null;
                               },
                             ),
-                            const SizedBox(height: 16),
+                            SizedBox(height: 16),
 
                             // ── Campo Contraseña ──
-                            const Text(
+                            Text(
                               'Contraseña segura',
-                              style: TextStyle(fontWeight: FontWeight.w700, fontSize: 13, color: _kTextDark),
+                              style: TextStyle(fontWeight: FontWeight.w700, fontSize: 13, color: Theme.of(context).colorScheme.onSurface),
                             ),
-                            const SizedBox(height: 8),
+                            SizedBox(height: 8),
                             _StyledField(
                               controller: _passCtrl,
                               hint: '••••••••',
@@ -255,7 +251,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                                 icon: Icon(
                                   _obscure ? Icons.visibility_outlined : Icons.visibility_off_outlined,
                                   size: 20,
-                                  color: Colors.grey.shade500,
+                                  color: Theme.of(context).colorScheme.onSurfaceVariant,
                                 ),
                                 onPressed: () => setState(() => _obscure = !_obscure),
                               ),
@@ -265,24 +261,24 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                                 return null;
                               },
                             ),
-                            const SizedBox(height: 8),
+                            SizedBox(height: 8),
                             
                             // Requisitos contraseña
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                const Text('Mínimo 8 caracteres', style: TextStyle(fontSize: 10, color: _kTextGrey, fontWeight: FontWeight.w600)),
-                                const Text('A-Z, 0-9, símbolos', style: TextStyle(fontSize: 10, color: _kTextGrey, fontWeight: FontWeight.w600)),
+                                Text('Mínimo 8 caracteres', style: TextStyle(fontSize: 10, color: Theme.of(context).colorScheme.onSurfaceVariant, fontWeight: FontWeight.w600)),
+                                Text('A-Z, 0-9, símbolos', style: TextStyle(fontSize: 10, color: Theme.of(context).colorScheme.onSurfaceVariant, fontWeight: FontWeight.w600)),
                               ],
                             ),
-                            const SizedBox(height: 16),
+                            SizedBox(height: 16),
 
                             // ── Campo Confirmar Contraseña ──
-                            const Text(
+                            Text(
                               'Confirmar contraseña',
-                              style: TextStyle(fontWeight: FontWeight.w700, fontSize: 13, color: _kTextDark),
+                              style: TextStyle(fontWeight: FontWeight.w700, fontSize: 13, color: Theme.of(context).colorScheme.onSurface),
                             ),
-                            const SizedBox(height: 8),
+                            SizedBox(height: 8),
                             _StyledField(
                               controller: _confirmPassCtrl,
                               hint: '••••••••',
@@ -292,7 +288,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                                 icon: Icon(
                                   _obscureConfirm ? Icons.visibility_outlined : Icons.visibility_off_outlined,
                                   size: 20,
-                                  color: Colors.grey.shade500,
+                                  color: Theme.of(context).colorScheme.onSurfaceVariant,
                                 ),
                                 onPressed: () => setState(() => _obscureConfirm = !_obscureConfirm),
                               ),
@@ -301,7 +297,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                                 return null;
                               },
                             ),
-                            const SizedBox(height: 20),
+                            SizedBox(height: 20),
 
                             // ── Aceptar Términos ──
                             Row(
@@ -312,17 +308,17 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                                   height: 20,
                                   child: Checkbox(
                                     value: _acceptTerms,
-                                    activeColor: _kBlue,
-                                    side: BorderSide(color: Colors.grey.shade400, width: 1.5),
+                                    activeColor: Theme.of(context).colorScheme.primary,
+                                    side: BorderSide(color: Theme.of(context).colorScheme.onSurfaceVariant, width: 1.5),
                                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
                                     onChanged: (v) => setState(() => _acceptTerms = v!),
                                   ),
                                 ),
-                                const SizedBox(width: 8),
+                                SizedBox(width: 8),
                                 Expanded(
                                   child: RichText(
-                                    text: const TextSpan(
-                                      style: TextStyle(fontSize: 11, color: _kTextGrey, height: 1.4),
+                                    text: TextSpan(
+                                      style: TextStyle(fontSize: 11, color: Theme.of(context).colorScheme.onSurfaceVariant, height: 1.4),
                                       children: [
                                         TextSpan(text: 'Acepto los '),
                                         TextSpan(text: 'Términos de Servicio', style: TextStyle(color: _kGreenBadge, fontWeight: FontWeight.w600, decoration: TextDecoration.underline)),
@@ -335,7 +331,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                                 ),
                               ],
                             ),
-                            const SizedBox(height: 24),
+                            SizedBox(height: 24),
 
                             // ── Botón Crear Cuenta ──
                             SizedBox(
@@ -344,20 +340,20 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                               child: ElevatedButton(
                                 onPressed: authState.isLoading ? null : _submit,
                                 style: ElevatedButton.styleFrom(
-                                  backgroundColor: _kBlue,
-                                  foregroundColor: Colors.white,
+                                  backgroundColor: Theme.of(context).colorScheme.primary,
+                                  foregroundColor: Theme.of(context).colorScheme.surface,
                                   elevation: 0,
                                   shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(26),
                                   ),
                                 ),
                                 child: authState.isLoading
-                                    ? const SizedBox(
+                                    ? SizedBox(
                                         width: 22,
                                         height: 22,
-                                        child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2.5),
+                                        child: CircularProgressIndicator(color: Theme.of(context).colorScheme.surface, strokeWidth: 2.5),
                                       )
-                                    : const Row(
+                                    : Row(
                                         mainAxisAlignment: MainAxisAlignment.center,
                                         children: [
                                           Text('Crear Cuenta', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
@@ -367,20 +363,20 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                                       ),
                               ),
                             ),
-                            const SizedBox(height: 24),
+                            SizedBox(height: 24),
 
                             // ── Separador "O regístrate con" ──
                             Row(
                               children: [
-                                Expanded(child: Divider(color: Colors.grey.shade300)),
-                                const Padding(
+                                Expanded(child: Divider(color: Theme.of(context).colorScheme.outlineVariant)),
+                                Padding(
                                   padding: EdgeInsets.symmetric(horizontal: 12),
-                                  child: Text('O regístrate con', style: TextStyle(fontSize: 11, color: _kTextGrey, fontWeight: FontWeight.w600)),
+                                  child: Text('O regístrate con', style: TextStyle(fontSize: 11, color: Theme.of(context).colorScheme.onSurfaceVariant, fontWeight: FontWeight.w600)),
                                 ),
-                                Expanded(child: Divider(color: Colors.grey.shade300)),
+                                Expanded(child: Divider(color: Theme.of(context).colorScheme.outlineVariant)),
                               ],
                             ),
-                            const SizedBox(height: 20),
+                            SizedBox(height: 20),
 
                             // ── Botones Sociales ──
                             Row(
@@ -389,34 +385,34 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                                   child: ElevatedButton.icon(
                                     onPressed: () {},
                                     style: ElevatedButton.styleFrom(
-                                      backgroundColor: _kFieldBg,
-                                      foregroundColor: _kTextDark,
+                                      backgroundColor: Theme.of(context).colorScheme.surfaceContainerHighest,
+                                      foregroundColor: Theme.of(context).colorScheme.onSurface,
                                       elevation: 0,
-                                      minimumSize: const Size(0, 48),
+                                      minimumSize: Size(0, 48),
                                       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                                     ),
                                     icon: Image.asset(
                                       'assets/images/google_logo.png',
                                       width: 18,
                                       height: 18,
-                                      errorBuilder: (context, error, stackTrace) => const Icon(Icons.g_mobiledata_rounded, color: Colors.red, size: 22),
+                                      errorBuilder: (context, error, stackTrace) => Icon(Icons.g_mobiledata_rounded, color: Colors.red, size: 22),
                                     ),
-                                    label: const Text('Google', style: TextStyle(fontWeight: FontWeight.w700, fontSize: 13)),
+                                    label: Text('Google', style: TextStyle(fontWeight: FontWeight.w700, fontSize: 13)),
                                   ),
                                 ),
-                                const SizedBox(width: 12),
+                                SizedBox(width: 12),
                                 Expanded(
                                   child: ElevatedButton.icon(
                                     onPressed: () {},
                                     style: ElevatedButton.styleFrom(
-                                      backgroundColor: _kFieldBg,
-                                      foregroundColor: _kTextDark,
+                                      backgroundColor: Theme.of(context).colorScheme.surfaceContainerHighest,
+                                      foregroundColor: Theme.of(context).colorScheme.onSurface,
                                       elevation: 0,
-                                      minimumSize: const Size(0, 48),
+                                      minimumSize: Size(0, 48),
                                       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                                     ),
                                     icon: Icon(Icons.facebook, color: Colors.blue.shade700, size: 20),
-                                    label: const Text('Facebook', style: TextStyle(fontWeight: FontWeight.w700, fontSize: 13)),
+                                    label: Text('Facebook', style: TextStyle(fontWeight: FontWeight.w700, fontSize: 13)),
                                   ),
                                 ),
                               ],
@@ -426,25 +422,25 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                       ),
                     ),
 
-                    const SizedBox(height: 28),
+                    SizedBox(height: 28),
 
                     // ── Inicia sesión ──
                     GestureDetector(
                       onTap: () => context.go('/login'),
                       child: RichText(
-                        text: const TextSpan(
-                          style: TextStyle(fontSize: 14, color: _kTextGrey),
+                        text: TextSpan(
+                          style: TextStyle(fontSize: 14, color: Theme.of(context).colorScheme.onSurfaceVariant),
                           children: [
                             TextSpan(text: '¿Ya tienes una cuenta? '),
                             TextSpan(
                               text: 'Inicia sesión',
-                              style: TextStyle(color: _kBlue, fontWeight: FontWeight.w700),
+                              style: TextStyle(color: Theme.of(context).colorScheme.primary, fontWeight: FontWeight.w700),
                             ),
                           ],
                         ),
                       ),
                     ),
-                    const SizedBox(height: 24),
+                    SizedBox(height: 24),
                   ],
                 ),
               ),
@@ -485,22 +481,22 @@ class _StyledField extends StatelessWidget {
       obscureText: obscureText,
       keyboardType: keyboardType,
       validator: validator,
-      style: const TextStyle(fontSize: 14, color: _kTextDark),
+      style: TextStyle(fontSize: 14, color: Theme.of(context).colorScheme.onSurface),
       decoration: InputDecoration(
         hintText: hint,
-        hintStyle: TextStyle(color: Colors.grey.shade500, fontSize: 14),
-        prefixIcon: Icon(prefixIcon, size: 20, color: Colors.grey.shade600),
+        hintStyle: TextStyle(color: Theme.of(context).colorScheme.onSurfaceVariant, fontSize: 14),
+        prefixIcon: Icon(prefixIcon, size: 20, color: Theme.of(context).colorScheme.onSurfaceVariant),
         suffixIcon: suffix,
         filled: true,
-        fillColor: _kFieldBg,
-        contentPadding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
+        fillColor: Theme.of(context).colorScheme.surfaceContainerHighest,
+        contentPadding: EdgeInsets.symmetric(vertical: 16, horizontal: 16),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
           borderSide: BorderSide.none,
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
-          borderSide: const BorderSide(color: _kBlue, width: 1.5),
+          borderSide: BorderSide(color: Theme.of(context).colorScheme.primary, width: 1.5),
         ),
         errorBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
