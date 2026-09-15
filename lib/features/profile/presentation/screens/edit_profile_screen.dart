@@ -6,8 +6,6 @@ import 'package:flutter_timezone/flutter_timezone.dart';
 
 import '../../providers/profile_provider.dart';
 
-const _kFieldBg = Color(0xFFF3F4F6); // actually the form background is white, fields are grey
-const _kBorder = Color(0xFFE5E7EB);
 
 class EditProfileScreen extends ConsumerStatefulWidget {
   const EditProfileScreen({super.key});
@@ -200,7 +198,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
                     decoration: BoxDecoration(
                       color: Theme.of(context).colorScheme.surface,
                       borderRadius: BorderRadius.circular(16),
-                      border: Border.all(color: _kBorder),
+                      border: Border.all(color: Theme.of(context).colorScheme.outlineVariant),
                     ),
                     child: Column(
                       children: [
@@ -230,7 +228,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
                     decoration: BoxDecoration(
                       color: Theme.of(context).colorScheme.surface,
                       borderRadius: BorderRadius.circular(16),
-                      border: Border.all(color: _kBorder),
+                      border: Border.all(color: Theme.of(context).colorScheme.outlineVariant),
                     ),
                     child: Column(
                       children: [
@@ -248,7 +246,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
                     decoration: BoxDecoration(
                       color: Theme.of(context).colorScheme.surface,
                       borderRadius: BorderRadius.circular(16),
-                      border: Border.all(color: _kBorder),
+                      border: Border.all(color: Theme.of(context).colorScheme.outlineVariant),
                     ),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -274,7 +272,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
                         SizedBox(height: 8),
                         Container(
                           padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                          decoration: BoxDecoration(color: _kFieldBg, borderRadius: BorderRadius.circular(12)),
+                          decoration: BoxDecoration(color: Theme.of(context).colorScheme.surfaceContainerHighest, borderRadius: BorderRadius.circular(12)),
                           child: Row(
                             children: [
                               Icon(Icons.mail_outline, color: Theme.of(context).colorScheme.onSurfaceVariant, size: 18),
@@ -283,7 +281,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
                               Spacer(),
                               Container(
                                 padding: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                                decoration: BoxDecoration(border: Border.all(color: _kBorder), borderRadius: BorderRadius.circular(8), color: Theme.of(context).colorScheme.surface),
+                                decoration: BoxDecoration(border: Border.all(color: Theme.of(context).colorScheme.outlineVariant), borderRadius: BorderRadius.circular(8), color: Theme.of(context).colorScheme.surface),
                                 child: Text('Modificar', style: TextStyle(color: Theme.of(context).colorScheme.primary, fontWeight: FontWeight.bold, fontSize: 11)),
                               ),
                             ],
@@ -296,7 +294,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
                         SizedBox(height: 8),
                         Container(
                           padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                          decoration: BoxDecoration(color: _kFieldBg, borderRadius: BorderRadius.circular(12)),
+                          decoration: BoxDecoration(color: Theme.of(context).colorScheme.surfaceContainerHighest, borderRadius: BorderRadius.circular(12)),
                           child: Row(
                             children: [
                               Icon(Icons.key_outlined, color: Theme.of(context).colorScheme.onSurfaceVariant, size: 18),
@@ -305,14 +303,14 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
                               Spacer(),
                               Container(
                                 padding: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                                decoration: BoxDecoration(border: Border.all(color: _kBorder), borderRadius: BorderRadius.circular(8), color: Theme.of(context).colorScheme.surface),
+                                decoration: BoxDecoration(border: Border.all(color: Theme.of(context).colorScheme.outlineVariant), borderRadius: BorderRadius.circular(8), color: Theme.of(context).colorScheme.surface),
                                 child: Text('Actualizar', style: TextStyle(color: Theme.of(context).colorScheme.primary, fontWeight: FontWeight.bold, fontSize: 11)),
                               ),
                             ],
                           ),
                         ),
                         SizedBox(height: 16),
-                        Divider(height: 1, color: _kBorder),
+                        Divider(height: 1, color: Theme.of(context).colorScheme.outlineVariant),
                         SizedBox(height: 16),
 
                         // Toggles
@@ -345,7 +343,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
                           children: [
                             Row(
                               children: [
-                                CircleAvatar(radius: 14, backgroundColor: _kFieldBg, child: Icon(Icons.shield_outlined, color: Theme.of(context).colorScheme.onSurfaceVariant, size: 14)),
+                                CircleAvatar(radius: 14, backgroundColor: Theme.of(context).colorScheme.surfaceContainerHighest, child: Icon(Icons.shield_outlined, color: Theme.of(context).colorScheme.onSurfaceVariant, size: 14)),
                                 SizedBox(width: 12),
                                 Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -388,7 +386,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
                     child: OutlinedButton(
                       onPressed: () => context.pop(),
                       style: OutlinedButton.styleFrom(
-                        side: BorderSide(color: _kBorder),
+                        side: BorderSide(color: Theme.of(context).colorScheme.outlineVariant),
                         padding: EdgeInsets.symmetric(vertical: 16),
                         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
                         backgroundColor: Theme.of(context).colorScheme.surface,
@@ -434,7 +432,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
           style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: Theme.of(context).colorScheme.onSurface),
           decoration: InputDecoration(
             filled: true,
-            fillColor: _kFieldBg,
+            fillColor: Theme.of(context).colorScheme.surfaceContainerHighest,
             prefixIcon: prefixWidget ?? (prefixIcon != null ? Icon(prefixIcon, color: Theme.of(context).colorScheme.onSurfaceVariant, size: 18) : null),
             prefixIconConstraints: BoxConstraints(minWidth: 40, minHeight: 40),
             suffixIcon: suffixIcon != null ? Icon(suffixIcon, color: Theme.of(context).colorScheme.onSurfaceVariant, size: 18) : null,

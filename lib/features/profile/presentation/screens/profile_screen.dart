@@ -6,7 +6,6 @@ import '../../providers/profile_provider.dart';
 import '../../providers/friends_provider.dart';
 
 const _kPurple = Color(0xFF6B48FF);
-const _kLightPurple = Color(0xFFF4F0FB);
 const _kOrange = Color(0xFFFF7A59);
 
 class ProfileScreen extends ConsumerWidget {
@@ -172,7 +171,7 @@ class ProfileScreen extends ConsumerWidget {
                 children: [
                   Container(
                     padding: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                    decoration: BoxDecoration(color: _kLightPurple, borderRadius: BorderRadius.circular(12)),
+                    decoration: BoxDecoration(color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.1), borderRadius: BorderRadius.circular(12)),
                     child: Row(
                       children: [
                         Icon(Icons.self_improvement, color: _kPurple, size: 14),
@@ -210,7 +209,7 @@ class ProfileScreen extends ConsumerWidget {
                   icon: Icon(Icons.edit, size: 16, color: _kPurple),
                   label: Text('Editar Perfil', style: TextStyle(color: _kPurple, fontWeight: FontWeight.bold)),
                   style: FilledButton.styleFrom(
-                    backgroundColor: _kLightPurple,
+                    backgroundColor: Theme.of(context).colorScheme.primary.withValues(alpha: 0.1),
                     padding: EdgeInsets.symmetric(vertical: 14),
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
                     elevation: 0,
@@ -303,7 +302,7 @@ class ProfileScreen extends ConsumerWidget {
           SizedBox(width: 8),
           Container(
             padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-            decoration: BoxDecoration(color: _kLightPurple, borderRadius: BorderRadius.circular(12)),
+            decoration: BoxDecoration(color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.1), borderRadius: BorderRadius.circular(12)),
             child: Text(badgeText, style: TextStyle(fontSize: 10, color: _kPurple, fontWeight: FontWeight.bold)),
           ),
         ],
@@ -475,7 +474,7 @@ class ProfileScreen extends ConsumerWidget {
           ),
           Container(
             padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-            decoration: BoxDecoration(color: _kLightPurple, borderRadius: BorderRadius.circular(12)),
+            decoration: BoxDecoration(color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.1), borderRadius: BorderRadius.circular(12)),
             child: Row(
               children: [
                 Text(actionType, style: TextStyle(color: _kPurple, fontSize: 12, fontWeight: FontWeight.bold)),

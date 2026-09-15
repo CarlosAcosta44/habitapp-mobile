@@ -313,7 +313,7 @@ class _CreateHabitScreenState extends ConsumerState<CreateHabitScreen> {
                     child: Icon(
                       getCategoryIcon(cat.icono),
                       size: 16,
-                      color: isSelected ? Theme.of(context).colorScheme.primary : Theme.of(context).colorScheme.outline,
+                      color: isSelected ? Theme.of(context).colorScheme.primary : Theme.of(context).colorScheme.onSurfaceVariant,
                     ),
                   ),
                 );
@@ -341,7 +341,7 @@ class _CreateHabitScreenState extends ConsumerState<CreateHabitScreen> {
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Icon(icon, color: Theme.of(context).colorScheme.outline, size: 20),
+              Icon(icon, color: Theme.of(context).colorScheme.onSurfaceVariant, size: 20),
               SizedBox(width: 12),
               Expanded(
                 child: TextFormField(
@@ -350,7 +350,7 @@ class _CreateHabitScreenState extends ConsumerState<CreateHabitScreen> {
                   style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: Theme.of(context).colorScheme.onSurface),
                   decoration: InputDecoration(
                     hintText: hint,
-                    hintStyle: TextStyle(color: Theme.of(context).colorScheme.outline, fontWeight: FontWeight.normal),
+                    hintStyle: TextStyle(color: Theme.of(context).colorScheme.onSurfaceVariant, fontWeight: FontWeight.normal),
                     border: InputBorder.none,
                     isDense: true,
                     contentPadding: EdgeInsets.zero,
@@ -383,7 +383,7 @@ class _CreateHabitScreenState extends ConsumerState<CreateHabitScreen> {
           SizedBox(height: 8),
           Row(
             children: [
-              Icon(Icons.flag_outlined, color: Theme.of(context).colorScheme.outline, size: 20),
+              Icon(Icons.flag_outlined, color: Theme.of(context).colorScheme.onSurfaceVariant, size: 20),
               SizedBox(width: 12),
               Expanded(
                 child: Container(

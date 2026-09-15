@@ -132,7 +132,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                   ),
                 ),
                 
-                Divider(color: Theme.of(context).colorScheme.outline, height: 1),
+                Divider(color: Theme.of(context).colorScheme.onSurfaceVariant, height: 1),
                 
                 habitsAsync.when(
                   data: (allHabits) {

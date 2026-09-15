@@ -244,7 +244,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
             title,
             style: TextStyle(color: Theme.of(context).colorScheme.onSurfaceVariant, fontSize: 10, fontWeight: FontWeight.w800, letterSpacing: 1),
           ),
-          Icon(trailingIcon, color: Theme.of(context).colorScheme.outline, size: 18),
+          Icon(trailingIcon, color: Theme.of(context).colorScheme.onSurfaceVariant, size: 18),
         ],
       ),
     );
@@ -614,7 +614,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
               ],
             ),
           ),
-          Icon(Icons.chevron_right, color: Theme.of(context).colorScheme.outline, size: 20),
+          Icon(Icons.chevron_right, color: Theme.of(context).colorScheme.onSurfaceVariant, size: 20),
         ],
       ),
     );

@@ -158,7 +158,7 @@ class _HabitDetailScreenState extends ConsumerState<HabitDetailScreen> {
                                   child: Icon(
                                     _getCategoryIcon(cat.icono),
                                     size: 16,
-                                    color: isSelected ? Theme.of(context).colorScheme.primary : Theme.of(context).colorScheme.outline,
+                                    color: isSelected ? Theme.of(context).colorScheme.primary : Theme.of(context).colorScheme.onSurfaceVariant,
                                   ),
                                 ),
                               );
@@ -185,7 +185,7 @@ class _HabitDetailScreenState extends ConsumerState<HabitDetailScreen> {
                     SizedBox(height: 8),
                     Row(
                       children: [
-                        Icon(Icons.flag_outlined, color: Theme.of(context).colorScheme.outline, size: 20),
+                        Icon(Icons.flag_outlined, color: Theme.of(context).colorScheme.onSurfaceVariant, size: 20),
                         SizedBox(width: 12),
                         Expanded(
                           child: Container(
@@ -556,7 +556,7 @@ class _HabitDetailScreenState extends ConsumerState<HabitDetailScreen> {
                     icon: Icon(Icons.add, size: 16),
                     label: Text('+1 ${habit.unidadMedida}'),
                     style: FilledButton.styleFrom(
-                      backgroundColor: habit.diasSemana.contains(DateTime.now().weekday) ? Theme.of(context).colorScheme.primary : Theme.of(context).colorScheme.outline,
+                      backgroundColor: habit.diasSemana.contains(DateTime.now().weekday) ? Theme.of(context).colorScheme.primary : Theme.of(context).colorScheme.onSurfaceVariant,
                       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
                       padding: EdgeInsets.symmetric(horizontal: 20, vertical: 12),
                     ),

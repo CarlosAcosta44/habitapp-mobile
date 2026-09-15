@@ -4,7 +4,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../providers/auth_provider.dart';
 
-const _kFieldBg = Color(0xFFF3F3F3);
+
 const _kGreenBadge = Color(0xFF0F8A5D);
 
 // ─────────────────────────────────────────────────────────
@@ -242,7 +242,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                                   child: Checkbox(
                                     value: _rememberMe,
                                     activeColor: Theme.of(context).colorScheme.primary,
-                                    side: BorderSide(color: Theme.of(context).colorScheme.outline, width: 1.5),
+                                    side: BorderSide(color: Theme.of(context).colorScheme.onSurfaceVariant, width: 1.5),
                                     shape: RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(4),
                                     ),
@@ -334,7 +334,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                                   child: ElevatedButton.icon(
                                     onPressed: () {},
                                     style: ElevatedButton.styleFrom(
-                                      backgroundColor: _kFieldBg,
+                                      backgroundColor: Theme.of(context).colorScheme.surfaceContainerHighest,
                                       foregroundColor: Theme.of(context).colorScheme.onSurface,
                                       elevation: 0,
                                       minimumSize: Size(0, 48),
@@ -362,7 +362,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                                   child: ElevatedButton.icon(
                                     onPressed: () {},
                                     style: ElevatedButton.styleFrom(
-                                      backgroundColor: _kFieldBg,
+                                      backgroundColor: Theme.of(context).colorScheme.surfaceContainerHighest,
                                       foregroundColor: Theme.of(context).colorScheme.onSurface,
                                       elevation: 0,
                                       minimumSize: Size(0, 48),
@@ -467,7 +467,7 @@ class _StyledField extends StatelessWidget {
         prefixIcon: Icon(prefixIcon, size: 20, color: Theme.of(context).colorScheme.onSurfaceVariant),
         suffixIcon: suffix,
         filled: true,
-        fillColor: _kFieldBg,
+        fillColor: Theme.of(context).colorScheme.surfaceContainerHighest,
         contentPadding: EdgeInsets.symmetric(vertical: 16, horizontal: 16),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
