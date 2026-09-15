@@ -502,7 +502,7 @@ class _HabitDetailScreenState extends ConsumerState<HabitDetailScreen> {
                 children: [
                   Container(
                     decoration: BoxDecoration(
-                      color: Colors.grey.shade100,
+                      color: Theme.of(context).colorScheme.surfaceContainerHighest,
                       shape: BoxShape.circle,
                     ),
                     child: IconButton(
