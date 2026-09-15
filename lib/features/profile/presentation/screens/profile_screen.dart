@@ -18,97 +18,97 @@ class ProfileScreen extends ConsumerWidget {
 
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-      body: SafeArea(
-        child: profileState.when(
-          data: (profile) {
-            if (profile == null) {
-              return Center(child: Text('No se pudo cargar el perfil'));
-            }
+      body: profileState.when(
+        data: (profile) {
+          if (profile == null) {
+            return Center(child: Text('No se pudo cargar el perfil'));
+          }
 
-            return CustomScrollView(
-              slivers: [
-                // ── AppBar ──
-                SliverAppBar(
-                  backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-                  elevation: 0,
-                  pinned: true,
-                  leading: IconButton(
-                    icon: Icon(Icons.arrow_back, color: Theme.of(context).colorScheme.onSurface),
-                    onPressed: () => context.pop(),
-                  ),
-                  title: Text(
-                    'Mi Perfil',
-                    style: TextStyle(color: Theme.of(context).colorScheme.onSurface, fontWeight: FontWeight.bold, fontSize: 18),
-                  ),
-                  centerTitle: true,
-                  actions: [
-                    Container(
-                      margin: EdgeInsets.symmetric(vertical: 8),
-                      decoration: BoxDecoration(color: Theme.of(context).colorScheme.shadow.withValues(alpha: 0.05), shape: BoxShape.circle),
-                      child: IconButton(
-                        icon: Icon(Icons.tune, color: Theme.of(context).colorScheme.onSurface, size: 20),
-                        onPressed: () => context.push('/settings'),
-                      ),
-                    ),
-                    SizedBox(width: 16),
-                  ],
+          return CustomScrollView(
+            slivers: [
+              // ── AppBar ──
+              SliverAppBar(
+                backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+                elevation: 0,
+                pinned: true,
+                leading: IconButton(
+                  icon: Icon(Icons.arrow_back, color: Theme.of(context).colorScheme.onSurface),
+                  onPressed: () => context.pop(),
                 ),
+                title: Text(
+                  'Mi Perfil',
+                  style: TextStyle(color: Theme.of(context).colorScheme.onSurface, fontWeight: FontWeight.bold, fontSize: 18),
+                ),
+                centerTitle: true,
+                actions: [
+                  Container(
+                    margin: EdgeInsets.symmetric(vertical: 8),
+                    decoration: BoxDecoration(color: Theme.of(context).colorScheme.shadow.withValues(alpha: 0.05), shape: BoxShape.circle),
+                    child: IconButton(
+                      icon: Icon(Icons.tune, color: Theme.of(context).colorScheme.onSurface, size: 20),
+                      onPressed: () => context.push('/settings'),
+                    ),
+                  ),
+                  SizedBox(width: 16),
+                ],
+              ),
 
-                SliverPadding(
-                  padding: EdgeInsets.symmetric(horizontal: 20, vertical: 16),
-                  sliver: SliverList(
-                    delegate: SliverChildListDelegate([
-                      // ── User Card ──
-                      _buildUserCard(context, profile, ref),
-                      SizedBox(height: 24),
+              SliverPadding(
+                padding: EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+                sliver: SliverList(
+                  delegate: SliverChildListDelegate([
+                    // ── User Card ──
+                    _buildUserCard(context, profile, ref),
+                    SizedBox(height: 24),
 
-                      // ── Basic Stats Row ──
-                      _buildBasicStatsRow(context, ref),
-                      SizedBox(height: 24),
+                    // ── Basic Stats Row ──
+                    _buildBasicStatsRow(context, ref),
+                    SizedBox(height: 24),
 
-                      // ── Puntos de Bienestar ──
-                      _buildSectionHeader(context, 'Puntos de Bienestar', badgeText: '+320 pts esta semana', icon: Icons.stars, iconColor: _kPurple),
-                      SizedBox(height: 12),
-                      _buildPointsCard(context, profile),
-                      SizedBox(height: 32),
+                    // ── Puntos de Bienestar ──
+                    _buildSectionHeader(context, 'Puntos de Bienestar', badgeText: '+320 pts esta semana', icon: Icons.stars, iconColor: _kPurple),
+                    SizedBox(height: 12),
+                    _buildPointsCard(context, profile),
+                    SizedBox(height: 32),
 
-                      // ── Logros ──
-                      _buildSectionHeader(context, 'Logros', subtitle: '12 de 24', actionText: 'Ver todos ->', icon: Icons.workspace_premium, iconColor: _kPurple),
-                      SizedBox(height: 16),
-                      _buildAchievementsRow(context),
-                      SizedBox(height: 32),
+                    // ── Logros ──
+                    _buildSectionHeader(context, 'Logros', subtitle: '12 de 24', actionText: 'Ver todos ->', icon: Icons.workspace_premium, iconColor: _kPurple),
+                    SizedBox(height: 16),
+                    _buildAchievementsRow(context),
+                    SizedBox(height: 32),
 
-                      // ── Amigos ──
-                      _buildSectionHeader(context, 'Amigos', subtitle: '18 amigos', actionText: '+ Añadir amigos', icon: Icons.people_alt_outlined, iconColor: _kPurple),
-                      SizedBox(height: 16),
-                      
-                      // Lista de amigos desde el backend
-                      friendsState.when(
-                        data: (friends) {
-                          if (friends.isEmpty) {
-                            return Center(child: Padding(
-                              padding: EdgeInsets.all(16.0),
-                              child: Text('Aún no tienes amigos añadidos.', style: TextStyle(color: Theme.of(context).colorScheme.onSurfaceVariant)),
-                            ));
-                          }
-                          return Column(
-                            children: friends.map((friend) => _buildFriendTile(
-                              context,
-                              name: '${friend.nombre} ${friend.apellido}',
-                              streak: '${friend.rachaDias} días',
-                              subtitle: 'En racha hoy', // Mocked subtitle
-                              avatarUrl: friend.fotoperfil,
-                              actionType: 'Saludar',
-                            )).toList(),
-                          );
-                        },
-                        loading: () => Center(child: CircularProgressIndicator()),
-                        error: (err, _) => Center(child: Text('Error al cargar amigos')),
-                      ),
+                    // ── Amigos ──
+                    _buildSectionHeader(context, 'Amigos', subtitle: '18 amigos', actionText: '+ Añadir amigos', icon: Icons.people_alt_outlined, iconColor: _kPurple),
+                    SizedBox(height: 16),
+                    
+                    // Lista de amigos desde el backend
+                    friendsState.when(
+                      data: (friends) {
+                        if (friends.isEmpty) {
+                          return Center(child: Padding(
+                            padding: EdgeInsets.all(16.0),
+                            child: Text('Aún no tienes amigos añadidos.', style: TextStyle(color: Theme.of(context).colorScheme.onSurfaceVariant)),
+                          ));
+                        }
+                        return Column(
+                          children: friends.map((friend) => _buildFriendTile(
+                            context,
+                            name: '${friend.nombre} ${friend.apellido}',
+                            streak: '${friend.rachaDias} días',
+                            subtitle: 'En racha hoy', // Mocked subtitle
+                            avatarUrl: friend.fotoperfil,
+                            actionType: 'Saludar',
+                          )).toList(),
+                        );
+                      },
+                      loading: () => Center(child: CircularProgressIndicator()),
+                      error: (err, _) => Center(child: Text('Error al cargar amigos')),
+                    ),
 
-                      SizedBox(height: 16),
+                    SizedBox(height: 16),
 
-                      // ── Botón Buscar Contactos ──
+                    // ── Botón Buscar Contactos ──
+                    Container(
                       Container(
                         width: double.infinity,
                         padding: EdgeInsets.symmetric(vertical: 16),
