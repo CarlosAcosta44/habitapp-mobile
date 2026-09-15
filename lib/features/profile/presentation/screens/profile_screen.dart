@@ -331,15 +331,15 @@ class ProfileScreen extends ConsumerWidget {
                 crossAxisAlignment: CrossAxisAlignment.baseline,
                 textBaseline: TextBaseline.alphabetic,
                 children: [
-                  Text(profile.puntostotales.toString(), style: TextStyle(fontSize: 40, fontWeight: FontWeight.w900, color: Theme.of(context).colorScheme.surface)),
+                  Text(profile.puntostotales.toString(), style: TextStyle(fontSize: 40, fontWeight: FontWeight.w900, color: Colors.white)),
                   SizedBox(width: 4),
                   Text('pts', style: TextStyle(fontSize: 16, color: Colors.white70)),
                 ],
               ),
               Container(
                 padding: EdgeInsets.all(12),
-                decoration: BoxDecoration(color: Theme.of(context).colorScheme.surface.withValues(alpha: 0.2), borderRadius: BorderRadius.circular(16)),
-                child: Icon(Icons.workspace_premium, color: Theme.of(context).colorScheme.surface, size: 28),
+                decoration: BoxDecoration(color: Colors.white.withValues(alpha: 0.2), borderRadius: BorderRadius.circular(16)),
+                child: Icon(Icons.workspace_premium, color: Colors.white, size: 28),
               ),
             ],
           ),
@@ -360,10 +360,10 @@ class ProfileScreen extends ConsumerWidget {
                 child: Container(
                   padding: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                   decoration: BoxDecoration(
-                    color: Theme.of(context).colorScheme.surface.withValues(alpha: 0.2),
+                    color: Colors.white.withValues(alpha: 0.2),
                     borderRadius: BorderRadius.circular(12),
                   ),
-                  child: Text('Ver ranking', style: TextStyle(color: Theme.of(context).colorScheme.surface, fontSize: 10, fontWeight: FontWeight.bold)),
+                  child: Text('Ver ranking', style: TextStyle(color: Colors.white, fontSize: 10, fontWeight: FontWeight.bold)),
                 ),
               ),
             ],
