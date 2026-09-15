@@ -527,7 +527,7 @@ class _CreateHabitScreenState extends ConsumerState<CreateHabitScreen> {
             }).toList(),
           ),
           SizedBox(height: 24),
-          Divider(height: 1, color: Color(0xFFF3F3F3)),
+          Divider(height: 1, color: Theme.of(context).colorScheme.outlineVariant),
           SizedBox(height: 16),
           Row(
             children: [

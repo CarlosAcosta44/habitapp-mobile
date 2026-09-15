@@ -454,7 +454,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
             (v) => setState(() => _appleHealthEnabled = v),
             subtitleDotColor: Theme.of(context).colorScheme.primary,
           ),
-          Divider(height: 1, indent: 70, color: Color(0xFFF3F3F3)),
+          Divider(height: 1, indent: 70, color: Theme.of(context).colorScheme.outlineVariant),
           _buildPrivacyTile(
             'Modo Privado en Comunidad',
             'Compartir hábitos de forma anónima',
