@@ -114,7 +114,7 @@ final class HabitsDashboardNotifierProvider
 }
 
 String _$habitsDashboardNotifierHash() =>
-    r'be686f11adcd04cdf88bd63317b9f933e49af48c';
+    r'e6a815903e36d8bf425580dcd253c1bc1f8f07f3';
 
 abstract class _$HabitsDashboardNotifier
     extends $AsyncNotifier<List<HabitModel>> {

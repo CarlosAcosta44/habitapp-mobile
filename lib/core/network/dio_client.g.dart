@@ -54,7 +54,7 @@ final class SecureStorageProvider
   }
 }
 
-String _$secureStorageHash() => r'a4f75721472cf77465bf47f759c90de5ca30856e';
+String _$secureStorageHash() => r'56392082011497ecf7eb752438c9b337891e0494';
 
 @ProviderFor(dioClient)
 final dioClientProvider = DioClientProvider._();
@@ -94,4 +94,4 @@ final class DioClientProvider extends $FunctionalProvider<Dio, Dio, Dio>
   }
 }
 
-String _$dioClientHash() => r'20b5d513741e1ea11c4f5ca30c0be05431cbd6a9';
+String _$dioClientHash() => r'62029f60d95c0428ffc6645594b06dfc6b3a0e72';
