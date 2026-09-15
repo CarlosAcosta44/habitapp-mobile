@@ -435,7 +435,7 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
             itemBuilder: (context, index) {
               // Simular intensidad basada en el índice
               int intensity = (index % 4);
-              Color color = Colors.grey.shade100;
+              Color color = Theme.of(context).colorScheme.surfaceContainerHighest;
               if (intensity == 1) color = Theme.of(context).colorScheme.primary.withValues(alpha: 0.3);
               if (intensity == 2) color = Theme.of(context).colorScheme.primary.withValues(alpha: 0.6);
               if (intensity == 3) color = Theme.of(context).colorScheme.primary;
@@ -445,7 +445,7 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
                   borderRadius: BorderRadius.circular(6),
                 ),
                 alignment: Alignment.center,
-                child: Text('${index+1}', style: TextStyle(color: intensity == 3 ? Theme.of(context).colorScheme.surface : Colors.black54, fontSize: 12)),
+                child: Text('${index+1}', style: TextStyle(color: intensity == 3 ? Colors.white : Theme.of(context).colorScheme.onSurfaceVariant, fontSize: 12)),
               );
             },
           ),
