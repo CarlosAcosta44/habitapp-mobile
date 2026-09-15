@@ -52,8 +52,6 @@ class MainLayoutScreen extends StatelessWidget {
         color: Theme.of(context).colorScheme.surface,
         elevation: 20,
         shadowColor: Theme.of(context).colorScheme.shadow.withValues(alpha: 0.1),
-        shape: CircularNotchedRectangle(),
-        notchMargin: 8,
         height: 70,
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,

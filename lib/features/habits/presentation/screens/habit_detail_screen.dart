@@ -7,7 +7,6 @@ import '../../data/models/category_model.dart';
 import '../../data/models/habit_model.dart';
 import '../../data/repositories/habits_repository.dart';
 
-const _kBlueLight = Color(0xFFEFF5FF);
 const _kRed = Color(0xFFF76B6B);
 
 final habitStatsProvider = FutureProvider.family<HabitModel, String>((ref, id) async {
@@ -463,7 +462,7 @@ class _HabitDetailScreenState extends ConsumerState<HabitDetailScreen> {
                     Container(
                       padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                       decoration: BoxDecoration(
-                        color: _kBlueLight,
+                        color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.1),
                         borderRadius: BorderRadius.circular(12),
                       ),
                       child: Text(
@@ -699,7 +698,7 @@ class _HabitDetailScreenState extends ConsumerState<HabitDetailScreen> {
               Spacer(),
               Container(
                 padding: EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                decoration: BoxDecoration(color: _kBlueLight, borderRadius: BorderRadius.circular(12)),
+                decoration: BoxDecoration(color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.1), borderRadius: BorderRadius.circular(12)),
                 child: Text('Activos', style: TextStyle(color: Theme.of(context).colorScheme.primary, fontSize: 10, fontWeight: FontWeight.bold)),
               )
             ],
@@ -722,7 +721,7 @@ class _HabitDetailScreenState extends ConsumerState<HabitDetailScreen> {
             ],
           ),
           SizedBox(height: 20),
-          Divider(height: 1, color: Color(0xFFF3F3F3)),
+          Divider(height: 1, color: Theme.of(context).colorScheme.outlineVariant),
           SizedBox(height: 16),
           Row(
             children: [
