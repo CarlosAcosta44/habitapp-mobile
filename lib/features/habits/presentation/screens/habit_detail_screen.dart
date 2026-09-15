@@ -114,7 +114,6 @@ class _HabitDetailScreenState extends ConsumerState<HabitDetailScreen> {
                           decoration: BoxDecoration(
                             color: Theme.of(context).scaffoldBackgroundColor,
                             borderRadius: BorderRadius.circular(20),
-                            border: Border.all(color: Theme.of(context).colorScheme.outlineVariant),
                           ),
                           child: Column(
                             children: [
@@ -192,7 +191,6 @@ class _HabitDetailScreenState extends ConsumerState<HabitDetailScreen> {
                             padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                             decoration: BoxDecoration(
                               color: Theme.of(context).scaffoldBackgroundColor,
-                              border: Border.all(color: Theme.of(context).colorScheme.outlineVariant),
                               borderRadius: BorderRadius.circular(8),
                             ),
                             child: TextFormField(
@@ -209,7 +207,6 @@ class _HabitDetailScreenState extends ConsumerState<HabitDetailScreen> {
                             padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                             decoration: BoxDecoration(
                               color: Theme.of(context).scaffoldBackgroundColor,
-                              border: Border.all(color: Theme.of(context).colorScheme.outlineVariant),
                               borderRadius: BorderRadius.circular(8),
                             ),
                             child: TextFormField(
@@ -409,7 +406,6 @@ class _HabitDetailScreenState extends ConsumerState<HabitDetailScreen> {
                               style: OutlinedButton.styleFrom(
                                 padding: EdgeInsets.symmetric(vertical: 14),
                                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-                                side: BorderSide(color: Theme.of(context).colorScheme.outlineVariant),
                               ),
                             ),
                           ),
@@ -721,7 +717,6 @@ class _HabitDetailScreenState extends ConsumerState<HabitDetailScreen> {
                 avatar: Icon(Icons.add, size: 16, color: Theme.of(context).colorScheme.primary),
                 label: Text('Añadir recordatorio', style: TextStyle(color: Theme.of(context).colorScheme.primary, fontSize: 12, fontWeight: FontWeight.bold)),
                 backgroundColor: Theme.of(context).colorScheme.surface,
-                side: BorderSide(color: Theme.of(context).colorScheme.outlineVariant),
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
               )
             ],
@@ -749,7 +744,6 @@ class _HabitDetailScreenState extends ConsumerState<HabitDetailScreen> {
       decoration: BoxDecoration(
         color: Theme.of(context).scaffoldBackgroundColor,
         borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: Theme.of(context).colorScheme.outlineVariant),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,

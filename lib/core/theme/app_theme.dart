@@ -27,6 +27,7 @@ class AppTheme {
         primary: primaryBlue,
         secondary: primaryPink,
         surface: _lightSurface,
+        surfaceContainerHighest: Color(0xFFF3F4F6),
         onSurface: _lightTextPrimary,
         onSurfaceVariant: _lightTextSecondary,
         outline: _lightDivider,
@@ -58,6 +59,7 @@ class AppTheme {
         primary: primaryBlue,
         secondary: primaryPink,
         surface: _darkSurface,
+        surfaceContainerHighest: Color(0xFF1E1E22), // Un gris sutilmente distinto
         onSurface: _darkTextPrimary,
         onSurfaceVariant: _darkTextSecondary,
         outline: _darkDivider,

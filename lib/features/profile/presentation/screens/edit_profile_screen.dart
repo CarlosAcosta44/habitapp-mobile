@@ -198,7 +198,6 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
                     decoration: BoxDecoration(
                       color: Theme.of(context).colorScheme.surface,
                       borderRadius: BorderRadius.circular(16),
-                      border: Border.all(color: Theme.of(context).colorScheme.outlineVariant),
                     ),
                     child: Column(
                       children: [
@@ -228,7 +227,6 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
                     decoration: BoxDecoration(
                       color: Theme.of(context).colorScheme.surface,
                       borderRadius: BorderRadius.circular(16),
-                      border: Border.all(color: Theme.of(context).colorScheme.outlineVariant),
                     ),
                     child: Column(
                       children: [
@@ -246,7 +244,6 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
                     decoration: BoxDecoration(
                       color: Theme.of(context).colorScheme.surface,
                       borderRadius: BorderRadius.circular(16),
-                      border: Border.all(color: Theme.of(context).colorScheme.outlineVariant),
                     ),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -281,7 +278,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
                               Spacer(),
                               Container(
                                 padding: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                                decoration: BoxDecoration(border: Border.all(color: Theme.of(context).colorScheme.outlineVariant), borderRadius: BorderRadius.circular(8), color: Theme.of(context).colorScheme.surface),
+                                decoration: BoxDecoration( borderRadius: BorderRadius.circular(8), color: Theme.of(context).colorScheme.surface),
                                 child: Text('Modificar', style: TextStyle(color: Theme.of(context).colorScheme.primary, fontWeight: FontWeight.bold, fontSize: 11)),
                               ),
                             ],
@@ -303,7 +300,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
                               Spacer(),
                               Container(
                                 padding: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                                decoration: BoxDecoration(border: Border.all(color: Theme.of(context).colorScheme.outlineVariant), borderRadius: BorderRadius.circular(8), color: Theme.of(context).colorScheme.surface),
+                                decoration: BoxDecoration( borderRadius: BorderRadius.circular(8), color: Theme.of(context).colorScheme.surface),
                                 child: Text('Actualizar', style: TextStyle(color: Theme.of(context).colorScheme.primary, fontWeight: FontWeight.bold, fontSize: 11)),
                               ),
                             ],
@@ -386,7 +383,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
                     child: OutlinedButton(
                       onPressed: () => context.pop(),
                       style: OutlinedButton.styleFrom(
-                        side: BorderSide(color: Theme.of(context).colorScheme.outlineVariant),
+                        
                         padding: EdgeInsets.symmetric(vertical: 16),
                         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
                         backgroundColor: Theme.of(context).colorScheme.surface,

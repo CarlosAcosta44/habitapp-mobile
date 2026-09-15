@@ -439,7 +439,6 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                               style: OutlinedButton.styleFrom(
                                 padding: EdgeInsets.symmetric(vertical: 16),
                                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-                                side: BorderSide(color: Theme.of(context).colorScheme.outlineVariant),
                               ),
                             ),
                           ),
@@ -545,6 +544,7 @@ class _ChallengeCard extends StatelessWidget {
                 width: 36,
                 height: 36,
                 decoration: BoxDecoration(color: color.withValues(alpha: 0.1), borderRadius: BorderRadius.circular(10)),
+                child: Icon(Icons.emoji_events_outlined, color: color, size: 20),
               ),
               Container(
                 padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
@@ -574,7 +574,7 @@ class _ChallengeCard extends StatelessWidget {
           SizedBox(height: 6),
           LinearProgressIndicator(
             value: progress,
-            backgroundColor: Colors.grey.shade100,
+            backgroundColor: Theme.of(context).colorScheme.surfaceContainerHighest,
             valueColor: AlwaysStoppedAnimation<Color>(color),
             minHeight: 6,
             borderRadius: BorderRadius.circular(3),
