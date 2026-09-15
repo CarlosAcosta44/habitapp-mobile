@@ -24,8 +24,6 @@ class _Slide {
 
 const _kHighlightBlue = Color(0xFF2D82FA); // Color azul del texto
 const _kBackgroundLight = Colors.white;
-const _kTextDark = Color(0xFF1E1E1E);
-const _kTextGrey = Color(0xFF6B6B6B);
 
 // ─────────────────────────────────────────────────────────
 //  OnboardingScreen
@@ -87,7 +85,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
           children: [
             // ── Header (Logo) ──
             Padding(
-              padding: const EdgeInsets.symmetric(vertical: 20),
+              padding: EdgeInsets.symmetric(vertical: 20),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -96,13 +94,13 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                     width: 28,
                     height: 28,
                     errorBuilder: (context, error, stackTrace) =>
-                        const Icon(Icons.extension, color: _kHighlightBlue, size: 28),
+                        Icon(Icons.extension, color: _kHighlightBlue, size: 28),
                   ),
-                  const SizedBox(width: 8),
-                  const Text(
+                  SizedBox(width: 8),
+                  Text(
                     'HabitApp',
                     style: TextStyle(
-                      color: _kTextDark,
+                      color: Theme.of(context).colorScheme.onSurface,
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
                     ),
@@ -120,7 +118,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                 itemBuilder: (context, index) {
                   final slide = _slides[index];
                   return Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 32),
+                    padding: EdgeInsets.symmetric(horizontal: 32),
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
@@ -138,14 +136,14 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                                 )
                               : Icon(slide.icon, size: 120, color: _kHighlightBlue),
                         ),
-                        const SizedBox(height: 40),
+                        SizedBox(height: 40),
 
                         // Título
                         RichText(
                           textAlign: TextAlign.center,
                           text: TextSpan(
-                            style: const TextStyle(
-                              color: _kTextDark,
+                            style: TextStyle(
+                              color: Theme.of(context).colorScheme.onSurface,
                               fontSize: 32,
                               fontWeight: FontWeight.w800,
                               height: 1.2,
@@ -154,19 +152,19 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                               TextSpan(text: slide.titleNormal),
                               TextSpan(
                                 text: slide.titleHighlight,
-                                style: const TextStyle(color: _kHighlightBlue),
+                                style: TextStyle(color: _kHighlightBlue),
                               ),
                             ],
                           ),
                         ),
-                        const SizedBox(height: 16),
+                        SizedBox(height: 16),
 
                         // Subtítulo
                         Text(
                           slide.subtitle,
                           textAlign: TextAlign.center,
-                          style: const TextStyle(
-                            color: _kTextGrey,
+                          style: TextStyle(
+                            color: Theme.of(context).colorScheme.onSurfaceVariant,
                             fontSize: 15,
                             height: 1.5,
                           ),
@@ -180,14 +178,14 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
 
             // ── Indicador de página ──
             Padding(
-              padding: const EdgeInsets.symmetric(vertical: 24),
+              padding: EdgeInsets.symmetric(vertical: 24),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: List.generate(
                   _slides.length,
                   (index) => AnimatedContainer(
-                    duration: const Duration(milliseconds: 300),
-                    margin: const EdgeInsets.symmetric(horizontal: 4),
+                    duration: Duration(milliseconds: 300),
+                    margin: EdgeInsets.symmetric(horizontal: 4),
                     width: _page == index ? 24 : 8,
                     height: 8,
                     decoration: BoxDecoration(
@@ -203,7 +201,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
 
             // ── Botones y Footer ──
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+              padding: EdgeInsets.symmetric(horizontal: 24, vertical: 16),
               child: Column(
                 children: [
                   // Botón principal
@@ -213,12 +211,12 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                       backgroundColor: _kHighlightBlue,
                       foregroundColor: Colors.white,
                       elevation: 0,
-                      minimumSize: const Size(double.infinity, 56),
+                      minimumSize: Size(double.infinity, 56),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(28),
                       ),
                     ),
-                    child: const Row(
+                    child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Icon(Icons.mail_outline_rounded, size: 22),
@@ -233,7 +231,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                       ],
                     ),
                   ),
-                  const SizedBox(height: 12),
+                  SizedBox(height: 12),
 
                   // Botones sociales
                   Row(
@@ -246,7 +244,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                           onTap: _continueWithSocial,
                         ),
                       ),
-                      const SizedBox(width: 12),
+                      SizedBox(width: 12),
                       Expanded(
                         child: _SocialButton(
                           fallbackIcon: Icons.apple,
@@ -256,18 +254,18 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                       ),
                     ],
                   ),
-                  const SizedBox(height: 24),
+                  SizedBox(height: 24),
 
                   // Términos y condiciones
                   Text(
                     'Al continuar aceptas nuestros',
                     style: TextStyle(
-                      color: _kTextGrey.withValues(alpha: 0.8),
+                      color: Theme.of(context).colorScheme.onSurfaceVariant.withValues(alpha: 0.8),
                       fontSize: 12,
                     ),
                   ),
-                  const SizedBox(height: 4),
-                  const Row(
+                  SizedBox(height: 4),
+                  Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Text(
@@ -281,7 +279,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                       Text(
                         ' y ',
                         style: TextStyle(
-                          color: _kTextGrey,
+                          color: Theme.of(context).colorScheme.onSurfaceVariant,
                           fontSize: 12,
                         ),
                       ),

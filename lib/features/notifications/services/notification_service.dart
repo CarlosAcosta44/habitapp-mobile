@@ -44,16 +44,16 @@ class NotificationService {
   }
 
   Future<void> _setupLocalNotifications() async {
-    const AndroidInitializationSettings initializationSettingsAndroid =
+    AndroidInitializationSettings initializationSettingsAndroid =
         AndroidInitializationSettings('@mipmap/ic_launcher');
         
-    const DarwinInitializationSettings initializationSettingsIOS = DarwinInitializationSettings(
+    DarwinInitializationSettings initializationSettingsIOS = DarwinInitializationSettings(
       requestAlertPermission: false,
       requestBadgePermission: false,
       requestSoundPermission: false,
     );
 
-    const InitializationSettings initializationSettings = InitializationSettings(
+    InitializationSettings initializationSettings = InitializationSettings(
       android: initializationSettingsAndroid,
       iOS: initializationSettingsIOS,
     );
@@ -66,7 +66,7 @@ class NotificationService {
     );
 
     if (Platform.isAndroid) {
-      const AndroidNotificationChannel channel = AndroidNotificationChannel(
+      AndroidNotificationChannel channel = AndroidNotificationChannel(
         'habitapp_high_importance_channel', // id
         'Recordatorios de Hábitos', // name
         description: 'Canal usado para notificaciones importantes de hábitos.',
@@ -103,7 +103,7 @@ class NotificationService {
           id: notification.hashCode,
           title: notification.title,
           body: notification.body,
-          notificationDetails: const NotificationDetails(
+          notificationDetails: NotificationDetails(
             android: AndroidNotificationDetails(
               'habitapp_high_importance_channel',
               'Recordatorios de Hábitos',
@@ -143,7 +143,7 @@ class NotificationService {
       id: id,
       title: title,
       body: body,
-      notificationDetails: const NotificationDetails(
+      notificationDetails: NotificationDetails(
         android: AndroidNotificationDetails(
           'habitapp_high_importance_channel',
           'Recordatorios de Hábitos',

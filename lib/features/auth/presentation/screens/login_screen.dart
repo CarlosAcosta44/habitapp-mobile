@@ -4,10 +4,6 @@ import 'package:go_router/go_router.dart';
 
 import '../../providers/auth_provider.dart';
 
-const _kBlue = Color(0xFF2D82FA);
-const _kBg = Color(0xFFF7F7F9);
-const _kTextDark = Color(0xFF1E1E1E);
-const _kTextGrey = Color(0xFF6B6B6B);
 const _kFieldBg = Color(0xFFF3F3F3);
 const _kGreenBadge = Color(0xFF0F8A5D);
 
@@ -56,7 +52,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
             content: Text(e.toString().replaceAll('Exception: ', '')),
             backgroundColor: Colors.red.shade600,
             behavior: SnackBarBehavior.floating,
-            margin: const EdgeInsets.all(16),
+            margin: EdgeInsets.all(16),
             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
           ),
         ),
@@ -64,29 +60,29 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     });
 
     return Scaffold(
-      backgroundColor: _kBg,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: SafeArea(
         child: Column(
           children: [
             // ── AppBar (Personalizado) ──
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+              padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
               child: Stack(
                 alignment: Alignment.center,
                 children: [
                   Align(
                     alignment: Alignment.centerLeft,
                     child: IconButton(
-                      icon: const Icon(Icons.arrow_back, color: _kTextDark),
+                      icon: Icon(Icons.arrow_back, color: Theme.of(context).colorScheme.onSurface),
                       onPressed: () => context.go('/onboarding'),
                     ),
                   ),
-                  const Text(
+                  Text(
                     'Login',
                     style: TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.w600,
-                      color: _kTextDark,
+                      color: Theme.of(context).colorScheme.onSurface,
                     ),
                   ),
                 ],
@@ -96,7 +92,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
             // ── Contenido ──
             Expanded(
               child: SingleChildScrollView(
-                padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+                padding: EdgeInsets.symmetric(horizontal: 24, vertical: 16),
                 child: Column(
                   children: [
                     // Avatar Logo con Badge
@@ -107,13 +103,13 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                           width: 80,
                           height: 80,
                           decoration: BoxDecoration(
-                            color: Colors.white,
+                            color: Theme.of(context).colorScheme.surface,
                             shape: BoxShape.circle,
                             boxShadow: [
                               BoxShadow(
                                 color: Colors.black.withValues(alpha: 0.05),
                                 blurRadius: 10,
-                                offset: const Offset(0, 4),
+                                offset: Offset(0, 4),
                               ),
                             ],
                           ),
@@ -123,56 +119,56 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                             width: 44,
                             height: 44,
                             errorBuilder: (context, error, stackTrace) =>
-                                const Icon(Icons.extension, color: _kBlue, size: 32),
+                                Icon(Icons.extension, color: Theme.of(context).colorScheme.primary, size: 32),
                           ),
                         ),
                         Container(
                           width: 24,
                           height: 24,
-                          decoration: const BoxDecoration(
+                          decoration: BoxDecoration(
                             color: _kGreenBadge,
                             shape: BoxShape.circle,
                           ),
                           alignment: Alignment.center,
-                          child: const Icon(
+                          child: Icon(
                             Icons.chevron_left_rounded,
-                            color: Colors.white,
+                            color: Theme.of(context).colorScheme.surface,
                             size: 16,
                           ),
                         ),
                       ],
                     ),
-                    const SizedBox(height: 20),
+                    SizedBox(height: 20),
 
                     // Títulos
-                    const Text(
+                    Text(
                       '¡Hola de nuevo!',
                       style: TextStyle(
                         fontSize: 24,
                         fontWeight: FontWeight.w900,
-                        color: _kTextDark,
+                        color: Theme.of(context).colorScheme.onSurface,
                         letterSpacing: -0.5,
                       ),
                     ),
-                    const SizedBox(height: 8),
-                    const Text(
+                    SizedBox(height: 8),
+                    Text(
                       'Inicia sesión para continuar cuidando de tus\nhábitos y bienestar mental.',
                       textAlign: TextAlign.center,
-                      style: TextStyle(fontSize: 14, color: _kTextGrey, height: 1.4),
+                      style: TextStyle(fontSize: 14, color: Theme.of(context).colorScheme.onSurfaceVariant, height: 1.4),
                     ),
-                    const SizedBox(height: 28),
+                    SizedBox(height: 28),
 
                     // Card del Formulario
                     Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
+                      padding: EdgeInsets.symmetric(horizontal: 20, vertical: 24),
                       decoration: BoxDecoration(
-                        color: Colors.white,
+                        color: Theme.of(context).colorScheme.surface,
                         borderRadius: BorderRadius.circular(24),
                         boxShadow: [
                           BoxShadow(
                             color: Colors.black.withValues(alpha: 0.03),
                             blurRadius: 20,
-                            offset: const Offset(0, 8),
+                            offset: Offset(0, 8),
                           ),
                         ],
                       ),
@@ -182,15 +178,15 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             // ── Campo Correo ──
-                            const Text(
+                            Text(
                               'Correo Electrónico',
                               style: TextStyle(
                                 fontWeight: FontWeight.w700,
                                 fontSize: 13,
-                                color: _kTextDark,
+                                color: Theme.of(context).colorScheme.onSurface,
                               ),
                             ),
-                            const SizedBox(height: 8),
+                            SizedBox(height: 8),
                             _StyledField(
                               controller: _emailCtrl,
                               hint: 'marina@ejemplo.com',
@@ -202,18 +198,18 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                                 return null;
                               },
                             ),
-                            const SizedBox(height: 20),
+                            SizedBox(height: 20),
 
                             // ── Campo Contraseña ──
-                            const Text(
+                            Text(
                               'Contraseña',
                               style: TextStyle(
                                 fontWeight: FontWeight.w700,
                                 fontSize: 13,
-                                color: _kTextDark,
+                                color: Theme.of(context).colorScheme.onSurface,
                               ),
                             ),
-                            const SizedBox(height: 8),
+                            SizedBox(height: 8),
                             _StyledField(
                               controller: _passCtrl,
                               hint: '••••••••',
@@ -235,7 +231,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                                 return null;
                               },
                             ),
-                            const SizedBox(height: 16),
+                            SizedBox(height: 16),
 
                             // ── Recordar datos & Olvidaste contraseña ──
                             Row(
@@ -245,7 +241,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                                   height: 24,
                                   child: Checkbox(
                                     value: _rememberMe,
-                                    activeColor: _kBlue,
+                                    activeColor: Theme.of(context).colorScheme.primary,
                                     side: BorderSide(color: Colors.grey.shade400, width: 1.5),
                                     shape: RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(4),
@@ -253,26 +249,26 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                                     onChanged: (v) => setState(() => _rememberMe = v!),
                                   ),
                                 ),
-                                const SizedBox(width: 8),
-                                const Text(
+                                SizedBox(width: 8),
+                                Text(
                                   'Recordar mis datos',
-                                  style: TextStyle(fontSize: 13, color: _kTextGrey),
+                                  style: TextStyle(fontSize: 13, color: Theme.of(context).colorScheme.onSurfaceVariant),
                                 ),
-                                const Spacer(),
+                                Spacer(),
                                 GestureDetector(
                                   onTap: () {},
-                                  child: const Text(
+                                  child: Text(
                                     '¿Olvidaste tu contraseña?',
                                     style: TextStyle(
                                       fontSize: 12,
-                                      color: _kBlue,
+                                      color: Theme.of(context).colorScheme.primary,
                                       fontWeight: FontWeight.w600,
                                     ),
                                   ),
                                 ),
                               ],
                             ),
-                            const SizedBox(height: 24),
+                            SizedBox(height: 24),
 
                             // ── Botón Iniciar Sesión ──
                             SizedBox(
@@ -281,7 +277,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                               child: ElevatedButton(
                                 onPressed: authState.isLoading ? null : _submit,
                                 style: ElevatedButton.styleFrom(
-                                  backgroundColor: _kBlue,
+                                  backgroundColor: Theme.of(context).colorScheme.primary,
                                   foregroundColor: Colors.white,
                                   elevation: 0,
                                   shape: RoundedRectangleBorder(
@@ -289,15 +285,15 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                                   ),
                                 ),
                                 child: authState.isLoading
-                                    ? const SizedBox(
+                                    ? SizedBox(
                                         width: 22,
                                         height: 22,
                                         child: CircularProgressIndicator(
-                                          color: Colors.white,
+                                          color: Theme.of(context).colorScheme.surface,
                                           strokeWidth: 2.5,
                                         ),
                                       )
-                                    : const Row(
+                                    : Row(
                                         mainAxisAlignment: MainAxisAlignment.center,
                                         children: [
                                           Text(
@@ -313,23 +309,23 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                                       ),
                               ),
                             ),
-                            const SizedBox(height: 24),
+                            SizedBox(height: 24),
 
                             // ── Separador "O continúa con" ──
                             Row(
                               children: [
                                 Expanded(child: Divider(color: Colors.grey.shade300)),
-                                const Padding(
+                                Padding(
                                   padding: EdgeInsets.symmetric(horizontal: 12),
                                   child: Text(
                                     'O continúa con',
-                                    style: TextStyle(fontSize: 12, color: _kTextGrey),
+                                    style: TextStyle(fontSize: 12, color: Theme.of(context).colorScheme.onSurfaceVariant),
                                   ),
                                 ),
                                 Expanded(child: Divider(color: Colors.grey.shade300)),
                               ],
                             ),
-                            const SizedBox(height: 20),
+                            SizedBox(height: 20),
 
                             // ── Botones Sociales ──
                             Row(
@@ -339,9 +335,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                                     onPressed: () {},
                                     style: ElevatedButton.styleFrom(
                                       backgroundColor: _kFieldBg,
-                                      foregroundColor: _kTextDark,
+                                      foregroundColor: Theme.of(context).colorScheme.onSurface,
                                       elevation: 0,
-                                      minimumSize: const Size(0, 48),
+                                      minimumSize: Size(0, 48),
                                       shape: RoundedRectangleBorder(
                                         borderRadius: BorderRadius.circular(12),
                                       ),
@@ -351,31 +347,31 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                                       width: 18,
                                       height: 18,
                                       errorBuilder: (context, error, stackTrace) =>
-                                          const Icon(Icons.g_mobiledata_rounded,
+                                          Icon(Icons.g_mobiledata_rounded,
                                               color: Colors.red, size: 22),
                                     ),
-                                    label: const Text(
+                                    label: Text(
                                       'Google',
                                       style: TextStyle(
                                           fontWeight: FontWeight.w700, fontSize: 13),
                                     ),
                                   ),
                                 ),
-                                const SizedBox(width: 12),
+                                SizedBox(width: 12),
                                 Expanded(
                                   child: ElevatedButton.icon(
                                     onPressed: () {},
                                     style: ElevatedButton.styleFrom(
                                       backgroundColor: _kFieldBg,
-                                      foregroundColor: _kTextDark,
+                                      foregroundColor: Theme.of(context).colorScheme.onSurface,
                                       elevation: 0,
-                                      minimumSize: const Size(0, 48),
+                                      minimumSize: Size(0, 48),
                                       shape: RoundedRectangleBorder(
                                         borderRadius: BorderRadius.circular(12),
                                       ),
                                     ),
                                     icon: Icon(Icons.facebook, color: Colors.blue.shade700, size: 20),
-                                    label: const Text(
+                                    label: Text(
                                       'Facebook',
                                       style: TextStyle(
                                           fontWeight: FontWeight.w700, fontSize: 13),
@@ -389,37 +385,37 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                       ),
                     ),
 
-                    const SizedBox(height: 28),
+                    SizedBox(height: 28),
 
                     // ── Regístrate gratis ──
                     GestureDetector(
                       onTap: () => context.go('/register'),
                       child: RichText(
-                        text: const TextSpan(
-                          style: TextStyle(fontSize: 14, color: _kTextGrey),
+                        text: TextSpan(
+                          style: TextStyle(fontSize: 14, color: Theme.of(context).colorScheme.onSurfaceVariant),
                           children: [
                             TextSpan(text: '¿Aún no tienes cuenta? '),
                             TextSpan(
                               text: 'Regístrate gratis',
-                              style: TextStyle(color: _kBlue, fontWeight: FontWeight.w700),
+                              style: TextStyle(color: Theme.of(context).colorScheme.primary, fontWeight: FontWeight.w700),
                             ),
                           ],
                         ),
                       ),
                     ),
-                    const SizedBox(height: 16),
+                    SizedBox(height: 16),
 
                     // ── Escudo de Seguridad ──
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        const Icon(Icons.shield_outlined, size: 16, color: _kTextGrey),
-                        const SizedBox(width: 8),
+                        Icon(Icons.shield_outlined, size: 16, color: Theme.of(context).colorScheme.onSurfaceVariant),
+                        SizedBox(width: 8),
                         Flexible(
                           child: Text(
                             'Tus datos de salud mental están 100% encriptados y\nprotegidos.',
                             textAlign: TextAlign.center,
-                            style: TextStyle(fontSize: 11, color: _kTextGrey.withValues(alpha: 0.8)),
+                            style: TextStyle(fontSize: 11, color: Theme.of(context).colorScheme.onSurfaceVariant.withValues(alpha: 0.8)),
                           ),
                         ),
                       ],
@@ -464,7 +460,7 @@ class _StyledField extends StatelessWidget {
       obscureText: obscureText,
       keyboardType: keyboardType,
       validator: validator,
-      style: const TextStyle(fontSize: 14, color: _kTextDark),
+      style: TextStyle(fontSize: 14, color: Theme.of(context).colorScheme.onSurface),
       decoration: InputDecoration(
         hintText: hint,
         hintStyle: TextStyle(color: Colors.grey.shade500, fontSize: 14),
@@ -472,14 +468,14 @@ class _StyledField extends StatelessWidget {
         suffixIcon: suffix,
         filled: true,
         fillColor: _kFieldBg,
-        contentPadding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
+        contentPadding: EdgeInsets.symmetric(vertical: 16, horizontal: 16),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
           borderSide: BorderSide.none,
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
-          borderSide: const BorderSide(color: _kBlue, width: 1.5),
+          borderSide: BorderSide(color: Theme.of(context).colorScheme.primary, width: 1.5),
         ),
         errorBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),

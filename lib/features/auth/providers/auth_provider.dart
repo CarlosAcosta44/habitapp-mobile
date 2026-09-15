@@ -26,14 +26,14 @@ class AuthNotifier extends _$AuthNotifier {
   }
 
   Future<void> login(String email, String password) async {
-    state = const AsyncValue.loading();
+    state = AsyncValue.loading();
     try {
       final response = await _repository.login(email, password);
       final token = response['access_token'];
       if (token != null) {
         AuthInterceptor.setToken(token);
         await _storage.write(key: 'access_token', value: token);
-        state = const AsyncValue.data(true);
+        state = AsyncValue.data(true);
       } else {
         throw Exception('Token not found in response');
       }
@@ -43,14 +43,14 @@ class AuthNotifier extends _$AuthNotifier {
   }
 
   Future<void> register(String email, String password, String nombre, String apellido) async {
-    state = const AsyncValue.loading();
+    state = AsyncValue.loading();
     try {
       final response = await _repository.register(email, password, nombre, apellido);
       final token = response['access_token'];
       if (token != null) {
         AuthInterceptor.setToken(token);
         await _storage.write(key: 'access_token', value: token);
-        state = const AsyncValue.data(true);
+        state = AsyncValue.data(true);
       } else {
         throw Exception('Token not found in response');
       }
@@ -62,14 +62,14 @@ class AuthNotifier extends _$AuthNotifier {
   Future<void> logout() async {
     AuthInterceptor.clearToken();
     await _storage.delete(key: 'access_token');
-    state = const AsyncValue.data(false);
+    state = AsyncValue.data(false);
   }
 
   // --- SOCIAL LOGIN ---
 
   Future<void> signInWithGoogle() async {
     try {
-      state = const AsyncValue.loading();
+      state = AsyncValue.loading();
       
       final GoogleSignIn googleSignIn = GoogleSignIn(
         // clientId: 'PONER_AQUI_CLIENT_ID_SI_ES_IOS',
@@ -78,7 +78,7 @@ class AuthNotifier extends _$AuthNotifier {
       final GoogleSignInAccount? googleUser = await googleSignIn.signIn();
       
       if (googleUser == null) {
-        state = const AsyncValue.data(false); // Cancelado por el usuario
+        state = AsyncValue.data(false); // Cancelado por el usuario
         return;
       }
       
@@ -96,7 +96,7 @@ class AuthNotifier extends _$AuthNotifier {
       AuthInterceptor.setToken(accessToken);
       await secureStorage.write(key: 'access_token', value: accessToken);
       
-      state = const AsyncValue.data(true);
+      state = AsyncValue.data(true);
     } catch (e, st) {
       state = AsyncValue.error(e, st);
     }
@@ -104,7 +104,7 @@ class AuthNotifier extends _$AuthNotifier {
 
   Future<void> signInWithApple() async {
     try {
-      state = const AsyncValue.loading();
+      state = AsyncValue.loading();
       
       final AuthorizationCredentialAppleID credential = await SignInWithApple.getAppleIDCredential(
         scopes: [
@@ -126,7 +126,7 @@ class AuthNotifier extends _$AuthNotifier {
       AuthInterceptor.setToken(accessToken);
       await secureStorage.write(key: 'access_token', value: accessToken);
       
-      state = const AsyncValue.data(true);
+      state = AsyncValue.data(true);
     } catch (e, st) {
       state = AsyncValue.error(e, st);
     }

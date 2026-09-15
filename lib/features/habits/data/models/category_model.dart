@@ -48,11 +48,11 @@ abstract class CategoryModel with _$CategoryModel {
       }
     }
     final nameLower = nombre.toLowerCase();
-    if (nameLower.contains('salud')) return const Color(0xFF4CAF50);
-    if (nameLower.contains('deporte') || nameLower.contains('correr')) return const Color(0xFFFF9800);
-    if (nameLower.contains('lectura') || nameLower.contains('estudio')) return const Color(0xFF9C27B0);
-    if (nameLower.contains('mente') || nameLower.contains('mindfulness')) return const Color(0xFF009688);
-    if (nameLower.contains('agua') || nameLower.contains('nutrición')) return const Color(0xFF2196F3);
-    return const Color(0xFF3F51B5);
+    if (nameLower.contains('salud')) return Color(0xFF4CAF50);
+    if (nameLower.contains('deporte') || nameLower.contains('correr')) return Color(0xFFFF9800);
+    if (nameLower.contains('lectura') || nameLower.contains('estudio')) return Color(0xFF9C27B0);
+    if (nameLower.contains('mente') || nameLower.contains('mindfulness')) return Color(0xFF009688);
+    if (nameLower.contains('agua') || nameLower.contains('nutrición')) return Color(0xFF2196F3);
+    return Color(0xFF3F51B5);
   }
 }

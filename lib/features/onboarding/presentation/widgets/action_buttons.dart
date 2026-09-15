@@ -14,7 +14,7 @@ class ActionButtons extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 24.0),
+      padding: EdgeInsets.symmetric(horizontal: 24.0),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -25,21 +25,21 @@ class ActionButtons extends StatelessWidget {
             child: ElevatedButton(
               onPressed: onRegisterPressed,
               style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFF2563EB), // Primary Blue
+                backgroundColor: Color(0xFF2563EB), // Primary Blue
                 foregroundColor: Colors.white,
                 elevation: 0,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(16),
                 ),
-                textStyle: const TextStyle(
+                textStyle: TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.bold,
                 ),
               ),
-              child: const Text('Crear Cuenta'),
+              child: Text('Crear Cuenta'),
             ),
           ),
-          const SizedBox(height: 12),
+          SizedBox(height: 12),
           // Botón Secundario: Iniciar Sesión
           SizedBox(
             width: double.infinity,
@@ -47,17 +47,17 @@ class ActionButtons extends StatelessWidget {
             child: OutlinedButton(
               onPressed: onLoginPressed,
               style: OutlinedButton.styleFrom(
-                foregroundColor: const Color(0xFF1E293B),
-                side: const BorderSide(color: Color(0xFFE2E8F0), width: 1.5),
+                foregroundColor: Color(0xFF1E293B),
+                side: BorderSide(color: Color(0xFFE2E8F0), width: 1.5),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(16),
                 ),
-                textStyle: const TextStyle(
+                textStyle: TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.w600,
                 ),
               ),
-              child: const Text('Ya tengo una cuenta'),
+              child: Text('Ya tengo una cuenta'),
             ),
           ),
         ],

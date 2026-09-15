@@ -8,7 +8,7 @@ part 'dio_client.g.dart';
 // Provider for FlutterSecureStorage
 @Riverpod(keepAlive: true)
 FlutterSecureStorage secureStorage(Ref ref) {
-  return const FlutterSecureStorage();
+  return FlutterSecureStorage();
 }
 
 // Provider for Dio client
@@ -19,8 +19,8 @@ Dio dioClient(Ref ref) {
   final dio = Dio(
     BaseOptions(
       baseUrl: 'http://localhost:4000/api/v1',
-      connectTimeout: const Duration(seconds: 10),
-      receiveTimeout: const Duration(seconds: 10),
+      connectTimeout: Duration(seconds: 10),
+      receiveTimeout: Duration(seconds: 10),
       headers: {
         'Content-Type': 'application/json',
         'Accept': 'application/json',

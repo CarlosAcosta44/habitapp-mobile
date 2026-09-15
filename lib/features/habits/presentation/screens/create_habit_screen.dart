@@ -5,11 +5,6 @@ import '../../data/models/create_habit_dto.dart';
 import '../../data/models/category_model.dart';
 import '../../providers/habits_provider.dart';
 
-const _kBlue = Color(0xFF2D82FA);
-const _kPink = Color(0xFFF94C84);
-const _kBg = Color(0xFFF7F7F9);
-const _kTextDark = Color(0xFF1E1E1E);
-const _kTextGrey = Color(0xFF6B6B6B);
 
 IconData getCategoryIcon(String? iconName) {
   switch (iconName?.toLowerCase()) {
@@ -117,7 +112,7 @@ class _CreateHabitScreenState extends ConsumerState<CreateHabitScreen> {
 
     if (!isFormValid || _selectedDays.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
+        SnackBar(
           content: Text('Por favor completa los campos y elige al menos 1 día.'),
           backgroundColor: Colors.redAccent,
         ),
@@ -127,7 +122,7 @@ class _CreateHabitScreenState extends ConsumerState<CreateHabitScreen> {
 
     if (_selectedCategoryId == null) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
+        SnackBar(
           content: Text('Por favor selecciona una categoría'),
           backgroundColor: Colors.redAccent,
         ),
@@ -159,7 +154,7 @@ class _CreateHabitScreenState extends ConsumerState<CreateHabitScreen> {
         context.pop();
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
+          SnackBar(
             content: Text('Error al crear el hábito. Inténtalo de nuevo.'),
             backgroundColor: Colors.redAccent,
           ),
@@ -173,23 +168,23 @@ class _CreateHabitScreenState extends ConsumerState<CreateHabitScreen> {
     final categoriesAsync = ref.watch(categoriesProvider);
 
     return Scaffold(
-      backgroundColor: _kBg,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: AppBar(
-        backgroundColor: _kBg,
+        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: _kTextDark),
+          icon: Icon(Icons.arrow_back, color: Theme.of(context).colorScheme.onSurface),
           onPressed: () => context.pop(),
         ),
-        title: const Text('Crear Hábito', style: TextStyle(color: _kTextDark, fontWeight: FontWeight.bold, fontSize: 16)),
+        title: Text('Crear Hábito', style: TextStyle(color: Theme.of(context).colorScheme.onSurface, fontWeight: FontWeight.bold, fontSize: 16)),
         centerTitle: false,
         actions: [
           Padding(
-            padding: const EdgeInsets.only(right: 16.0),
+            padding: EdgeInsets.only(right: 16.0),
             child: CircleAvatar(
               radius: 16,
-              backgroundColor: _kPink.withValues(alpha: 0.1),
-              child: const Icon(Icons.person_outline, color: _kPink, size: 18),
+              backgroundColor: Theme.of(context).colorScheme.secondary.withValues(alpha: 0.1),
+              child: Icon(Icons.person_outline, color: Theme.of(context).colorScheme.secondary, size: 18),
             ),
           )
         ],
@@ -197,7 +192,7 @@ class _CreateHabitScreenState extends ConsumerState<CreateHabitScreen> {
       body: categoriesAsync.when(
         data: (categories) {
           if (categories.isEmpty) {
-            return const Center(child: Text('No hay categorías disponibles'));
+            return Center(child: Text('No hay categorías disponibles'));
           }
 
           if (_selectedCategoryId == null && categories.isNotEmpty) {
@@ -210,49 +205,49 @@ class _CreateHabitScreenState extends ConsumerState<CreateHabitScreen> {
           );
 
           return SingleChildScrollView(
-            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+            padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
             child: Form(
               key: _formKey,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text('Crear Hábito', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 22, color: _kTextDark)),
-                  const SizedBox(height: 16),
+                  Text('Crear Hábito', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 22, color: Theme.of(context).colorScheme.onSurface)),
+                  SizedBox(height: 16),
                   _buildCategorySelector(categories, selectedCat),
-                  const SizedBox(height: 16),
+                  SizedBox(height: 16),
                   _buildInputField('NOMBRE DEL HÁBITO', Icons.edit_note, _nombreController, 'Beber agua conscientemente'),
-                  const SizedBox(height: 12),
+                  SizedBox(height: 12),
                   _buildInputField('MOTIVACIÓN O PROPÓSITO', Icons.format_quote, _descripcionController, 'Tomar 8 vasos de agua para mantener mi energía...', maxLines: 2),
-                  const SizedBox(height: 12),
+                  SizedBox(height: 12),
                   _buildDailyGoalField(),
-                  const SizedBox(height: 12),
+                  SizedBox(height: 12),
                   _buildSoundCard(),
-                  const SizedBox(height: 12),
+                  SizedBox(height: 12),
                   _buildDaysCard(),
-                  const SizedBox(height: 32),
+                  SizedBox(height: 32),
                   SizedBox(
                     width: double.infinity,
                     height: 56,
                     child: ElevatedButton.icon(
                       onPressed: _isLoading ? null : _submitForm,
-                      icon: _isLoading ? const SizedBox() : const Icon(Icons.add_task, color: Colors.white),
+                      icon: _isLoading ? SizedBox() : Icon(Icons.add_task, color: Theme.of(context).colorScheme.surface),
                       label: _isLoading
-                          ? const SizedBox(width: 24, height: 24, child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2))
-                          : const Text('Crear Hábito', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white)),
+                          ? SizedBox(width: 24, height: 24, child: CircularProgressIndicator(color: Theme.of(context).colorScheme.surface, strokeWidth: 2))
+                          : Text('Crear Hábito', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Theme.of(context).colorScheme.surface)),
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: _kBlue,
+                        backgroundColor: Theme.of(context).colorScheme.primary,
                         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
                         elevation: 0,
                       ),
                     ),
                   ),
-                  const SizedBox(height: 40),
+                  SizedBox(height: 40),
                 ],
               ),
             ),
           );
         },
-        loading: () => const Center(child: CircularProgressIndicator()),
+        loading: () => Center(child: CircularProgressIndicator()),
         error: (err, _) => Center(child: Text('Error: $err')),
       ),
     );
@@ -261,43 +256,43 @@ class _CreateHabitScreenState extends ConsumerState<CreateHabitScreen> {
   Widget _buildCategorySelector(List<CategoryModel> categories, CategoryModel selectedCat) {
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 16),
+      padding: EdgeInsets.symmetric(vertical: 24, horizontal: 16),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Theme.of(context).colorScheme.surface,
         borderRadius: BorderRadius.circular(24),
         border: Border.all(color: Colors.grey.shade200),
       ),
       child: Column(
         children: [
           Container(
-            padding: const EdgeInsets.all(16),
+            padding: EdgeInsets.all(16),
             decoration: BoxDecoration(
-              color: _kBg,
+              color: Theme.of(context).scaffoldBackgroundColor,
               borderRadius: BorderRadius.circular(20),
               border: Border.all(color: Colors.grey.shade300),
             ),
             child: Column(
               children: [
-                Icon(getCategoryIcon(selectedCat.icono), size: 32, color: _kBlue),
-                const SizedBox(height: 8),
+                Icon(getCategoryIcon(selectedCat.icono), size: 32, color: Theme.of(context).colorScheme.primary),
+                SizedBox(height: 8),
                 Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    const Icon(Icons.local_fire_department, color: Color(0xFF0F8A5D), size: 12),
-                    const SizedBox(width: 4),
-                    Text('0d racha', style: TextStyle(color: const Color(0xFF0F8A5D), fontSize: 10, fontWeight: FontWeight.bold)),
+                    Icon(Icons.local_fire_department, color: Color(0xFF0F8A5D), size: 12),
+                    SizedBox(width: 4),
+                    Text('0d racha', style: TextStyle(color: Color(0xFF0F8A5D), fontSize: 10, fontWeight: FontWeight.bold)),
                   ],
                 )
               ],
             ),
           ),
-          const SizedBox(height: 12),
-          Text(selectedCat.nombre, style: const TextStyle(fontSize: 12, color: _kTextGrey)),
-          const SizedBox(height: 16),
+          SizedBox(height: 12),
+          Text(selectedCat.nombre, style: TextStyle(fontSize: 12, color: Theme.of(context).colorScheme.onSurfaceVariant)),
+          SizedBox(height: 16),
           Container(
-            padding: const EdgeInsets.all(6),
+            padding: EdgeInsets.all(6),
             decoration: BoxDecoration(
-              color: _kBg,
+              color: Theme.of(context).scaffoldBackgroundColor,
               borderRadius: BorderRadius.circular(30),
             ),
             child: Row(
@@ -307,18 +302,18 @@ class _CreateHabitScreenState extends ConsumerState<CreateHabitScreen> {
                 return GestureDetector(
                   onTap: () => setState(() => _selectedCategoryId = cat.id),
                   child: Container(
-                    margin: const EdgeInsets.symmetric(horizontal: 4),
-                    padding: const EdgeInsets.all(8),
+                    margin: EdgeInsets.symmetric(horizontal: 4),
+                    padding: EdgeInsets.all(8),
                     decoration: BoxDecoration(
                       color: isSelected ? Colors.white : Colors.transparent,
                       shape: BoxShape.circle,
-                      boxShadow: isSelected ? [BoxShadow(color: Colors.black.withValues(alpha: 0.05), blurRadius: 4, offset: const Offset(0, 2))] : [],
-                      border: isSelected ? Border.all(color: _kBlue, width: 1.5) : null,
+                      boxShadow: isSelected ? [BoxShadow(color: Colors.black.withValues(alpha: 0.05), blurRadius: 4, offset: Offset(0, 2))] : [],
+                      border: isSelected ? Border.all(color: Theme.of(context).colorScheme.primary, width: 1.5) : null,
                     ),
                     child: Icon(
                       getCategoryIcon(cat.icono),
                       size: 16,
-                      color: isSelected ? _kBlue : Colors.grey.shade400,
+                      color: isSelected ? Theme.of(context).colorScheme.primary : Colors.grey.shade400,
                     ),
                   ),
                 );
@@ -333,26 +328,26 @@ class _CreateHabitScreenState extends ConsumerState<CreateHabitScreen> {
   Widget _buildInputField(String label, IconData icon, TextEditingController controller, String hint, {int maxLines = 1}) {
     return Container(
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Theme.of(context).colorScheme.surface,
         borderRadius: BorderRadius.circular(16),
         border: Border.all(color: Colors.grey.shade200),
       ),
-      padding: const EdgeInsets.all(16),
+      padding: EdgeInsets.all(16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(label, style: const TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: Colors.grey, letterSpacing: 1)),
-          const SizedBox(height: 8),
+          Text(label, style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: Colors.grey, letterSpacing: 1)),
+          SizedBox(height: 8),
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Icon(icon, color: Colors.grey.shade400, size: 20),
-              const SizedBox(width: 12),
+              SizedBox(width: 12),
               Expanded(
                 child: TextFormField(
                   controller: controller,
                   maxLines: maxLines,
-                  style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: _kTextDark),
+                  style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: Theme.of(context).colorScheme.onSurface),
                   decoration: InputDecoration(
                     hintText: hint,
                     hintStyle: TextStyle(color: Colors.grey.shade400, fontWeight: FontWeight.normal),
@@ -376,25 +371,25 @@ class _CreateHabitScreenState extends ConsumerState<CreateHabitScreen> {
   Widget _buildDailyGoalField() {
     return Container(
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Theme.of(context).colorScheme.surface,
         borderRadius: BorderRadius.circular(16),
         border: Border.all(color: Colors.grey.shade200),
       ),
-      padding: const EdgeInsets.all(16),
+      padding: EdgeInsets.all(16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text('META DIARIA', style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: Colors.grey, letterSpacing: 1)),
-          const SizedBox(height: 8),
+          Text('META DIARIA', style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: Colors.grey, letterSpacing: 1)),
+          SizedBox(height: 8),
           Row(
             children: [
               Icon(Icons.flag_outlined, color: Colors.grey.shade400, size: 20),
-              const SizedBox(width: 12),
+              SizedBox(width: 12),
               Expanded(
                 child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                  padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                   decoration: BoxDecoration(
-                    color: _kBg,
+                    color: Theme.of(context).scaffoldBackgroundColor,
                     border: Border.all(color: Colors.grey.shade300),
                     borderRadius: BorderRadius.circular(8),
                   ),
@@ -404,21 +399,21 @@ class _CreateHabitScreenState extends ConsumerState<CreateHabitScreen> {
                         child: TextFormField(
                           controller: _metaDiariaController,
                           keyboardType: TextInputType.number,
-                          style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: _kTextDark),
-                          decoration: const InputDecoration(border: InputBorder.none, isDense: true, contentPadding: EdgeInsets.zero, hintText: 'cantidad', hintStyle: TextStyle(color: Colors.grey, fontWeight: FontWeight.normal)),
+                          style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Theme.of(context).colorScheme.onSurface),
+                          decoration: InputDecoration(border: InputBorder.none, isDense: true, contentPadding: EdgeInsets.zero, hintText: 'cantidad', hintStyle: TextStyle(color: Colors.grey, fontWeight: FontWeight.normal)),
                         ),
                       ),
-                      const Icon(Icons.unfold_more, color: Colors.grey, size: 16),
+                      Icon(Icons.unfold_more, color: Colors.grey, size: 16),
                     ],
                   ),
                 ),
               ),
-              const SizedBox(width: 12),
+              SizedBox(width: 12),
               Expanded(
                 child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                  padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                   decoration: BoxDecoration(
-                    color: _kBg,
+                    color: Theme.of(context).scaffoldBackgroundColor,
                     border: Border.all(color: Colors.grey.shade300),
                     borderRadius: BorderRadius.circular(8),
                   ),
@@ -427,17 +422,17 @@ class _CreateHabitScreenState extends ConsumerState<CreateHabitScreen> {
                       Expanded(
                         child: TextFormField(
                           controller: _unidadMedidaController,
-                          style: const TextStyle(fontSize: 12, color: _kTextDark),
-                          decoration: const InputDecoration(border: InputBorder.none, isDense: true, contentPadding: EdgeInsets.zero, hintText: 'unidad de medida', hintStyle: TextStyle(color: Colors.grey)),
+                          style: TextStyle(fontSize: 12, color: Theme.of(context).colorScheme.onSurface),
+                          decoration: InputDecoration(border: InputBorder.none, isDense: true, contentPadding: EdgeInsets.zero, hintText: 'unidad de medida', hintStyle: TextStyle(color: Colors.grey)),
                         ),
                       ),
-                      const Icon(Icons.expand_more, color: Colors.grey, size: 16),
+                      Icon(Icons.expand_more, color: Colors.grey, size: 16),
                     ],
                   ),
                 ),
               ),
-              const SizedBox(width: 8),
-              const Text('/ dia', style: TextStyle(color: Colors.grey, fontSize: 12)),
+              SizedBox(width: 8),
+              Text('/ dia', style: TextStyle(color: Colors.grey, fontSize: 12)),
             ],
           )
         ],
@@ -448,31 +443,31 @@ class _CreateHabitScreenState extends ConsumerState<CreateHabitScreen> {
   Widget _buildSoundCard() {
     return Container(
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Theme.of(context).colorScheme.surface,
         borderRadius: BorderRadius.circular(16),
         border: Border.all(color: Colors.grey.shade200),
       ),
-      padding: const EdgeInsets.all(16),
+      padding: EdgeInsets.all(16),
       child: Row(
         children: [
           CircleAvatar(
             radius: 18,
             backgroundColor: Colors.orange.withValues(alpha: 0.1),
-            child: const Icon(Icons.notifications_active_outlined, color: Colors.orange, size: 18),
+            child: Icon(Icons.notifications_active_outlined, color: Colors.orange, size: 18),
           ),
-          const SizedBox(width: 16),
-          const Expanded(
+          SizedBox(width: 16),
+          Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('Sonido y Recordatorio', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14, color: _kTextDark)),
-                Text('Campana de serenidad matutina', style: TextStyle(fontSize: 11, color: _kTextGrey)),
+                Text('Sonido y Recordatorio', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14, color: Theme.of(context).colorScheme.onSurface)),
+                Text('Campana de serenidad matutina', style: TextStyle(fontSize: 11, color: Theme.of(context).colorScheme.onSurfaceVariant)),
               ],
             ),
           ),
-          const Text('08:00', style: TextStyle(color: _kTextGrey, fontWeight: FontWeight.bold, fontSize: 12)),
-          const SizedBox(width: 4),
-          const Icon(Icons.chevron_right, color: Colors.grey, size: 16),
+          Text('08:00', style: TextStyle(color: Theme.of(context).colorScheme.onSurfaceVariant, fontWeight: FontWeight.bold, fontSize: 12)),
+          SizedBox(width: 4),
+          Icon(Icons.chevron_right, color: Colors.grey, size: 16),
         ],
       ),
     );
@@ -481,32 +476,32 @@ class _CreateHabitScreenState extends ConsumerState<CreateHabitScreen> {
   Widget _buildDaysCard() {
     return Container(
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Theme.of(context).colorScheme.surface,
         borderRadius: BorderRadius.circular(16),
         border: Border.all(color: Colors.grey.shade200),
       ),
-      padding: const EdgeInsets.all(20),
+      padding: EdgeInsets.all(20),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              const Text('Días de la semana', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14, color: _kTextDark)),
-              Text('${_selectedDays.length} días', style: const TextStyle(color: _kBlue, fontWeight: FontWeight.bold, fontSize: 12)),
+              Text('Días de la semana', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14, color: Theme.of(context).colorScheme.onSurface)),
+              Text('${_selectedDays.length} días', style: TextStyle(color: Theme.of(context).colorScheme.primary, fontWeight: FontWeight.bold, fontSize: 12)),
             ],
           ),
-          const SizedBox(height: 16),
+          SizedBox(height: 16),
           Row(
             children: [
               _buildPresetButton('Todos los\ndías', 'all', Icons.check, _selectedDays.length == 7),
-              const SizedBox(width: 8),
+              SizedBox(width: 8),
               _buildPresetButton('Laborales\n(L-V)', 'workdays', null, _selectedDays.length == 5 && _selectedDays.containsAll([1, 2, 3, 4, 5])),
-              const SizedBox(width: 8),
+              SizedBox(width: 8),
               _buildPresetButton('Fines de\nsemana', 'weekends', null, _selectedDays.length == 2 && _selectedDays.containsAll([6, 7])),
             ],
           ),
-          const SizedBox(height: 20),
+          SizedBox(height: 20),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: _dayList.map((day) {
@@ -518,13 +513,13 @@ class _CreateHabitScreenState extends ConsumerState<CreateHabitScreen> {
                   height: 36,
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    color: isSelected ? _kBlue : _kBlue.withValues(alpha: 0.1),
+                    color: isSelected ? Theme.of(context).colorScheme.primary : Theme.of(context).colorScheme.primary.withValues(alpha: 0.1),
                   ),
                   child: Center(
                     child: Text(
                       day['label'] as String,
                       style: TextStyle(
-                        color: isSelected ? Colors.white : _kBlue,
+                        color: isSelected ? Colors.white : Theme.of(context).colorScheme.primary,
                         fontWeight: FontWeight.bold,
                         fontSize: 12,
                       ),
@@ -534,36 +529,36 @@ class _CreateHabitScreenState extends ConsumerState<CreateHabitScreen> {
               );
             }).toList(),
           ),
-          const SizedBox(height: 24),
-          const Divider(height: 1, color: Color(0xFFF3F3F3)),
-          const SizedBox(height: 16),
+          SizedBox(height: 24),
+          Divider(height: 1, color: Color(0xFFF3F3F3)),
+          SizedBox(height: 16),
           Row(
             children: [
               Container(
-                padding: const EdgeInsets.all(8),
+                padding: EdgeInsets.all(8),
                 decoration: BoxDecoration(
-                  color: _kBlue.withValues(alpha: 0.1),
+                  color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(8),
                 ),
-                child: const Icon(Icons.calendar_today, color: _kBlue, size: 16),
+                child: Icon(Icons.calendar_today, color: Theme.of(context).colorScheme.primary, size: 16),
               ),
-              const SizedBox(width: 12),
-              const Expanded(
+              SizedBox(width: 12),
+              Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text('Fecha de inicio', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 13, color: _kTextDark)),
-                    Text('Comenzar hoy en el calendario', style: TextStyle(fontSize: 11, color: _kTextGrey)),
+                    Text('Fecha de inicio', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 13, color: Theme.of(context).colorScheme.onSurface)),
+                    Text('Comenzar hoy en el calendario', style: TextStyle(fontSize: 11, color: Theme.of(context).colorScheme.onSurfaceVariant)),
                   ],
                 ),
               ),
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                padding: EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                 decoration: BoxDecoration(
-                  color: _kBlue.withValues(alpha: 0.1),
+                  color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(12),
                 ),
-                child: const Text('Hoy', style: TextStyle(color: _kBlue, fontSize: 11, fontWeight: FontWeight.bold)),
+                child: Text('Hoy', style: TextStyle(color: Theme.of(context).colorScheme.primary, fontSize: 11, fontWeight: FontWeight.bold)),
               )
             ],
           )
@@ -577,24 +572,24 @@ class _CreateHabitScreenState extends ConsumerState<CreateHabitScreen> {
       child: GestureDetector(
         onTap: () => _selectPreset(preset),
         child: Container(
-          padding: const EdgeInsets.symmetric(vertical: 8),
+          padding: EdgeInsets.symmetric(vertical: 8),
           decoration: BoxDecoration(
-            color: isSelected ? _kBlue.withValues(alpha: 0.05) : Colors.transparent,
+            color: isSelected ? Theme.of(context).colorScheme.primary.withValues(alpha: 0.05) : Colors.transparent,
             borderRadius: BorderRadius.circular(8),
-            border: Border.all(color: isSelected ? _kBlue : Colors.grey.shade300),
+            border: Border.all(color: isSelected ? Theme.of(context).colorScheme.primary : Colors.grey.shade300),
           ),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               if (icon != null && isSelected) ...[
-                Icon(icon, size: 12, color: _kBlue),
-                const SizedBox(width: 4),
+                Icon(icon, size: 12, color: Theme.of(context).colorScheme.primary),
+                SizedBox(width: 4),
               ],
               Text(
                 text,
                 textAlign: TextAlign.center,
                 style: TextStyle(
-                  color: isSelected ? _kBlue : _kTextGrey,
+                  color: isSelected ? Theme.of(context).colorScheme.primary : Theme.of(context).colorScheme.onSurfaceVariant,
                   fontSize: 10,
                   fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
                 ),

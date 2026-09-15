@@ -28,12 +28,12 @@ class ProfileNotifier extends _$ProfileNotifier {
   }
 
   Future<void> refreshProfile() async {
-    state = const AsyncValue.loading();
+    state = AsyncValue.loading();
     state = await AsyncValue.guard(() => _fetchProfile());
   }
 
   Future<void> updateProfile(Map<String, dynamic> data) async {
-    state = const AsyncValue.loading();
+    state = AsyncValue.loading();
     try {
       final repository = ref.read(profileRepositoryProvider);
       final updatedProfile = await repository.updateProfile(data);
@@ -45,7 +45,7 @@ class ProfileNotifier extends _$ProfileNotifier {
   }
   
   Future<void> uploadAvatar(String filePath) async {
-    state = const AsyncValue.loading();
+    state = AsyncValue.loading();
     try {
       final repository = ref.read(profileRepositoryProvider);
       await repository.uploadAvatar(filePath);
@@ -57,6 +57,6 @@ class ProfileNotifier extends _$ProfileNotifier {
   }
 
   void clearProfile() {
-    state = const AsyncValue.data(null);
+    state = AsyncValue.data(null);
   }
 }

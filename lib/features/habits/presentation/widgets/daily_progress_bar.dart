@@ -16,7 +16,7 @@ class DailyProgressBar extends StatelessWidget {
     final int percentageInt = (percentage * 100).toInt();
 
     return Container(
-      padding: const EdgeInsets.all(16),
+      padding: EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: Colors.blue.shade600,
         borderRadius: BorderRadius.circular(16),
@@ -32,32 +32,32 @@ class DailyProgressBar extends StatelessWidget {
               children: [
                 CircularProgressIndicator(
                   value: percentage,
-                  backgroundColor: Colors.white.withValues(alpha: 0.3),
-                  valueColor: const AlwaysStoppedAnimation<Color>(Colors.white),
+                  backgroundColor: Theme.of(context).colorScheme.surface.withValues(alpha: 0.3),
+                  valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
                   strokeWidth: 4,
                 ),
                 Center(
                   child: Text(
                     '%$percentageInt',
-                    style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 12),
+                    style: TextStyle(color: Theme.of(context).colorScheme.surface, fontWeight: FontWeight.bold, fontSize: 12),
                   ),
                 ),
               ],
             ),
           ),
-          const SizedBox(width: 16),
+          SizedBox(width: 16),
           // Text
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text(
+                Text(
                   '¡Tus metas diarias casi completas! 🔥',
-                  style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+                  style: TextStyle(color: Theme.of(context).colorScheme.surface, fontWeight: FontWeight.bold),
                 ),
                 Text(
                   '$completed de $total completados',
-                  style: const TextStyle(color: Colors.white70, fontSize: 12),
+                  style: TextStyle(color: Colors.white70, fontSize: 12),
                 ),
               ],
             ),
