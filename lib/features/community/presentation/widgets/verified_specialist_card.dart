@@ -3,8 +3,6 @@ import '../../data/models/community_feed_models.dart';
 
 const _kBlue = Color(0xFF2D82FA);
 const _kGreen = Color(0xFF0F8A5D);
-const _kTextDark = Color(0xFF1E1E1E);
-const _kTextGrey = Color(0xFF6B6B6B);
 
 class VerifiedSpecialistCard extends StatelessWidget {
   final VerifiedSpecialistItem specialist;
@@ -20,12 +18,15 @@ class VerifiedSpecialistCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+
     return Container(
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: colorScheme.surface,
         borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: const Color(0xFFEFEFF2), width: 1),
+        border: Border.all(color: colorScheme.surfaceContainerHighest, width: 1),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withValues(alpha: 0.02),
@@ -67,7 +68,7 @@ class VerifiedSpecialistCard extends StatelessWidget {
                         decoration: BoxDecoration(
                           color: _kGreen,
                           shape: BoxShape.circle,
-                          border: Border.all(color: Colors.white, width: 2),
+                          border: Border.all(color: colorScheme.surface, width: 2),
                         ),
                       ),
                     ),
@@ -87,10 +88,10 @@ class VerifiedSpecialistCard extends StatelessWidget {
                       children: [
                         Text(
                           specialist.name,
-                          style: const TextStyle(
+                          style: TextStyle(
                             fontSize: 13.5,
                             fontWeight: FontWeight.bold,
-                            color: _kTextDark,
+                            color: colorScheme.onSurface,
                           ),
                         ),
                         Row(
@@ -103,11 +104,11 @@ class VerifiedSpecialistCard extends StatelessWidget {
                             const SizedBox(width: 2),
                             Text(
                               '${specialist.rating} (${specialist.reviewsCount})',
-                              style: const TextStyle(
-                                fontSize: 11,
-                                fontWeight: FontWeight.bold,
-                                color: _kTextDark,
-                              ),
+                                style: TextStyle(
+                                  fontSize: 11,
+                                  fontWeight: FontWeight.bold,
+                                  color: colorScheme.onSurface,
+                                ),
                             ),
                           ],
                         ),
@@ -131,17 +132,17 @@ class VerifiedSpecialistCard extends StatelessWidget {
                     // Price & mode
                     Row(
                       children: [
-                        const Icon(
+                        Icon(
                           Icons.laptop_mac_rounded,
                           size: 12,
-                          color: _kTextGrey,
+                          color: colorScheme.onSurfaceVariant,
                         ),
                         const SizedBox(width: 4),
                         Text(
                           'Online  •  ${specialist.priceSession}',
-                          style: const TextStyle(
+                          style: TextStyle(
                             fontSize: 10.5,
-                            color: _kTextGrey,
+                            color: colorScheme.onSurfaceVariant,
                           ),
                         ),
                       ],
@@ -163,16 +164,16 @@ class VerifiedSpecialistCard extends StatelessWidget {
                   child: Container(
                     padding: const EdgeInsets.symmetric(vertical: 9),
                     decoration: BoxDecoration(
-                      color: const Color(0xFFF0F2F5),
+                      color: colorScheme.surfaceContainerHighest.withValues(alpha: 0.5),
                       borderRadius: BorderRadius.circular(14),
                     ),
                     alignment: Alignment.center,
-                    child: const Text(
+                    child: Text(
                       'Ver perfil',
                       style: TextStyle(
                         fontSize: 12,
                         fontWeight: FontWeight.w700,
-                        color: _kTextDark,
+                        color: colorScheme.onSurface,
                       ),
                     ),
                   ),
@@ -196,12 +197,12 @@ class VerifiedSpecialistCard extends StatelessWidget {
                       ],
                     ),
                     alignment: Alignment.center,
-                    child: const Text(
+                    child: Text(
                       'Agendar sesión',
                       style: TextStyle(
                         fontSize: 12,
                         fontWeight: FontWeight.w700,
-                        color: Colors.white,
+                        color: colorScheme.onPrimary,
                       ),
                     ),
                   ),

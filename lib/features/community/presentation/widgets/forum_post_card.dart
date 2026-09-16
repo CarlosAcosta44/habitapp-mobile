@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../data/models/community_feed_models.dart';
 
-const _kTextDark = Color(0xFF1E1E1E);
-const _kTextGrey = Color(0xFF6B6B6B);
 const _kPink = Color(0xFFE22D6F);
 
 class ForumPostCard extends StatelessWidget {
@@ -19,12 +17,15 @@ class ForumPostCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: colorScheme.surface,
         borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: const Color(0xFFEFEFF2), width: 1),
+        border: Border.all(color: colorScheme.surfaceContainerHighest, width: 1),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withValues(alpha: 0.03),
@@ -50,8 +51,8 @@ class ForumPostCard extends StatelessWidget {
                 alignment: Alignment.center,
                 child: Text(
                   post.authorInitials,
-                  style: const TextStyle(
-                    color: Colors.white,
+                  style: TextStyle(
+                    color: colorScheme.onPrimary,
                     fontWeight: FontWeight.bold,
                     fontSize: 13,
                   ),
@@ -65,18 +66,18 @@ class ForumPostCard extends StatelessWidget {
                   children: [
                     Text(
                       post.authorName,
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontSize: 13.5,
                         fontWeight: FontWeight.bold,
-                        color: _kTextDark,
+                        color: colorScheme.onSurface,
                       ),
                     ),
                     const SizedBox(height: 1),
                     Text(
                       post.timeAgo,
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontSize: 11,
-                        color: _kTextGrey,
+                        color: colorScheme.onSurfaceVariant,
                       ),
                     ),
                   ],
@@ -86,7 +87,7 @@ class ForumPostCard extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                 decoration: BoxDecoration(
-                  color: const Color(0xFFFFEBF2),
+                  color: _kPink.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(14),
                 ),
                 child: Text(
@@ -106,10 +107,10 @@ class ForumPostCard extends StatelessWidget {
           // Question Title
           Text(
             post.questionTitle,
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 14.5,
               fontWeight: FontWeight.bold,
-              color: _kTextDark,
+              color: colorScheme.onSurface,
               height: 1.3,
             ),
           ),
@@ -121,9 +122,9 @@ class ForumPostCard extends StatelessWidget {
             post.content,
             maxLines: 3,
             overflow: TextOverflow.ellipsis,
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 12,
-              color: _kTextGrey,
+              color: colorScheme.onSurfaceVariant,
               height: 1.35,
             ),
           ),
@@ -136,17 +137,17 @@ class ForumPostCard extends StatelessWidget {
               // Comments count
               Row(
                 children: [
-                  const Icon(
+                  Icon(
                     Icons.chat_bubble_outline_rounded,
                     size: 15,
-                    color: _kTextGrey,
+                    color: colorScheme.onSurfaceVariant,
                   ),
                   const SizedBox(width: 4),
                   Text(
                     '${post.commentsCount} respuestas',
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 11,
-                      color: _kTextGrey,
+                      color: colorScheme.onSurfaceVariant,
                       fontWeight: FontWeight.w500,
                     ),
                   ),
@@ -165,14 +166,14 @@ class ForumPostCard extends StatelessWidget {
                           ? Icons.favorite_rounded
                           : Icons.favorite_border_rounded,
                       size: 16,
-                      color: post.isLikedByMe ? _kPink : _kTextGrey,
+                      color: post.isLikedByMe ? _kPink : colorScheme.onSurfaceVariant,
                     ),
                     const SizedBox(width: 4),
                     Text(
                       '${post.likesCount} apoyos',
                       style: TextStyle(
                         fontSize: 11,
-                        color: post.isLikedByMe ? _kPink : _kTextGrey,
+                        color: post.isLikedByMe ? _kPink : colorScheme.onSurfaceVariant,
                         fontWeight:
                             post.isLikedByMe ? FontWeight.bold : FontWeight.w500,
                       ),
@@ -189,15 +190,15 @@ class ForumPostCard extends StatelessWidget {
                 child: Container(
                   padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
                   decoration: BoxDecoration(
-                    color: const Color(0xFFF0F2F5),
+                    color: colorScheme.surfaceContainerHighest.withValues(alpha: 0.5),
                     borderRadius: BorderRadius.circular(16),
                   ),
-                  child: const Text(
+                  child: Text(
                     'Participar',
                     style: TextStyle(
                       fontSize: 11.5,
                       fontWeight: FontWeight.w700,
-                      color: _kTextDark,
+                      color: colorScheme.onSurface,
                     ),
                   ),
                 ),
