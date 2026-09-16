@@ -41,7 +41,7 @@ Este documento detalla el plan de acción para construir `HabitAppFrontend`. El 
 **Objetivo:** Integrar el componente social, gamificación y gráficos de progreso.
 
 *   **Breiner (Engagement y Reportes):**
-    *   [ ] **US032:** Participación en Retos de la Comunidad.
+    *   [x] **US032:** Participación en Retos de la Comunidad.
     *   [ ] **US025:** Leer publicaciones en el muro de la comunidad.
     *   [x] **US031:** Visualizar mis reportes y ranking en gráficas nativas.
 *   **Backend (Seguridad - Ya terminado):** ✅ **COMPLETADO**
