@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../data/models/community_feed_models.dart';
 
-const _kTextDark = Color(0xFF1E1E1E);
-const _kTextGrey = Color(0xFF6B6B6B);
+
 
 class ClinicalArticleCard extends StatelessWidget {
   final ClinicalArticleItem article;
@@ -16,14 +15,17 @@ class ClinicalArticleCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+
     return GestureDetector(
       onTap: onTap,
       child: Container(
         padding: const EdgeInsets.all(14),
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: colorScheme.surface,
           borderRadius: BorderRadius.circular(20),
-          border: Border.all(color: const Color(0xFFEFEFF2), width: 1),
+          border: Border.all(color: colorScheme.surfaceContainerHighest, width: 1),
           boxShadow: [
             BoxShadow(
               color: Colors.black.withValues(alpha: 0.02),
@@ -71,9 +73,9 @@ class ClinicalArticleCard extends StatelessWidget {
                       const SizedBox(width: 4),
                       Text(
                         '· ${article.readTime}',
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontSize: 10.5,
-                          color: _kTextGrey,
+                          color: colorScheme.onSurfaceVariant,
                         ),
                       ),
                     ],
@@ -84,10 +86,10 @@ class ClinicalArticleCard extends StatelessWidget {
                     article.title,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 13.5,
                       fontWeight: FontWeight.bold,
-                      color: _kTextDark,
+                      color: colorScheme.onSurface,
                     ),
                   ),
                   const SizedBox(height: 2),
@@ -96,18 +98,18 @@ class ClinicalArticleCard extends StatelessWidget {
                     article.description,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 11,
-                      color: _kTextGrey,
+                      color: colorScheme.onSurfaceVariant,
                     ),
                   ),
                   const SizedBox(height: 4),
                   // Author
                   Text(
                     article.author,
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 10.5,
-                      color: _kTextGrey,
+                      color: colorScheme.onSurfaceVariant,
                       fontWeight: FontWeight.w500,
                     ),
                   ),

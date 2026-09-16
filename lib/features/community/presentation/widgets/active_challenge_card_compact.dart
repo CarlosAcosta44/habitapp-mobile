@@ -3,8 +3,6 @@ import '../../data/models/community_feed_models.dart';
 
 const _kBlue = Color(0xFF2D82FA);
 const _kGreen = Color(0xFF0F8A5D);
-const _kTextDark = Color(0xFF1E1E1E);
-const _kTextGrey = Color(0xFF6B6B6B);
 
 class ActiveChallengeCardCompact extends StatelessWidget {
   final ActiveChallengeSummary challenge;
@@ -20,12 +18,15 @@ class ActiveChallengeCardCompact extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: colorScheme.surface,
         borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: const Color(0xFFEFEFF2), width: 1),
+        border: Border.all(color: colorScheme.surfaceContainerHighest, width: 1),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withValues(alpha: 0.03),
@@ -44,7 +45,7 @@ class ActiveChallengeCardCompact extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 3),
                 decoration: BoxDecoration(
-                  color: const Color(0xFFE6F4EE),
+                  color: _kGreen.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: Text(
@@ -58,17 +59,17 @@ class ActiveChallengeCardCompact extends StatelessWidget {
               ),
               Row(
                 children: [
-                  const Icon(
+                  Icon(
                     Icons.access_time_rounded,
                     size: 13,
-                    color: _kTextGrey,
+                    color: colorScheme.onSurfaceVariant,
                   ),
                   const SizedBox(width: 4),
                   Text(
                     challenge.remainingTime,
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 11,
-                      color: _kTextGrey,
+                      color: colorScheme.onSurfaceVariant,
                       fontWeight: FontWeight.w500,
                     ),
                   ),
@@ -107,18 +108,18 @@ class ActiveChallengeCardCompact extends StatelessWidget {
                   children: [
                     Text(
                       challenge.title,
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontSize: 13.5,
                         fontWeight: FontWeight.bold,
-                        color: _kTextDark,
+                        color: colorScheme.onSurface,
                       ),
                     ),
                     const SizedBox(height: 2),
                     Text(
                       challenge.participantsInfo,
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontSize: 11,
-                        color: _kTextGrey,
+                        color: colorScheme.onSurfaceVariant,
                       ),
                     ),
                   ],
@@ -134,7 +135,7 @@ class ActiveChallengeCardCompact extends StatelessWidget {
                   duration: const Duration(milliseconds: 200),
                   padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 9),
                   decoration: BoxDecoration(
-                    color: challenge.isJoined ? const Color(0xFFE6F4EE) : _kBlue,
+                    color: challenge.isJoined ? _kGreen.withValues(alpha: 0.1) : _kBlue,
                     borderRadius: BorderRadius.circular(20),
                     boxShadow: challenge.isJoined
                         ? []
@@ -151,7 +152,7 @@ class ActiveChallengeCardCompact extends StatelessWidget {
                     style: TextStyle(
                       fontSize: 12,
                       fontWeight: FontWeight.bold,
-                      color: challenge.isJoined ? _kGreen : Colors.white,
+                      color: challenge.isJoined ? _kGreen : colorScheme.onPrimary,
                     ),
                   ),
                 ),

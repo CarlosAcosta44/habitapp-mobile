@@ -10,13 +10,12 @@ import '../widgets/forum_post_card.dart';
 import '../widgets/clinical_article_card.dart';
 import '../widgets/verified_specialist_card.dart';
 import '../widgets/active_challenge_card_compact.dart';
+import '../../../profile/providers/profile_provider.dart';
+import 'challenges_screen.dart';
 
-const _kBg = Color(0xFFF7F7F9);
 const _kBlue = Color(0xFF2D82FA);
 const _kGreen = Color(0xFF0F8A5D);
 const _kPink = Color(0xFFE22D6F);
-const _kTextDark = Color(0xFF1E1E1E);
-const _kTextGrey = Color(0xFF6B6B6B);
 
 class CommunityScreen extends ConsumerStatefulWidget {
   const CommunityScreen({super.key});
@@ -58,9 +57,15 @@ class _CommunityScreenState extends ConsumerState<CommunityScreen> {
   Widget build(BuildContext context) {
     final state = ref.watch(communityFeedProvider);
     final notifier = ref.read(communityFeedProvider.notifier);
+    final profileState = ref.watch(profileProvider);
+
+    
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+    final isDark = theme.brightness == Brightness.dark;
 
     return Scaffold(
-      backgroundColor: _kBg,
+      backgroundColor: theme.scaffoldBackgroundColor,
       body: SafeArea(
         child: RefreshIndicator(
           color: _kBlue,
@@ -69,16 +74,16 @@ class _CommunityScreenState extends ConsumerState<CommunityScreen> {
           },
           child: SingleChildScrollView(
             controller: _scrollController,
-            physics: const AlwaysScrollableScrollPhysics(parent: BouncingScrollPhysics()),
+            physics: const AlwaysScrollableScrollPhysics(),
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // 1. Header principal con Buscador y Chips de Filtro
                 CommunityHeader(
                   selectedFilterIndex: state.selectedFilterIndex,
                   onFilterChanged: (index) => notifier.setFilter(index),
                   onSearchChanged: (query) => notifier.setSearchQuery(query),
+                  profileImageUrl: profileState.value?.fotoperfil,
                   onNotificationTap: () {
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(content: Text('No tienes notificaciones pendientes.')),
@@ -115,12 +120,12 @@ class _CommunityScreenState extends ConsumerState<CommunityScreen> {
                   const SizedBox(height: 24),
                 ],
 
-                // 3. Sección: Foros y Círculos de Apoyo (El Muro/Feed con Infinite Scroll)
                 if (state.selectedFilterIndex == 0 || state.selectedFilterIndex == 1) ...[
                   _buildSectionHeader(
+                    context,
                     icon: Icons.chat_bubble_outline_rounded,
                     iconColor: _kPink,
-                    iconBgColor: const Color(0xFFFFEBF2),
+                    iconBgColor: isDark ? _kPink.withValues(alpha: 0.2) : const Color(0xFFFFEBF2),
                     title: 'Foros y Círculos de Apoyo',
                     actionText: 'Ver todos',
                     onAction: () => notifier.setFilter(1),
@@ -128,7 +133,7 @@ class _CommunityScreenState extends ConsumerState<CommunityScreen> {
                   const SizedBox(height: 12),
 
                   // Lista de publicaciones del Feed
-                  ...state.posts.map((post) {
+                  ...(state.selectedFilterIndex == 0 ? state.posts.take(1) : state.posts).map((post) {
                     return Padding(
                       padding: const EdgeInsets.only(bottom: 14),
                       child: ForumPostCard(
@@ -147,12 +152,12 @@ class _CommunityScreenState extends ConsumerState<CommunityScreen> {
                   const SizedBox(height: 16),
                 ],
 
-                // 4. Sección: Artículos y Guías Clínicas (Visible en Todo o Artículos)
                 if (state.selectedFilterIndex == 0 || state.selectedFilterIndex == 3) ...[
                   _buildSectionHeader(
+                    context,
                     icon: Icons.menu_book_rounded,
                     iconColor: const Color(0xFFC07338),
-                    iconBgColor: const Color(0xFFFFF3E8),
+                    iconBgColor: isDark ? const Color(0xFFC07338).withValues(alpha: 0.2) : const Color(0xFFFFF3E8),
                     title: 'Artículos y Guías Clínicas',
                     actionText: 'Ver biblioteca',
                     onAction: () {
@@ -190,7 +195,7 @@ class _CommunityScreenState extends ConsumerState<CommunityScreen> {
                           Container(
                             padding: const EdgeInsets.all(6),
                             decoration: BoxDecoration(
-                              color: const Color(0xFFE6F4EE),
+                              color: isDark ? _kGreen.withValues(alpha: 0.2) : const Color(0xFFE6F4EE),
                               borderRadius: BorderRadius.circular(8),
                             ),
                             child: const Icon(
@@ -200,19 +205,19 @@ class _CommunityScreenState extends ConsumerState<CommunityScreen> {
                             ),
                           ),
                           const SizedBox(width: 8),
-                          const Text(
+                          Text(
                             'Especialistas Verificados',
                             style: TextStyle(
                               fontSize: 16,
                               fontWeight: FontWeight.bold,
-                              color: _kTextDark,
+                              color: colorScheme.onSurface,
                             ),
                           ),
                           const SizedBox(width: 8),
                           Container(
                             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
                             decoration: BoxDecoration(
-                              color: const Color(0xFFEFF5FF),
+                              color: isDark ? _kBlue.withValues(alpha: 0.2) : const Color(0xFFEFF5FF),
                               borderRadius: BorderRadius.circular(10),
                             ),
                             child: const Text(
@@ -240,11 +245,11 @@ class _CommunityScreenState extends ConsumerState<CommunityScreen> {
                     ],
                   ),
                   const SizedBox(height: 4),
-                  const Text(
+                  Text(
                     'Terapeutas colegiados con sesiones online confidenciales y personalizadas.',
                     style: TextStyle(
                       fontSize: 11.5,
-                      color: _kTextGrey,
+                      color: colorScheme.onSurfaceVariant,
                       height: 1.3,
                     ),
                   ),
@@ -278,13 +283,14 @@ class _CommunityScreenState extends ConsumerState<CommunityScreen> {
                 // 6. Sección: Retos Comunitarios Activos (Navega a la pantalla de Retos de Breiner)
                 if (state.selectedFilterIndex == 0) ...[
                   _buildSectionHeader(
+                    context,
                     icon: Icons.local_fire_department_rounded,
                     iconColor: const Color(0xFFFF9800),
-                    iconBgColor: const Color(0xFFFFF3E0),
+                    iconBgColor: isDark ? const Color(0xFFFF9800).withValues(alpha: 0.2) : const Color(0xFFFFF3E0),
                     title: 'Retos Comunitarios Activos',
                     actionText: 'Ver todos',
                     onAction: () {
-                      context.push('/challenges');
+                      notifier.setFilter(5); // Cambiar a la pestaña Retos
                     },
                   ),
                   const SizedBox(height: 12),
@@ -300,15 +306,21 @@ class _CommunityScreenState extends ConsumerState<CommunityScreen> {
                                 ? '¡Te uniste a "${state.activeChallenge.title}"!'
                                 : 'Has salido del reto.',
                           ),
-                          backgroundColor: !state.activeChallenge.isJoined ? _kGreen : Colors.grey[700],
+                          backgroundColor: !state.activeChallenge.isJoined ? _kGreen : colorScheme.onSurfaceVariant,
                         ),
                       );
                     },
                     onSeeAll: () {
-                      context.push('/challenges');
+                      notifier.setFilter(5); // Cambiar a la pestaña Retos
                     },
                   ),
 
+                  const SizedBox(height: 40),
+                ],
+
+                // 7. Pestaña de Retos Completa (Visible solo en índice 5)
+                if (state.selectedFilterIndex == 5) ...[
+                  const ChallengesView(),
                   const SizedBox(height: 40),
                 ],
               ],
@@ -320,7 +332,8 @@ class _CommunityScreenState extends ConsumerState<CommunityScreen> {
   }
 
   /// Encabezado reutilizable de cada sección
-  Widget _buildSectionHeader({
+  Widget _buildSectionHeader(
+    BuildContext context, {
     required IconData icon,
     required Color iconColor,
     required Color iconBgColor,
@@ -344,10 +357,10 @@ class _CommunityScreenState extends ConsumerState<CommunityScreen> {
             const SizedBox(width: 8),
             Text(
               title,
-              style: const TextStyle(
+              style: TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.bold,
-                color: _kTextDark,
+                color: Theme.of(context).colorScheme.onSurface,
               ),
             ),
           ],
@@ -367,16 +380,17 @@ class _CommunityScreenState extends ConsumerState<CommunityScreen> {
     );
   }
 
-  /// Spinner o mensaje inferior del Infinite Scroll
   Widget _buildInfiniteScrollFooter(CommunityFeedState state) {
+    final theme = Theme.of(context);
+    
     if (state.isLoadingMore) {
       return Container(
         padding: const EdgeInsets.symmetric(vertical: 16),
         alignment: Alignment.center,
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
-          children: const [
-            SizedBox(
+          children: [
+            const SizedBox(
               width: 18,
               height: 18,
               child: CircularProgressIndicator(
@@ -384,12 +398,12 @@ class _CommunityScreenState extends ConsumerState<CommunityScreen> {
                 color: _kBlue,
               ),
             ),
-            SizedBox(width: 10),
+            const SizedBox(width: 10),
             Text(
               'Cargando más publicaciones...',
               style: TextStyle(
                 fontSize: 12,
-                color: _kTextGrey,
+                color: theme.colorScheme.onSurfaceVariant,
                 fontWeight: FontWeight.w500,
               ),
             ),
@@ -402,11 +416,11 @@ class _CommunityScreenState extends ConsumerState<CommunityScreen> {
       return Container(
         padding: const EdgeInsets.symmetric(vertical: 14),
         alignment: Alignment.center,
-        child: const Text(
+        child: Text(
           '✨ ¡Estás al día con todas las publicaciones!',
           style: TextStyle(
             fontSize: 11.5,
-            color: _kTextGrey,
+            color: theme.colorScheme.onSurfaceVariant,
             fontWeight: FontWeight.w500,
           ),
         ),
@@ -420,10 +434,13 @@ class _CommunityScreenState extends ConsumerState<CommunityScreen> {
   void _showParticipateDialog(BuildContext context, ForumPostItem post) {
     final textController = TextEditingController();
 
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+    
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
-      backgroundColor: Colors.white,
+      backgroundColor: theme.scaffoldBackgroundColor,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
       ),
@@ -444,10 +461,10 @@ class _CommunityScreenState extends ConsumerState<CommunityScreen> {
                 children: [
                   Text(
                     'Responder a ${post.authorName}',
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
-                      color: _kTextDark,
+                      color: colorScheme.onSurface,
                     ),
                   ),
                   IconButton(
@@ -459,9 +476,9 @@ class _CommunityScreenState extends ConsumerState<CommunityScreen> {
               const SizedBox(height: 8),
               Text(
                 post.questionTitle,
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 13,
-                  color: _kTextGrey,
+                  color: colorScheme.onSurfaceVariant,
                   fontStyle: FontStyle.italic,
                 ),
               ),
@@ -470,11 +487,14 @@ class _CommunityScreenState extends ConsumerState<CommunityScreen> {
                 controller: textController,
                 maxLines: 4,
                 autofocus: true,
+                style: TextStyle(color: colorScheme.onSurface),
                 decoration: InputDecoration(
                   hintText: 'Escribe tu respuesta o técnica de apoyo...',
-                  hintStyle: const TextStyle(fontSize: 13, color: Colors.grey),
+                  hintStyle: TextStyle(fontSize: 13, color: colorScheme.onSurfaceVariant.withValues(alpha: 0.6)),
                   filled: true,
-                  fillColor: const Color(0xFFF7F7F9),
+                  fillColor: theme.brightness == Brightness.dark 
+                      ? colorScheme.surfaceContainerHighest 
+                      : const Color(0xFFF7F7F9),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(16),
                     borderSide: BorderSide.none,

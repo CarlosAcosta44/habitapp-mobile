@@ -482,6 +482,15 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
     return chartDataAsync.when(
       data: (chartData) {
         double totalSemanal = chartData.fold<double>(0, (a, b) => a + b.y);
+        
+        // Calcular maxY dinámicamente para que las barras no desborden
+        double maxY = 10.0;
+        for (var data in chartData) {
+          if (data.y > maxY) {
+            maxY = data.y;
+          }
+        }
+        maxY = (maxY * 1.2).ceilToDouble(); // 20% de margen superior
 
         return Container(
           padding: EdgeInsets.all(20),
@@ -531,7 +540,7 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
                 child: BarChart(
                   BarChartData(
                     alignment: BarChartAlignment.spaceAround,
-                    maxY: 10,
+                    maxY: maxY,
                     barTouchData: BarTouchData(enabled: false),
                     titlesData: FlTitlesData(
                       show: true,
@@ -564,7 +573,7 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
                       leftTitles: AxisTitles(
                         sideTitles: SideTitles(
                           showTitles: true,
-                          reservedSize: 28,
+                          reservedSize: 36, // Más espacio para números grandes
                           getTitlesWidget: (val, meta) => Text(
                             val.toInt().toString(),
                             style: TextStyle(
@@ -611,8 +620,10 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
                             borderRadius: BorderRadius.circular(4),
                             backDrawRodData: BackgroundBarChartRodData(
                               show: true,
-                              toY: 10,
-                              color: Colors.grey.shade100,
+                              toY: maxY,
+                              color: Theme.of(context).brightness == Brightness.dark
+                                  ? Colors.white.withValues(alpha: 0.05)
+                                  : Colors.grey.shade100,
                             ),
                           ),
                         ],

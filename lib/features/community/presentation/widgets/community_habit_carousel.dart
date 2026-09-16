@@ -3,8 +3,6 @@ import '../../data/models/community_feed_models.dart';
 
 const _kBlue = Color(0xFF2D82FA);
 const _kGreen = Color(0xFF0F8A5D);
-const _kTextDark = Color(0xFF1E1E1E);
-const _kTextGrey = Color(0xFF6B6B6B);
 
 class CommunityHabitCarousel extends StatelessWidget {
   final List<CommunityHabitItem> habits;
@@ -20,6 +18,9 @@ class CommunityHabitCarousel extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -32,7 +33,7 @@ class CommunityHabitCarousel extends StatelessWidget {
                 Container(
                   padding: const EdgeInsets.all(6),
                   decoration: BoxDecoration(
-                    color: const Color(0xFFE6F4EE),
+                    color: _kGreen.withValues(alpha: 0.1),
                     borderRadius: BorderRadius.circular(8),
                   ),
                   child: const Icon(
@@ -42,12 +43,12 @@ class CommunityHabitCarousel extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(width: 8),
-                const Text(
+                Text(
                   'Hábitos de la comunidad',
                   style: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.bold,
-                    color: _kTextDark,
+                    color: colorScheme.onSurface,
                   ),
                 ),
               ],
@@ -68,11 +69,11 @@ class CommunityHabitCarousel extends StatelessWidget {
 
         const SizedBox(height: 4),
 
-        const Text(
+        Text(
           'Inspirados por otros miembros para cuidar la salud emocional día a día.',
           style: TextStyle(
             fontSize: 11.5,
-            color: _kTextGrey,
+            color: colorScheme.onSurfaceVariant,
             height: 1.3,
           ),
         ),
@@ -84,7 +85,6 @@ class CommunityHabitCarousel extends StatelessWidget {
           height: 175,
           child: ListView.separated(
             scrollDirection: Axis.horizontal,
-            physics: const BouncingScrollPhysics(),
             itemCount: habits.length,
             separatorBuilder: (context, index) => const SizedBox(width: 12),
             itemBuilder: (context, index) {
@@ -112,13 +112,16 @@ class _CommunityHabitCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+
     return Container(
       width: 220,
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: colorScheme.surface,
         borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: const Color(0xFFEFEFF2), width: 1),
+        border: Border.all(color: colorScheme.surfaceContainerHighest, width: 1),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withValues(alpha: 0.03),
@@ -153,7 +156,7 @@ class _CommunityHabitCard extends StatelessWidget {
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
                   decoration: BoxDecoration(
-                    color: const Color(0xFFFFEBF2),
+                    color: const Color(0xFFE22D6F).withValues(alpha: 0.1),
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: Text(
@@ -176,10 +179,10 @@ class _CommunityHabitCard extends StatelessWidget {
                 habit.title,
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 13.5,
                   fontWeight: FontWeight.bold,
-                  color: _kTextDark,
+                  color: colorScheme.onSurface,
                 ),
               ),
               const SizedBox(height: 3),
@@ -187,9 +190,9 @@ class _CommunityHabitCard extends StatelessWidget {
                 habit.description,
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 11,
-                  color: _kTextGrey,
+                  color: colorScheme.onSurfaceVariant,
                   height: 1.25,
                 ),
               ),
@@ -224,7 +227,7 @@ class _CommunityHabitCard extends StatelessWidget {
                   duration: const Duration(milliseconds: 200),
                   padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                   decoration: BoxDecoration(
-                    color: habit.isAdded ? const Color(0xFFE6F4EE) : _kBlue,
+                    color: habit.isAdded ? _kGreen.withValues(alpha: 0.1) : _kBlue,
                     borderRadius: BorderRadius.circular(20),
                   ),
                   child: Row(
@@ -233,7 +236,7 @@ class _CommunityHabitCard extends StatelessWidget {
                       Icon(
                         habit.isAdded ? Icons.check : Icons.add,
                         size: 13,
-                        color: habit.isAdded ? _kGreen : Colors.white,
+                        color: habit.isAdded ? _kGreen : colorScheme.onPrimary,
                       ),
                       const SizedBox(width: 2),
                       Text(
@@ -241,7 +244,7 @@ class _CommunityHabitCard extends StatelessWidget {
                         style: TextStyle(
                           fontSize: 11,
                           fontWeight: FontWeight.bold,
-                          color: habit.isAdded ? _kGreen : Colors.white,
+                          color: habit.isAdded ? _kGreen : colorScheme.onPrimary,
                         ),
                       ),
                     ],

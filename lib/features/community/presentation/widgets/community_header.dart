@@ -2,8 +2,7 @@ import 'package:flutter/material.dart';
 
 const _kBlue = Color(0xFF2D82FA);
 const _kGreen = Color(0xFF0F8A5D);
-const _kTextDark = Color(0xFF1E1E1E);
-const _kTextGrey = Color(0xFF6B6B6B);
+
 
 class CommunityHeader extends StatelessWidget {
   final int selectedFilterIndex;
@@ -11,6 +10,7 @@ class CommunityHeader extends StatelessWidget {
   final ValueChanged<String> onSearchChanged;
   final VoidCallback? onNotificationTap;
   final VoidCallback? onProfileTap;
+  final String? profileImageUrl;
 
   const CommunityHeader({
     super.key,
@@ -19,18 +19,23 @@ class CommunityHeader extends StatelessWidget {
     required this.onSearchChanged,
     this.onNotificationTap,
     this.onProfileTap,
+    this.profileImageUrl,
   });
 
   static const List<String> _filters = [
     'Todo',
     'Foros de Apoyo',
-    'Hábitos Compartidos',
+    'Hábitos de la comunidad',
     'Artículos',
     'Especialistas',
+    'Retos',
   ];
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -38,20 +43,24 @@ class CommunityHeader extends StatelessWidget {
         Row(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            // Brain logo avatar
+            // App logo avatar
             Container(
               width: 44,
               height: 44,
               decoration: BoxDecoration(
-                color: const Color(0xFFEFF5FF),
                 shape: BoxShape.circle,
                 border: Border.all(color: _kBlue.withValues(alpha: 0.2), width: 1.5),
               ),
               alignment: Alignment.center,
-              child: const Icon(
-                Icons.psychology_rounded,
-                color: _kBlue,
-                size: 26,
+              clipBehavior: Clip.hardEdge,
+              child: Image.asset(
+                'assets/images/logo-habitapp.png',
+                fit: BoxFit.cover,
+                errorBuilder: (context, error, stackTrace) => const Icon(
+                  Icons.psychology_rounded,
+                  color: _kBlue,
+                  size: 26,
+                ),
               ),
             ),
             const SizedBox(width: 12),
@@ -60,12 +69,12 @@ class CommunityHeader extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text(
+                  Text(
                     'Comunidad & Bienestar',
                     style: TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
-                      color: _kTextDark,
+                      color: colorScheme.onSurface,
                       letterSpacing: -0.3,
                     ),
                   ),
@@ -81,12 +90,12 @@ class CommunityHeader extends StatelessWidget {
                         ),
                       ),
                       const SizedBox(width: 6),
-                      const Text(
+                      Text(
                         '4,890 miembros conectados',
                         style: TextStyle(
                           fontSize: 11,
                           fontWeight: FontWeight.w500,
-                          color: _kTextGrey,
+                          color: colorScheme.onSurfaceVariant,
                         ),
                       ),
                     ],
@@ -101,12 +110,12 @@ class CommunityHeader extends StatelessWidget {
                 width: 40,
                 height: 40,
                 decoration: BoxDecoration(
-                  color: const Color(0xFFF0F2F5),
+                  color: colorScheme.surfaceContainerHighest.withValues(alpha: 0.5),
                   shape: BoxShape.circle,
                 ),
-                child: const Icon(
+                child: Icon(
                   Icons.notifications_none_rounded,
-                  color: _kTextDark,
+                  color: colorScheme.onSurface,
                   size: 20,
                 ),
               ),
@@ -123,11 +132,22 @@ class CommunityHeader extends StatelessWidget {
                   shape: BoxShape.circle,
                   border: Border.all(color: const Color(0xFFF94C84).withValues(alpha: 0.3), width: 1.5),
                 ),
-                child: const Icon(
-                  Icons.person_outline_rounded,
-                  color: Color(0xFFE22D6F),
-                  size: 22,
-                ),
+                clipBehavior: Clip.hardEdge,
+                child: profileImageUrl != null
+                    ? Image.network(
+                        profileImageUrl!,
+                        fit: BoxFit.cover,
+                        errorBuilder: (context, error, stackTrace) => const Icon(
+                          Icons.person_outline_rounded,
+                          color: Color(0xFFE22D6F),
+                          size: 22,
+                        ),
+                      )
+                    : const Icon(
+                        Icons.person_outline_rounded,
+                        color: Color(0xFFE22D6F),
+                        size: 22,
+                      ),
               ),
             ),
           ],
@@ -139,9 +159,9 @@ class CommunityHeader extends StatelessWidget {
         Container(
           height: 46,
           decoration: BoxDecoration(
-            color: Colors.white,
+            color: colorScheme.surface,
             borderRadius: BorderRadius.circular(30),
-            border: Border.all(color: const Color(0xFFE0E0E6), width: 1),
+            border: Border.all(color: colorScheme.outline, width: 1),
             boxShadow: [
               BoxShadow(
                 color: Colors.black.withValues(alpha: 0.02),
@@ -187,10 +207,10 @@ class CommunityHeader extends StatelessWidget {
                   duration: const Duration(milliseconds: 200),
                   padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                   decoration: BoxDecoration(
-                    color: isSelected ? _kBlue : Colors.white,
+                    color: isSelected ? _kBlue : colorScheme.surface,
                     borderRadius: BorderRadius.circular(24),
                     border: Border.all(
-                      color: isSelected ? _kBlue : const Color(0xFFE0E0E6),
+                      color: isSelected ? _kBlue : colorScheme.outline,
                       width: 1,
                     ),
                     boxShadow: isSelected
@@ -209,7 +229,7 @@ class CommunityHeader extends StatelessWidget {
                       style: TextStyle(
                         fontSize: 12,
                         fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
-                        color: isSelected ? Colors.white : _kTextDark,
+                        color: isSelected ? colorScheme.onPrimary : colorScheme.onSurface,
                       ),
                     ),
                   ),
