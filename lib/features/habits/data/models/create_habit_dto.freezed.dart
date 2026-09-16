@@ -29,12 +29,12 @@ $CreateHabitDtoCopyWith<CreateHabitDto> get copyWith => _$CreateHabitDtoCopyWith
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is CreateHabitDto&&(identical(other.nombre, nombre) || other.nombre == nombre)&&(identical(other.descripcion, descripcion) || other.descripcion == descripcion)&&(identical(other.fechaInicio, fechaInicio) || other.fechaInicio == fechaInicio)&&(identical(other.fechaFin, fechaFin) || other.fechaFin == fechaFin)&&(identical(other.puntos, puntos) || other.puntos == puntos)&&(identical(other.metaDiaria, metaDiaria) || other.metaDiaria == metaDiaria)&&(identical(other.unidadMedida, unidadMedida) || other.unidadMedida == unidadMedida)&&(identical(other.idCategoria, idCategoria) || other.idCategoria == idCategoria)&&DeepCollectionEquality().equals(other.diasSemana, diasSemana));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is CreateHabitDto&&(identical(other.nombre, nombre) || other.nombre == nombre)&&(identical(other.descripcion, descripcion) || other.descripcion == descripcion)&&(identical(other.fechaInicio, fechaInicio) || other.fechaInicio == fechaInicio)&&(identical(other.fechaFin, fechaFin) || other.fechaFin == fechaFin)&&(identical(other.puntos, puntos) || other.puntos == puntos)&&(identical(other.metaDiaria, metaDiaria) || other.metaDiaria == metaDiaria)&&(identical(other.unidadMedida, unidadMedida) || other.unidadMedida == unidadMedida)&&(identical(other.idCategoria, idCategoria) || other.idCategoria == idCategoria)&&const DeepCollectionEquality().equals(other.diasSemana, diasSemana));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,nombre,descripcion,fechaInicio,fechaFin,puntos,metaDiaria,unidadMedida,idCategoria,DeepCollectionEquality().hash(diasSemana));
+int get hashCode => Object.hash(runtimeType,nombre,descripcion,fechaInicio,fechaFin,puntos,metaDiaria,unidadMedida,idCategoria,const DeepCollectionEquality().hash(diasSemana));
 
 @override
 String toString() {
@@ -250,12 +250,12 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _CreateHabitDto&&(identical(other.nombre, nombre) || other.nombre == nombre)&&(identical(other.descripcion, descripcion) || other.descripcion == descripcion)&&(identical(other.fechaInicio, fechaInicio) || other.fechaInicio == fechaInicio)&&(identical(other.fechaFin, fechaFin) || other.fechaFin == fechaFin)&&(identical(other.puntos, puntos) || other.puntos == puntos)&&(identical(other.metaDiaria, metaDiaria) || other.metaDiaria == metaDiaria)&&(identical(other.unidadMedida, unidadMedida) || other.unidadMedida == unidadMedida)&&(identical(other.idCategoria, idCategoria) || other.idCategoria == idCategoria)&&DeepCollectionEquality().equals(other._diasSemana, _diasSemana));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _CreateHabitDto&&(identical(other.nombre, nombre) || other.nombre == nombre)&&(identical(other.descripcion, descripcion) || other.descripcion == descripcion)&&(identical(other.fechaInicio, fechaInicio) || other.fechaInicio == fechaInicio)&&(identical(other.fechaFin, fechaFin) || other.fechaFin == fechaFin)&&(identical(other.puntos, puntos) || other.puntos == puntos)&&(identical(other.metaDiaria, metaDiaria) || other.metaDiaria == metaDiaria)&&(identical(other.unidadMedida, unidadMedida) || other.unidadMedida == unidadMedida)&&(identical(other.idCategoria, idCategoria) || other.idCategoria == idCategoria)&&const DeepCollectionEquality().equals(other._diasSemana, _diasSemana));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,nombre,descripcion,fechaInicio,fechaFin,puntos,metaDiaria,unidadMedida,idCategoria,DeepCollectionEquality().hash(_diasSemana));
+int get hashCode => Object.hash(runtimeType,nombre,descripcion,fechaInicio,fechaFin,puntos,metaDiaria,unidadMedida,idCategoria,const DeepCollectionEquality().hash(_diasSemana));
 
 @override
 String toString() {

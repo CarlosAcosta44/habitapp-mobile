@@ -17,6 +17,8 @@ import '../../features/habits/presentation/screens/habit_detail_screen.dart';
 import '../../features/habits/presentation/screens/archived_habits_screen.dart';
 import '../../features/auth/presentation/screens/register_screen.dart';
 import '../../features/reports/presentation/screens/reports_screen.dart';
+import '../../features/community/presentation/screens/community_screen.dart';
+import '../../features/community/presentation/screens/challenge_detail_screen.dart';
 
 part 'app_router.g.dart';
 
@@ -63,7 +65,7 @@ GoRouter appRouter(Ref ref) {
             routes: [
               GoRoute(
                 path: '/community',
-                builder: (context, state) => Scaffold(body: Center(child: Text('Comunidad'))),
+                builder: (context, state) => const CommunityScreen(),
               ),
             ],
           ),
@@ -118,6 +120,13 @@ GoRouter appRouter(Ref ref) {
       GoRoute(
         path: '/archived-habits',
         builder: (context, state) => ArchivedHabitsScreen(),
+      ),
+      GoRoute(
+        path: '/community/challenge/:id',
+        builder: (context, state) {
+          final retoId = state.pathParameters['id']!;
+          return ChallengeDetailScreen(retoId: retoId);
+        },
       ),
     ],
     redirect: (context, state) {
