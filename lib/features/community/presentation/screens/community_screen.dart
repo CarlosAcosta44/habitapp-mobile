@@ -2,8 +2,21 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../providers/retos_provider.dart';
-import '../widgets/challenge_card.dart';
+import '../../data/models/community_feed_models.dart';
+import '../../providers/community_feed_provider.dart';
+import '../widgets/community_header.dart';
+import '../widgets/community_habit_carousel.dart';
+import '../widgets/forum_post_card.dart';
+import '../widgets/clinical_article_card.dart';
+import '../widgets/verified_specialist_card.dart';
+import '../widgets/active_challenge_card_compact.dart';
+
+const _kBg = Color(0xFFF7F7F9);
+const _kBlue = Color(0xFF2D82FA);
+const _kGreen = Color(0xFF0F8A5D);
+const _kPink = Color(0xFFE22D6F);
+const _kTextDark = Color(0xFF1E1E1E);
+const _kTextGrey = Color(0xFF6B6B6B);
 
 class CommunityScreen extends ConsumerStatefulWidget {
   const CommunityScreen({super.key});
@@ -13,246 +26,499 @@ class CommunityScreen extends ConsumerStatefulWidget {
 }
 
 class _CommunityScreenState extends ConsumerState<CommunityScreen> {
-  int _selectedFilterIndex = 0; // 0: Todos, 1: Mis Retos, 2: Disponibles
+  final ScrollController _scrollController = ScrollController();
+
+  @override
+  void initState() {
+    super.initState();
+    _scrollController.addListener(_onScroll);
+  }
+
+  @override
+  void dispose() {
+    _scrollController.removeListener(_onScroll);
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  /// Detección de proximidad al fondo para disparar el Infinite Scroll
+  void _onScroll() {
+    if (!_scrollController.hasClients) return;
+
+    final maxScroll = _scrollController.position.maxScrollExtent;
+    final currentScroll = _scrollController.position.pixels;
+
+    // Disparamos la carga cuando falten 250 píxeles para llegar al final
+    if (currentScroll >= maxScroll - 250) {
+      ref.read(communityFeedProvider.notifier).loadMore();
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final colorScheme = theme.colorScheme;
-    final retosAsync = ref.watch(communityRetosProvider);
+    final state = ref.watch(communityFeedProvider);
+    final notifier = ref.read(communityFeedProvider.notifier);
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Retos de la Comunidad'),
-        centerTitle: false,
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.refresh_rounded),
-            onPressed: () {
-              ref.read(communityRetosProvider.notifier).refresh();
-            },
-            tooltip: 'Actualizar retos',
-          ),
-        ],
-      ),
-      body: RefreshIndicator(
-        onRefresh: () async {
-          await ref.read(communityRetosProvider.notifier).refresh();
-        },
-        child: SingleChildScrollView(
-          physics: const AlwaysScrollableScrollPhysics(parent: BouncingScrollPhysics()),
-          padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Hero Banner Informativo
-              Container(
-                width: double.infinity,
-                padding: const EdgeInsets.all(20),
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    colors: [
-                      colorScheme.primary,
-                      const Color(0xFF1E52BD),
-                    ],
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                  ),
-                  borderRadius: BorderRadius.circular(24),
-                  boxShadow: [
-                    BoxShadow(
-                      color: colorScheme.primary.withValues(alpha: 0.25),
-                      blurRadius: 12,
-                      offset: const Offset(0, 4),
-                    ),
-                  ],
-                ),
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const Text(
-                            '¡Gana Puntos e Insignias! 🏆',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          const SizedBox(height: 6),
-                          Text(
-                            'Únete a los desafíos colectivos y supera tus metas junto a miles de usuarios.',
-                            style: TextStyle(
-                              color: Colors.white.withValues(alpha: 0.9),
-                              fontSize: 13,
-                              height: 1.3,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    const SizedBox(width: 12),
-                    Container(
-                      padding: const EdgeInsets.all(12),
-                      decoration: BoxDecoration(
-                        color: Colors.white.withValues(alpha: 0.2),
-                        shape: BoxShape.circle,
-                      ),
-                      child: const Icon(
-                        Icons.emoji_events_rounded,
-                        color: Colors.white,
-                        size: 32,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(height: 20),
-
-              // Chips de Filtro
-              SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                child: Row(
-                  children: [
-                    _buildFilterChip(0, 'Todos'),
-                    const SizedBox(width: 8),
-                    _buildFilterChip(1, 'Mis Retos (Unidos)'),
-                    const SizedBox(width: 8),
-                    _buildFilterChip(2, 'Disponibles'),
-                  ],
-                ),
-              ),
-              const SizedBox(height: 16),
-
-              // Lista de Retos
-              retosAsync.when(
-                loading: () => const Padding(
-                  padding: EdgeInsets.only(top: 40.0),
-                  child: Center(child: CircularProgressIndicator()),
-                ),
-                error: (err, stack) => Padding(
-                  padding: const EdgeInsets.only(top: 40.0),
-                  child: Center(
-                    child: Column(
-                      children: [
-                        const Icon(Icons.error_outline_rounded, size: 48, color: Colors.red),
-                        const SizedBox(height: 12),
-                        Text('Error al cargar retos: $err'),
-                        const SizedBox(height: 8),
-                        ElevatedButton(
-                          onPressed: () => ref.read(communityRetosProvider.notifier).refresh(),
-                          child: const Text('Reintentar'),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-                data: (retos) {
-                  final filteredList = retos.where((reto) {
-                    if (_selectedFilterIndex == 1) return reto.isJoined;
-                    if (_selectedFilterIndex == 2) return !reto.isJoined;
-                    return true;
-                  }).toList();
-
-                  if (filteredList.isEmpty) {
-                    return Container(
-                      width: double.infinity,
-                      padding: const EdgeInsets.all(32),
-                      child: Column(
-                        children: [
-                          Icon(
-                            Icons.emoji_events_outlined,
-                            size: 64,
-                            color: colorScheme.onSurfaceVariant.withValues(alpha: 0.5),
-                          ),
-                          const SizedBox(height: 16),
-                          Text(
-                            _selectedFilterIndex == 1
-                                ? 'Aún no estás participando en ningún reto.'
-                                : 'No hay retos disponibles en esta sección.',
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                              fontSize: 15,
-                              fontWeight: FontWeight.w600,
-                              color: colorScheme.onSurfaceVariant,
-                            ),
-                          ),
-                        ],
-                      ),
+      backgroundColor: _kBg,
+      body: SafeArea(
+        child: RefreshIndicator(
+          color: _kBlue,
+          onRefresh: () async {
+            await notifier.refresh();
+          },
+          child: SingleChildScrollView(
+            controller: _scrollController,
+            physics: const AlwaysScrollableScrollPhysics(parent: BouncingScrollPhysics()),
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // 1. Header principal con Buscador y Chips de Filtro
+                CommunityHeader(
+                  selectedFilterIndex: state.selectedFilterIndex,
+                  onFilterChanged: (index) => notifier.setFilter(index),
+                  onSearchChanged: (query) => notifier.setSearchQuery(query),
+                  onNotificationTap: () {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text('No tienes notificaciones pendientes.')),
                     );
-                  }
+                  },
+                  onProfileTap: () => context.push('/profile'),
+                ),
 
-                  return ListView.builder(
-                    shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
-                    itemCount: filteredList.length,
-                    itemBuilder: (context, index) {
-                      final reto = filteredList[index];
-                      return ChallengeCard(
-                        reto: reto,
-                        onTap: () {
-                          context.push('/community/challenge/${reto.id}');
-                        },
-                        onJoinTap: () async {
-                          final success = await ref
-                              .read(communityRetosProvider.notifier)
-                              .joinChallenge(reto.id);
-                          if (context.mounted) {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                content: Text(
-                                  success
-                                      ? '¡Te uniste al reto "${reto.titulo}"!'
-                                      : 'No se pudo procesar la solicitud.',
-                                ),
-                                backgroundColor: success ? colorScheme.primary : Colors.red,
-                              ),
-                            );
-                          }
-                        },
+                const SizedBox(height: 20),
+
+                // 2. Sección: Hábitos de la comunidad (Visible en Todo o Hábitos Compartidos)
+                if (state.selectedFilterIndex == 0 || state.selectedFilterIndex == 2) ...[
+                  CommunityHabitCarousel(
+                    habits: state.habits,
+                    onAddHabit: (id) {
+                      notifier.toggleHabitAdded(id);
+                      final habit = state.habits.firstWhere((h) => h.id == id);
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text(
+                            !habit.isAdded
+                                ? '¡Hábito "${habit.title}" añadido a tu rutina!'
+                                : 'Hábito removido.',
+                          ),
+                          backgroundColor: !habit.isAdded ? _kGreen : Colors.grey[700],
+                          duration: const Duration(seconds: 2),
+                        ),
                       );
                     },
-                  );
-                },
-              ),
-            ],
+                    onSeeAll: () {
+                      notifier.setFilter(2); // Filtra a hábitos
+                    },
+                  ),
+                  const SizedBox(height: 24),
+                ],
+
+                // 3. Sección: Foros y Círculos de Apoyo (El Muro/Feed con Infinite Scroll)
+                if (state.selectedFilterIndex == 0 || state.selectedFilterIndex == 1) ...[
+                  _buildSectionHeader(
+                    icon: Icons.chat_bubble_outline_rounded,
+                    iconColor: _kPink,
+                    iconBgColor: const Color(0xFFFFEBF2),
+                    title: 'Foros y Círculos de Apoyo',
+                    actionText: 'Ver todos',
+                    onAction: () => notifier.setFilter(1),
+                  ),
+                  const SizedBox(height: 12),
+
+                  // Lista de publicaciones del Feed
+                  ...state.posts.map((post) {
+                    return Padding(
+                      padding: const EdgeInsets.only(bottom: 14),
+                      child: ForumPostCard(
+                        post: post,
+                        onToggleLike: () => notifier.toggleLike(post.id),
+                        onParticipate: () {
+                          _showParticipateDialog(context, post);
+                        },
+                      ),
+                    );
+                  }),
+
+                  // Indicador inferior de Infinite Scroll
+                  _buildInfiniteScrollFooter(state),
+
+                  const SizedBox(height: 16),
+                ],
+
+                // 4. Sección: Artículos y Guías Clínicas (Visible en Todo o Artículos)
+                if (state.selectedFilterIndex == 0 || state.selectedFilterIndex == 3) ...[
+                  _buildSectionHeader(
+                    icon: Icons.menu_book_rounded,
+                    iconColor: const Color(0xFFC07338),
+                    iconBgColor: const Color(0xFFFFF3E8),
+                    title: 'Artículos y Guías Clínicas',
+                    actionText: 'Ver biblioteca',
+                    onAction: () {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(content: Text('Abriendo biblioteca de artículos clínicos...')),
+                      );
+                    },
+                  ),
+                  const SizedBox(height: 12),
+
+                  ...state.articles.map((article) {
+                    return Padding(
+                      padding: const EdgeInsets.only(bottom: 12),
+                      child: ClinicalArticleCard(
+                        article: article,
+                        onTap: () {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(content: Text('Leyendo "${article.title}"')),
+                          );
+                        },
+                      ),
+                    );
+                  }),
+
+                  const SizedBox(height: 20),
+                ],
+
+                // 5. Sección: Especialistas Verificados (Visible en Todo o Especialistas)
+                if (state.selectedFilterIndex == 0 || state.selectedFilterIndex == 4) ...[
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Row(
+                        children: [
+                          Container(
+                            padding: const EdgeInsets.all(6),
+                            decoration: BoxDecoration(
+                              color: const Color(0xFFE6F4EE),
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            child: const Icon(
+                              Icons.verified_user_outlined,
+                              color: _kGreen,
+                              size: 18,
+                            ),
+                          ),
+                          const SizedBox(width: 8),
+                          const Text(
+                            'Especialistas Verificados',
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                              color: _kTextDark,
+                            ),
+                          ),
+                          const SizedBox(width: 8),
+                          Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                            decoration: BoxDecoration(
+                              color: const Color(0xFFEFF5FF),
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            child: const Text(
+                              'En línea',
+                              style: TextStyle(
+                                fontSize: 10,
+                                fontWeight: FontWeight.bold,
+                                color: _kBlue,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      GestureDetector(
+                        onTap: () => notifier.setFilter(4),
+                        child: const Text(
+                          'Ver todos',
+                          style: TextStyle(
+                            fontSize: 12,
+                            fontWeight: FontWeight.w700,
+                            color: _kGreen,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 4),
+                  const Text(
+                    'Terapeutas colegiados con sesiones online confidenciales y personalizadas.',
+                    style: TextStyle(
+                      fontSize: 11.5,
+                      color: _kTextGrey,
+                      height: 1.3,
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+
+                  ...state.specialists.map((specialist) {
+                    return Padding(
+                      padding: const EdgeInsets.only(bottom: 12),
+                      child: VerifiedSpecialistCard(
+                        specialist: specialist,
+                        onViewProfile: () {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(content: Text('Perfil de ${specialist.name}')),
+                          );
+                        },
+                        onBookSession: () {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text('Agendando sesión con ${specialist.name} (${specialist.priceSession})'),
+                              backgroundColor: _kBlue,
+                            ),
+                          );
+                        },
+                      ),
+                    );
+                  }),
+
+                  const SizedBox(height: 20),
+                ],
+
+                // 6. Sección: Retos Comunitarios Activos (Navega a la pantalla de Retos de Breiner)
+                if (state.selectedFilterIndex == 0) ...[
+                  _buildSectionHeader(
+                    icon: Icons.local_fire_department_rounded,
+                    iconColor: const Color(0xFFFF9800),
+                    iconBgColor: const Color(0xFFFFF3E0),
+                    title: 'Retos Comunitarios Activos',
+                    actionText: 'Ver todos',
+                    onAction: () {
+                      context.push('/challenges');
+                    },
+                  ),
+                  const SizedBox(height: 12),
+
+                  ActiveChallengeCardCompact(
+                    challenge: state.activeChallenge,
+                    onJoin: () {
+                      notifier.toggleJoinActiveChallenge();
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text(
+                            !state.activeChallenge.isJoined
+                                ? '¡Te uniste a "${state.activeChallenge.title}"!'
+                                : 'Has salido del reto.',
+                          ),
+                          backgroundColor: !state.activeChallenge.isJoined ? _kGreen : Colors.grey[700],
+                        ),
+                      );
+                    },
+                    onSeeAll: () {
+                      context.push('/challenges');
+                    },
+                  ),
+
+                  const SizedBox(height: 40),
+                ],
+              ],
+            ),
           ),
         ),
       ),
     );
   }
 
-  Widget _buildFilterChip(int index, String label) {
-    final theme = Theme.of(context);
-    final colorScheme = theme.colorScheme;
-    final isSelected = _selectedFilterIndex == index;
-
-    return ChoiceChip(
-      label: Text(label),
-      selected: isSelected,
-      onSelected: (selected) {
-        if (selected) {
-          setState(() {
-            _selectedFilterIndex = index;
-          });
-        }
-      },
-      selectedColor: colorScheme.primary,
-      labelStyle: TextStyle(
-        color: isSelected ? Colors.white : colorScheme.onSurface,
-        fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
-        fontSize: 13,
-      ),
-      backgroundColor: colorScheme.surface,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(20),
-        side: BorderSide(
-          color: isSelected ? colorScheme.primary : colorScheme.outline.withValues(alpha: 0.3),
+  /// Encabezado reutilizable de cada sección
+  Widget _buildSectionHeader({
+    required IconData icon,
+    required Color iconColor,
+    required Color iconBgColor,
+    required String title,
+    required String actionText,
+    required VoidCallback onAction,
+  }) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Row(
+          children: [
+            Container(
+              padding: const EdgeInsets.all(6),
+              decoration: BoxDecoration(
+                color: iconBgColor,
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: Icon(icon, color: iconColor, size: 18),
+            ),
+            const SizedBox(width: 8),
+            Text(
+              title,
+              style: const TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+                color: _kTextDark,
+              ),
+            ),
+          ],
         ),
+        GestureDetector(
+          onTap: onAction,
+          child: Text(
+            actionText,
+            style: const TextStyle(
+              fontSize: 12,
+              fontWeight: FontWeight.w700,
+              color: _kGreen,
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  /// Spinner o mensaje inferior del Infinite Scroll
+  Widget _buildInfiniteScrollFooter(CommunityFeedState state) {
+    if (state.isLoadingMore) {
+      return Container(
+        padding: const EdgeInsets.symmetric(vertical: 16),
+        alignment: Alignment.center,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: const [
+            SizedBox(
+              width: 18,
+              height: 18,
+              child: CircularProgressIndicator(
+                strokeWidth: 2,
+                color: _kBlue,
+              ),
+            ),
+            SizedBox(width: 10),
+            Text(
+              'Cargando más publicaciones...',
+              style: TextStyle(
+                fontSize: 12,
+                color: _kTextGrey,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+          ],
+        ),
+      );
+    }
+
+    if (!state.hasMore) {
+      return Container(
+        padding: const EdgeInsets.symmetric(vertical: 14),
+        alignment: Alignment.center,
+        child: const Text(
+          '✨ ¡Estás al día con todas las publicaciones!',
+          style: TextStyle(
+            fontSize: 11.5,
+            color: _kTextGrey,
+            fontWeight: FontWeight.w500,
+          ),
+        ),
+      );
+    }
+
+    return const SizedBox.shrink();
+  }
+
+  /// Diálogo para responder a una publicación
+  void _showParticipateDialog(BuildContext context, ForumPostItem post) {
+    final textController = TextEditingController();
+
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.white,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
       ),
-      showCheckmark: false,
+      builder: (ctx) {
+        return Padding(
+          padding: EdgeInsets.only(
+            left: 20,
+            right: 20,
+            top: 20,
+            bottom: MediaQuery.of(ctx).viewInsets.bottom + 20,
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    'Responder a ${post.authorName}',
+                    style: const TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                      color: _kTextDark,
+                    ),
+                  ),
+                  IconButton(
+                    icon: const Icon(Icons.close, size: 20),
+                    onPressed: () => Navigator.pop(ctx),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 8),
+              Text(
+                post.questionTitle,
+                style: const TextStyle(
+                  fontSize: 13,
+                  color: _kTextGrey,
+                  fontStyle: FontStyle.italic,
+                ),
+              ),
+              const SizedBox(height: 14),
+              TextField(
+                controller: textController,
+                maxLines: 4,
+                autofocus: true,
+                decoration: InputDecoration(
+                  hintText: 'Escribe tu respuesta o técnica de apoyo...',
+                  hintStyle: const TextStyle(fontSize: 13, color: Colors.grey),
+                  filled: true,
+                  fillColor: const Color(0xFFF7F7F9),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(16),
+                    borderSide: BorderSide.none,
+                  ),
+                ),
+              ),
+              const SizedBox(height: 16),
+              SizedBox(
+                width: double.infinity,
+                height: 46,
+                child: ElevatedButton(
+                  onPressed: () {
+                    final text = textController.text.trim();
+                    if (text.isNotEmpty) {
+                      Navigator.pop(ctx);
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text('¡Tu respuesta fue publicada en el foro!'),
+                          backgroundColor: _kGreen,
+                        ),
+                      );
+                    }
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: _kBlue,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(16),
+                    ),
+                    elevation: 0,
+                  ),
+                  child: const Text(
+                    'Publicar respuesta',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 14,
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        );
+      },
     );
   }
 }
