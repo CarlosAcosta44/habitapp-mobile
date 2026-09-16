@@ -67,9 +67,9 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
     super.dispose();
   }
 
-  Future<void> _pickImage() async {
+  Future<void> _pickImage(ImageSource source) async {
     final picker = ImagePicker();
-    final pickedFile = await picker.pickImage(source: ImageSource.gallery, imageQuality: 80);
+    final pickedFile = await picker.pickImage(source: source, imageQuality: 80);
     
     if (pickedFile != null) {
       // Iniciar la subida de imagen
@@ -88,6 +88,39 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
         }
       }
     }
+  }
+
+  void _showImageSourceOptions() {
+    showModalBottomSheet(
+      context: context,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (context) {
+        return SafeArea(
+          child: Wrap(
+            children: [
+              ListTile(
+                leading: Icon(Icons.camera_alt),
+                title: Text('Tomar Foto'),
+                onTap: () {
+                  Navigator.pop(context);
+                  _pickImage(ImageSource.camera);
+                },
+              ),
+              ListTile(
+                leading: Icon(Icons.photo_library),
+                title: Text('Elegir de Galería'),
+                onTap: () {
+                  Navigator.pop(context);
+                  _pickImage(ImageSource.gallery);
+                },
+              ),
+            ],
+          ),
+        );
+      },
+    );
   }
 
   Future<void> _saveChanges() async {
@@ -159,7 +192,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
                 children: [
                   // --- Avatar Section ---
                   GestureDetector(
-                    onTap: _pickImage,
+                    onTap: _showImageSourceOptions,
                     child: Stack(
                       alignment: Alignment.bottomRight,
                       children: [
@@ -183,7 +216,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
                   ),
                   SizedBox(height: 12),
                   GestureDetector(
-                    onTap: _pickImage,
+                    onTap: _showImageSourceOptions,
                     child: Text('Cambiar foto de perfil', style: TextStyle(color: Theme.of(context).colorScheme.primary, fontWeight: FontWeight.bold, fontSize: 13)),
                   ),
                   SizedBox(height: 4),
