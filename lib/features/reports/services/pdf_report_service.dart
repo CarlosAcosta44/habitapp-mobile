@@ -15,27 +15,48 @@ class PdfReportService {
             return pw.Column(
               crossAxisAlignment: pw.CrossAxisAlignment.start,
               children: [
-                pw.Header(level: 0, child: pw.Text("Reporte de Hábitos - HabitApp")),
+                pw.Header(
+                  level: 0,
+                  child: pw.Text("Reporte de Hábitos - HabitApp"),
+                ),
                 pw.SizedBox(height: 20),
-                pw.Text("Cumplimiento Global: ${data['cumplimiento_global']}%", style: pw.TextStyle(fontSize: 18, fontWeight: pw.FontWeight.bold)),
-                pw.Text("${data['total_cumplido']} de ${data['total_esperado']} hábitos completados"),
+                pw.Text(
+                  "Cumplimiento Global: ${data['cumplimiento_global']}%",
+                  style: pw.TextStyle(
+                    fontSize: 18,
+                    fontWeight: pw.FontWeight.bold,
+                  ),
+                ),
+                pw.Text(
+                  "${data['total_cumplido']} de ${data['total_esperado']} hábitos completados",
+                ),
                 pw.SizedBox(height: 20),
                 pw.Row(
                   mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
                   children: [
                     pw.Text("Racha Actual: ${data['racha_actual']} días"),
                     pw.Text("Racha Máxima: ${data['racha_maxima']} días"),
-                  ]
+                  ],
                 ),
                 pw.SizedBox(height: 20),
                 if (data['mas_constante'] != null) ...[
-                  pw.Text("Hábito más constante:", style: pw.TextStyle(fontWeight: pw.FontWeight.bold)),
-                  pw.Text("${data['mas_constante']['nombre']} - ${data['mas_constante']['racha']} días seguidos (${data['mas_constante']['rate']}%)"),
+                  pw.Text(
+                    "Hábito más constante:",
+                    style: pw.TextStyle(fontWeight: pw.FontWeight.bold),
+                  ),
+                  pw.Text(
+                    "${data['mas_constante']['nombre']} - ${data['mas_constante']['racha']} días seguidos (${data['mas_constante']['rate']}%)",
+                  ),
                   pw.SizedBox(height: 10),
                 ],
                 if (data['oportunidad_mejora'] != null) ...[
-                  pw.Text("Oportunidad de mejora:", style: pw.TextStyle(fontWeight: pw.FontWeight.bold)),
-                  pw.Text("${data['oportunidad_mejora']['nombre']} (${data['oportunidad_mejora']['rate']}%)"),
+                  pw.Text(
+                    "Oportunidad de mejora:",
+                    style: pw.TextStyle(fontWeight: pw.FontWeight.bold),
+                  ),
+                  pw.Text(
+                    "${data['oportunidad_mejora']['nombre']} (${data['oportunidad_mejora']['rate']}%)",
+                  ),
                   pw.SizedBox(height: 20),
                 ],
                 pw.Header(level: 1, child: pw.Text("Insight Inteligente")),
@@ -47,7 +68,7 @@ class PdfReportService {
       );
 
       // INFO 1: Guardar o Compartir el PDF
-      // El paquete printing se encarga de manejar automáticamente el guardado o 
+      // El paquete printing se encarga de manejar automáticamente el guardado o
       // visualización de manera compatible con Web, Android y iOS.
       await Printing.sharePdf(
         bytes: await pdf.save(),

@@ -1,18 +1,75 @@
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter/material.dart';
+import 'package:fl_chart/fl_chart.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
+
 import '../../profile/providers/profile_provider.dart';
-import '../../../core/network/dio_client.dart';
+import '../data/reports_repository.dart';
+import '../domain/habit_stats.dart';
 
-final reportSummaryProvider = FutureProvider.autoDispose<Map<String, dynamic>>((ref) async {
+part 'reports_provider.g.dart';
+
+@riverpod
+Future<HabitStats> habitStats(Ref ref) async {
   final userProfile = await ref.watch(profileProvider.future);
-  final dio = ref.watch(dioClientProvider);
-
   if (userProfile == null) throw Exception('No user profile found');
 
-  final response = await dio.get('/reports/user/${userProfile.idusuario}');
-  
-  if (response.statusCode == 200) {
-    return response.data as Map<String, dynamic>;
-  } else {
-    throw Exception('Failed to load user summary');
+  return ref
+      .watch(reportsRepositoryProvider)
+      .getHabitStats(userProfile.idusuario);
+}
+
+@riverpod
+Future<List<FlSpot>> weeklyProgressChartData(Ref ref) async {
+  final stats = await ref.watch(habitStatsProvider.future);
+
+  if (stats.weeklyProgress.isEmpty) {
+    // Si no hay datos, proveemos un mock para visualización inicial
+    return const [
+      FlSpot(0, 0),
+      FlSpot(1, 20),
+      FlSpot(2, 50),
+      FlSpot(3, 40),
+      FlSpot(4, 80),
+      FlSpot(5, 60),
+      FlSpot(6, 90),
+    ];
   }
-});
+
+  return stats.weeklyProgress.asMap().entries.map((entry) {
+    return FlSpot(entry.key.toDouble(), entry.value.value);
+  }).toList();
+}
+
+@riverpod
+Future<List<BarChartGroupData>> monthlyProgressBarData(Ref ref) async {
+  final stats = await ref.watch(habitStatsProvider.future);
+
+  if (stats.monthlyProgress.isEmpty) {
+    // Mock para visualización inicial
+    return List.generate(4, (index) {
+      return BarChartGroupData(
+        x: index,
+        barRods: [
+          BarChartRodData(
+            toY: (index + 1) * 20.0,
+            width: 15,
+            borderRadius: BorderRadius.circular(4),
+          ),
+        ],
+      );
+    });
+  }
+
+  return stats.monthlyProgress.asMap().entries.map((entry) {
+    return BarChartGroupData(
+      x: entry.key,
+      barRods: [
+        BarChartRodData(
+          toY: entry.value.value,
+          width: 15,
+          borderRadius: BorderRadius.circular(4),
+        ),
+      ],
+    );
+  }).toList();
+}
