@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../providers/profile_provider.dart';
 import '../../providers/friends_provider.dart';
+import '../../../../core/widgets/location_card.dart';
 
 const _kPurple = Color(0xFF6B48FF);
 const _kOrange = Color(0xFFFF7A59);
@@ -66,6 +67,10 @@ class ProfileScreen extends ConsumerWidget {
                   delegate: SliverChildListDelegate([
                     // ── User Card ──
                     _buildUserCard(context, profile, ref),
+                    SizedBox(height: 16),
+
+                    // ── Ubicación GPS ──
+                    const LocationCard(),
                     SizedBox(height: 24),
 
                     // ── Basic Stats Row ──

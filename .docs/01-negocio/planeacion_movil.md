@@ -59,7 +59,15 @@ Este documento detalla el plan de acción para construir `HabitAppFrontend`. El 
 ## Sprint 4: Módulo de Entrenador (Coach) y Hardware
 **Objetivo:** Desarrollar herramientas para entrenadores y aprovechar características nativas del dispositivo.
 
-*   **Carlos:**
+*   **Juan (Core Entrenador):**
+    *   [ ] **US021:** Ver el listado de mis clientes asignados.
+    *   [ ] **US022:** Crear rutinas modelo agrupando varios hábitos.
+*   **Nicolas (Interacción Cliente-Coach):**
+    *   [ ] **US023:** Asignar una rutina prearmada a un cliente.
+    *   [ ] **US024:** Visualización de Progreso del Cliente.
+*   **Breiner (Ubicación):**
+    *   [x] **US033:** Utilizar mi ubicación (GPS).
+*   **Carlos (Cámara y Biometría):**
     *   [ ] **US034:** Subir imágenes desde Cámara/Galería.
     *   [ ] **US035:** Seguridad Biométrica (Huella / FaceID).
 *   **Nicolas:**
