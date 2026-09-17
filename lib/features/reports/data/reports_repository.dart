@@ -2,7 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../../../core/network/dio_client.dart';
-import '../domain/habit_stats.dart';
+import 'models/habit_stats.dart';
 
 part 'reports_repository.g.dart';
 
@@ -45,6 +45,15 @@ class ReportsRepository {
           );
         }
 
+        final consistenciaMes = data['consistencia_mes'] as List<dynamic>? ?? [];
+        final monthlyProgress = <ChartDataPoint>[];
+        for (var item in consistenciaMes) {
+          monthlyProgress.add(ChartDataPoint(
+            label: item['fecha'],
+            value: (item['activos'] as num).toDouble(),
+          ));
+        }
+
         return HabitStats(
           weeklyCompliancePercentage: (data['cumplimiento_global'] as num?)?.toDouble() ?? 0.0,
           monthlyCompliancePercentage: (data['cumplimiento_global'] as num?)?.toDouble() ?? 0.0,
@@ -55,6 +64,7 @@ class ReportsRepository {
           accumulatedPoints: data['puntos_totales'] ?? 0,
           smartInsight: data['insight'] ?? 'Continúa así para mantener tu consistencia.',
           weeklyProgress: weeklyProgress,
+          monthlyProgress: monthlyProgress,
           mostConsistentHabit: masConstante,
           improvementOpportunity: oportunidad,
         );

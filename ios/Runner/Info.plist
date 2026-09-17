@@ -10,12 +10,14 @@
 	<string>Necesitamos acceso a la cámara para actualizar tu foto de perfil</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>Necesitamos acceso a tu galería para actualizar tu foto de perfil</string>
+	<key>NSFaceIDUsageDescription</key>
+	<string>Necesitamos tu Face ID para asegurar tu cuenta y permitir un acceso rápido</string>
 	<key>CADisableMinimumFrameDurationOnPhone</key>
 	<true/>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleDisplayName</key>
-	<string>Habitapp Frontend</string>
+	<string>HabitApp</string>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIdentifier</key>

@@ -46,10 +46,10 @@ Este documento detalla el plan de acción para construir `HabitAppFrontend`. El 
     *   [x] **US029:** Recibir notificaciones push locales o remotas.
 *   **Nicolas:** ✅ **COMPLETADO**
     *   [x] **US031:** Visualizar mis reportes y ranking en gráficas nativas.
-*   **Breiner:**
+*   **Breiner:** ✅ **COMPLETADO**
     *   [x] **US032:** Participación en Retos de la Comunidad.
-*   **Juan:**
-    *   [ ] **US025:** Leer publicaciones en el muro de la comunidad.
+*   **Juan:** ✅ **COMPLETADO**
+    *   [x] **US025:** Leer publicaciones en el muro de la comunidad.
 *   **Backend (Seguridad - Ya terminado):** ✅ **COMPLETADO**
     *   [x] **US026:** Que mi información sea estrictamente privada (RLS).
     *   [x] **US027:** Verificación de identidad con JWT.
@@ -68,13 +68,5 @@ Este documento detalla el plan de acción para construir `HabitAppFrontend`. El 
 *   **Breiner (Ubicación):**
     *   [x] **US033:** Utilizar mi ubicación (GPS).
 *   **Carlos (Cámara y Biometría):**
-    *   [ ] **US034:** Subir imágenes desde Cámara/Galería.
+    *   [x] **US034:** Subir imágenes desde Cámara/Galería.
     *   [ ] **US035:** Seguridad Biométrica (Huella / FaceID).
-*   **Nicolas:**
-    *   [ ] **US023:** Asignar una rutina prearmada a un cliente.
-    *   [ ] **US024:** Visualización de Progreso del Cliente.
-*   **Breiner:**
-    *   [ ] **US033:** Utilizar mi ubicación (GPS).
-*   **Juan:**
-    *   [ ] **US021:** Ver el listado de mis clientes asignados.
-    *   [ ] **US022:** Crear rutinas modelo agrupando varios hábitos.

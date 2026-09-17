@@ -4,7 +4,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../../profile/providers/profile_provider.dart';
 import '../data/reports_repository.dart';
-import '../domain/habit_stats.dart';
+import '../data/models/habit_stats.dart';
 
 part 'reports_provider.g.dart';
 

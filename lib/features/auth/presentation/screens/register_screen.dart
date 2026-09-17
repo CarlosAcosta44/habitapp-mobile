@@ -18,6 +18,7 @@ class RegisterScreen extends ConsumerStatefulWidget {
 class _RegisterScreenState extends ConsumerState<RegisterScreen> {
   final _formKey = GlobalKey<FormState>();
   final _nameCtrl = TextEditingController();
+  final _apellidoCtrl = TextEditingController();
   final _emailCtrl = TextEditingController();
   final _passCtrl = TextEditingController();
   final _confirmPassCtrl = TextEditingController();
@@ -29,6 +30,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
   @override
   void dispose() {
     _nameCtrl.dispose();
+    _apellidoCtrl.dispose();
     _emailCtrl.dispose();
     _passCtrl.dispose();
     _confirmPassCtrl.dispose();
@@ -47,16 +49,12 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
         return;
       }
 
-      final nameParts = _nameCtrl.text.trim().split(' ');
-      final nombre = nameParts.first;
-      final apellido = nameParts.length > 1 ? nameParts.sublist(1).join(' ') : '...';
-
       FocusScope.of(context).unfocus();
       ref.read(authProvider.notifier).register(
             _emailCtrl.text.trim(),
             _passCtrl.text,
-            nombre,
-            apellido,
+            _nameCtrl.text.trim(),
+            _apellidoCtrl.text.trim(),
           );
     }
   }
@@ -211,9 +209,23 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                             SizedBox(height: 8),
                             _StyledField(
                               controller: _nameCtrl,
-                              hint: 'Marina Soler',
+                              hint: 'Marina',
                               prefixIcon: Icons.person_outline_rounded,
                               validator: (v) => v!.isEmpty ? 'Ingresa tu nombre' : null,
+                            ),
+                            SizedBox(height: 16),
+
+                            // ── Campo Apellido ──
+                            Text(
+                              'Apellido',
+                              style: TextStyle(fontWeight: FontWeight.w700, fontSize: 13, color: Theme.of(context).colorScheme.onSurface),
+                            ),
+                            SizedBox(height: 8),
+                            _StyledField(
+                              controller: _apellidoCtrl,
+                              hint: 'Soler',
+                              prefixIcon: Icons.person_outline_rounded,
+                              validator: (v) => v!.isEmpty ? 'Ingresa tu apellido' : null,
                             ),
                             SizedBox(height: 16),
 

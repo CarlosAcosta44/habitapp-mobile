@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
+import '../../../auth/providers/biometric_provider.dart';
 import 'package:flutter_timezone/flutter_timezone.dart';
 
 import '../../providers/profile_provider.dart';
@@ -23,7 +24,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
   late TextEditingController _dobController;
   late TextEditingController _timezoneController;
   
-  bool _biometricEnabled = true;
+
   bool _twoFactorEnabled = false;
 
   @override
@@ -361,8 +362,18 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
                               ],
                             ),
                             Switch(
-                              value: _biometricEnabled,
-                              onChanged: (v) => setState(() => _biometricEnabled = v),
+                              value: ref.watch(biometricProvider).value?.isEnabled ?? false,
+                              onChanged: (v) async {
+                                try {
+                                  await ref.read(biometricProvider.notifier).toggleBiometric(v);
+                                } catch (e) {
+                                  if (context.mounted) {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(content: Text(e.toString().replaceAll('Exception: ', ''))),
+                                    );
+                                  }
+                                }
+                              },
                               activeThumbColor: Theme.of(context).colorScheme.primary,
                             ),
                           ],

@@ -3,6 +3,8 @@ import 'package:flutter/foundation.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import '../../../../core/network/dio_client.dart';
 import '../models/reto_model.dart';
+import '../models/post.dart';
+import '../models/challenge.dart';
 
 part 'community_repository.g.dart';
 
@@ -70,20 +72,9 @@ class CommunityRepository {
 
   /// Obtiene los retos activos de la comunidad
   Future<List<RetoModel>> getRetos() async {
-    try {
-      final response = await _dio.get('/community/retos');
-      final data = response.data;
-      if (data is List && data.isNotEmpty) {
-        return data.map((e) => RetoModel.fromJson(e as Map<String, dynamic>)).toList();
-      }
-      return _defaultRetos;
-    } on DioException catch (e) {
-      debugPrint('Error en GET /community/retos: ${e.message}. Usando lista por defecto.');
-      return _defaultRetos;
-    } catch (e) {
-      debugPrint('Excepción al cargar retos: $e. Usando lista por defecto.');
-      return _defaultRetos;
-    }
+    // Simula una petición de red con un retraso de 1 segundo
+    await Future.delayed(const Duration(seconds: 1));
+    return _defaultRetos;
   }
 
   /// Permite al usuario unirse a un reto determinado
@@ -100,6 +91,49 @@ class CommunityRepository {
     } catch (e) {
       debugPrint('Excepción al unirse al reto: $e');
       return true;
+    }
+  }
+
+  Future<List<Post>> getFeed({int page = 1, int limit = 10}) async {
+    try {
+      final response = await _dio.get(
+        '/community/posts',
+        queryParameters: {'page': page, 'limit': limit},
+      );
+      if (response.statusCode == 200) {
+        final List<dynamic> data = response.data['data'] ?? response.data;
+        return data
+            .map((json) => Post.fromJson(json as Map<String, dynamic>))
+            .toList();
+      }
+      throw Exception('Failed to load community feed');
+    } on DioException catch (e) {
+      if (e.response?.statusCode == 404) return [];
+      throw Exception('Network error loading feed: ${e.message}');
+    }
+  }
+
+  Future<void> toggleLike(String postId) async {
+    try {
+      await _dio.post('/community/posts/$postId/like');
+    } catch (e) {
+      throw Exception('Failed to toggle like: $e');
+    }
+  }
+
+  Future<List<Challenge>> getChallenges() async {
+    try {
+      final response = await _dio.get('/community/challenges');
+      if (response.statusCode == 200) {
+        final List<dynamic> data = response.data['data'] ?? response.data;
+        return data
+            .map((json) => Challenge.fromJson(json as Map<String, dynamic>))
+            .toList();
+      }
+      throw Exception('Failed to load challenges');
+    } on DioException catch (e) {
+      if (e.response?.statusCode == 404) return [];
+      throw Exception('Network error loading challenges: ${e.message}');
     }
   }
 }
