@@ -90,7 +90,10 @@ GoRouter appRouter(Ref ref) {
             routes: [
               GoRoute(
                 path: '/reports',
-                builder: (context, state) => ReportsScreen(),
+                builder: (context, state) {
+                  final userId = state.uri.queryParameters['userId'];
+                  return ReportsScreen(userId: userId);
+                },
               ),
             ],
           ),

@@ -11,9 +11,10 @@ class ReportsRepository {
 
   ReportsRepository(this._dio);
 
-  Future<HabitStats> getHabitStats(String userId) async {
+  Future<HabitStats> getHabitStats(String currentUserId, {String? targetUserId}) async {
+    final idToFetch = targetUserId ?? currentUserId;
     try {
-      final response = await _dio.get('/reports/user/$userId');
+      final response = await _dio.get('/reports/user/$idToFetch');
 
       if (response.statusCode == 200) {
         final data = response.data as Map<String, dynamic>;
