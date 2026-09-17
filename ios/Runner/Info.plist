@@ -6,6 +6,10 @@
 	<string>HabitApp necesita tu ubicación para registrar desde dónde completas tus hábitos y mostrarte entrenadores cercanos.</string>
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
 	<string>HabitApp necesita tu ubicación para registrar tus actividades físicas y de hábitos.</string>
+	<key>NSCameraUsageDescription</key>
+	<string>Necesitamos acceso a la cámara para actualizar tu foto de perfil</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Necesitamos acceso a tu galería para actualizar tu foto de perfil</string>
 	<key>CADisableMinimumFrameDurationOnPhone</key>
 	<true/>
 	<key>CFBundleDevelopmentRegion</key>

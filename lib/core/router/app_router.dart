@@ -18,6 +18,7 @@ import '../../features/habits/presentation/screens/archived_habits_screen.dart';
 import '../../features/auth/presentation/screens/register_screen.dart';
 import '../../features/reports/presentation/screens/reports_screen.dart';
 import '../../features/community/presentation/screens/community_screen.dart';
+import '../../features/community/presentation/screens/challenges_screen.dart';
 import '../../features/community/presentation/screens/challenge_detail_screen.dart';
 
 part 'app_router.g.dart';
@@ -127,6 +128,10 @@ GoRouter appRouter(Ref ref) {
           final retoId = state.pathParameters['id']!;
           return ChallengeDetailScreen(retoId: retoId);
         },
+      ),
+      GoRoute(
+        path: '/challenges',
+        builder: (context, state) => const ChallengesScreen(),
       ),
     ],
     redirect: (context, state) {
