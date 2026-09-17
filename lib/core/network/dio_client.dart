@@ -18,7 +18,7 @@ Dio dioClient(Ref ref) {
   
   final dio = Dio(
     BaseOptions(
-      baseUrl: 'http://localhost:4000/api/v1',
+      baseUrl: 'https://habitapp-api-hnbba0c8cqfvc2hj.chilecentral-01.azurewebsites.net/api/v1',
       connectTimeout: const Duration(seconds: 10),
       receiveTimeout: Duration(seconds: 10),
       headers: {
