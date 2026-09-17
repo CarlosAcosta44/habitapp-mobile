@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fl_chart/fl_chart.dart';
 import '../../domain/habit_stats.dart';
-
 import '../../providers/reports_provider.dart';
+import '../../services/pdf_report_service.dart';
 
 
 const _kGreen = Color(0xFF4CAF50);
@@ -117,8 +117,11 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
           SizedBox(height: 24),
           FilledButton.icon(
             onPressed: () async {
-              // TODO: Convert HabitStats to Map for PdfReportService if needed, or update service
-              // await PdfReportService.generateAndDownloadPdf(stats.toJson());
+              final timeframeLabel = ['Semana', 'Mes', 'Año'][_selectedTab];
+              await PdfReportService.generateAndDownloadPdf(
+                stats,
+                timeframe: timeframeLabel,
+              );
             },
             icon: Icon(Icons.download, size: 18),
             label: Text('Descargar reporte (PDF)'),
