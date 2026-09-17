@@ -9,7 +9,8 @@ const _kGreen = Color(0xFF4CAF50);
 const _kOrange = Color(0xFFFF9800);
 
 class ReportsScreen extends ConsumerStatefulWidget {
-  const ReportsScreen({super.key});
+  final String? userId;
+  const ReportsScreen({super.key, this.userId});
 
   @override
   ConsumerState<ReportsScreen> createState() => _ReportsScreenState();
@@ -19,15 +20,21 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final reportAsync = ref.watch(habitStatsProvider);
+    final reportAsync = ref.watch(habitStatsProvider(targetUserId: widget.userId));
 
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: AppBar(
         backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         elevation: 0,
+        leading: widget.userId != null 
+            ? IconButton(
+                icon: const Icon(Icons.arrow_back),
+                onPressed: () => Navigator.pop(context),
+              )
+            : null,
         title: Text(
-          'Progreso y Métricas',
+          widget.userId != null ? 'Progreso del Cliente' : 'Progreso y Métricas',
           style: TextStyle(
             color: Theme.of(context).colorScheme.onSurface,
             fontWeight: FontWeight.bold,
@@ -453,7 +460,7 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
 
   Widget _buildWeeklyVolume(HabitStats stats) {
     // Obtenemos los datos del provider de fl_chart
-    final chartDataAsync = ref.watch(weeklyProgressChartDataProvider);
+    final chartDataAsync = ref.watch(weeklyProgressChartDataProvider(targetUserId: widget.userId));
 
     return chartDataAsync.when(
       data: (chartData) {

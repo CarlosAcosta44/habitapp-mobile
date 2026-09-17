@@ -9,18 +9,18 @@ import '../data/models/habit_stats.dart';
 part 'reports_provider.g.dart';
 
 @riverpod
-Future<HabitStats> habitStats(Ref ref) async {
+Future<HabitStats> habitStats(Ref ref, {String? targetUserId}) async {
   final userProfile = await ref.watch(profileProvider.future);
   if (userProfile == null) throw Exception('No user profile found');
 
   return ref
       .watch(reportsRepositoryProvider)
-      .getHabitStats(userProfile.idusuario);
+      .getHabitStats(userProfile.idusuario, targetUserId: targetUserId);
 }
 
 @riverpod
-Future<List<FlSpot>> weeklyProgressChartData(Ref ref) async {
-  final stats = await ref.watch(habitStatsProvider.future);
+Future<List<FlSpot>> weeklyProgressChartData(Ref ref, {String? targetUserId}) async {
+  final stats = await ref.watch(habitStatsProvider(targetUserId: targetUserId).future);
 
   if (stats.weeklyProgress.isEmpty) {
     // Si no hay datos, proveemos un mock para visualización inicial
@@ -41,8 +41,8 @@ Future<List<FlSpot>> weeklyProgressChartData(Ref ref) async {
 }
 
 @riverpod
-Future<List<BarChartGroupData>> monthlyProgressBarData(Ref ref) async {
-  final stats = await ref.watch(habitStatsProvider.future);
+Future<List<BarChartGroupData>> monthlyProgressBarData(Ref ref, {String? targetUserId}) async {
+  final stats = await ref.watch(habitStatsProvider(targetUserId: targetUserId).future);
 
   if (stats.monthlyProgress.isEmpty) {
     // Mock para visualización inicial
