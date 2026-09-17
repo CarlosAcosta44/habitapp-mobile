@@ -1,7 +1,7 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-import '../data/community_repository.dart';
-import '../domain/challenge.dart';
+import '../data/repositories/community_repository.dart';
+import '../data/models/challenge.dart';
 
 part 'challenge_provider.g.dart';
 

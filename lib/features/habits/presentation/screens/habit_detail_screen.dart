@@ -511,16 +511,20 @@ class _HabitDetailScreenState extends ConsumerState<HabitDetailScreen> {
                               final nuevoProgreso = (habit.progresoHoy - 1).clamp(0, habit.metaDiaria).toDouble();
                               // Actualizar UI local inmediatamente (evita freeze)
                               ref.read(habitsDashboardProvider.notifier).updateLocalProgress(widget.habitId, nuevoProgreso);
-                              try {
-                                await ref.read(habitsRepositoryProvider).avanzarProgreso(widget.habitId, -1);
-                                ref.invalidate(habitStatsProvider(widget.habitId));
-                                // Refrescar dashboard en el siguiente microtask
-                                Future.microtask(() => ref.read(habitsDashboardProvider.notifier).refresh());
-                              } catch (_) {
-                                // revertir
-                                ref.read(habitsDashboardProvider.notifier).updateLocalProgress(widget.habitId, habit.progresoHoy);
+                                try {
+                                  await ref.read(habitsRepositoryProvider).avanzarProgreso(widget.habitId, -1);
+                                  if (!mounted) return;
+                                  ref.invalidate(habitStatsProvider(widget.habitId));
+                                  // Refrescar dashboard en el siguiente microtask
+                                  Future.microtask(() {
+                                    if (mounted) ref.read(habitsDashboardProvider.notifier).refresh();
+                                  });
+                                } catch (_) {
+                                  if (!mounted) return;
+                                  // revertir
+                                  ref.read(habitsDashboardProvider.notifier).updateLocalProgress(widget.habitId, habit.progresoHoy);
+                                }
                               }
-                            }
                           : null,
                       icon: Icon(Icons.remove, size: 20),
                       color: Theme.of(context).colorScheme.onSurface,
@@ -537,11 +541,15 @@ class _HabitDetailScreenState extends ConsumerState<HabitDetailScreen> {
                             ref.read(habitsDashboardProvider.notifier).updateLocalProgress(widget.habitId, nuevoProgreso);
                             try {
                               await ref.read(habitsRepositoryProvider).avanzarProgreso(widget.habitId, 1);
+                              if (!mounted) return;
                               ref.invalidate(habitStatsProvider(widget.habitId));
                               // Refrescar dashboard en el siguiente microtask
-                              Future.microtask(() => ref.read(habitsDashboardProvider.notifier).refresh());
+                              Future.microtask(() {
+                                if (mounted) ref.read(habitsDashboardProvider.notifier).refresh();
+                              });
                               if (mounted) ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Progreso incrementado')));
                             } catch (e) {
+                              if (!mounted) return;
                               // revertir
                               ref.read(habitsDashboardProvider.notifier).updateLocalProgress(widget.habitId, habit.progresoHoy);
                               if (mounted) ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Error: $e')));

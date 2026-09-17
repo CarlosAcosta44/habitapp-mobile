@@ -1,7 +1,7 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-import '../data/community_repository.dart';
-import '../domain/post.dart';
+import '../data/repositories/community_repository.dart';
+import '../data/models/post.dart';
 
 part 'community_provider.g.dart';
 

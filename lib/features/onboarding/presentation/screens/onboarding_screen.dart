@@ -23,7 +23,6 @@ class _Slide {
 }
 
 const _kHighlightBlue = Color(0xFF2D82FA); // Color azul del texto
-const _kBackgroundLight = Colors.white;
 
 // ─────────────────────────────────────────────────────────
 //  OnboardingScreen
@@ -79,7 +78,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: _kBackgroundLight,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: SafeArea(
         child: Column(
           children: [
@@ -247,7 +246,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                       SizedBox(width: 12),
                       Expanded(
                         child: _SocialButton(
-                          fallbackIcon: Icons.apple,
+                          fallbackIcon: Icons.facebook,
                           color: Colors.black,
                           onTap: _continueWithSocial,
                         ),

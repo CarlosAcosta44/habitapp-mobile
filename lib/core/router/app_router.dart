@@ -5,6 +5,8 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 import '../../features/auth/presentation/screens/login_screen.dart';
 import '../../features/auth/presentation/screens/splash_screen.dart';
 import '../../features/auth/providers/auth_provider.dart';
+import '../../features/auth/presentation/screens/lock_screen.dart';
+import '../../features/auth/providers/biometric_provider.dart';
 import '../../features/onboarding/presentation/screens/onboarding_screen.dart';
 import '../../features/onboarding/providers/onboarding_provider.dart';
 import '../../features/dashboard/presentation/screens/dashboard_screen.dart';
@@ -42,6 +44,10 @@ GoRouter appRouter(Ref ref) {
       GoRoute(
         path: '/login',
         builder: (context, state) => LoginScreen(),
+      ),
+      GoRoute(
+        path: '/lock',
+        builder: (context, state) => const LockScreen(),
       ),
       GoRoute(
         path: '/register',
@@ -137,34 +143,35 @@ GoRouter appRouter(Ref ref) {
     redirect: (context, state) {
       final authState = ref.read(authProvider);
       final onboardingState = ref.read(onboardingProvider);
+      final biometricState = ref.read(biometricProvider);
 
       final loc = state.matchedLocation;
       final isAtSplash = loc == '/splash';
       final isAtOnboarding = loc == '/onboarding';
       final isAtLogin = loc == '/login';
       final isAtRegister = loc == '/register';
+      final isAtLock = loc == '/lock';
 
       // 1. Mientras cargan los providers → mantener en Splash
-      if (authState.isLoading || onboardingState.isLoading) {
+      if (authState.isLoading || onboardingState.isLoading || biometricState.isLoading) {
         return isAtSplash ? null : '/splash';
       }
 
-      // 2. Si NO vio el onboarding → siempre al onboarding
-      final hasSeenOnboarding = onboardingState.value ?? false;
-      if (!hasSeenOnboarding) {
-        return isAtOnboarding ? null : '/onboarding';
-      }
-
-      // 3. Si no está autenticado → puede estar en login, register u onboarding
-      //    (onboarding es accesible como "pantalla de atrás" desde login)
+      // 2. Si no está autenticado → puede estar en onboarding, login o register. Por defecto va a onboarding.
       final isAuthenticated = authState.value ?? false;
       if (!isAuthenticated) {
         if (isAtLogin || isAtRegister || isAtOnboarding) return null;
-        return '/login';
+        return '/onboarding'; // Pantalla de bienvenida
       }
 
-      // 4. Si ya está autenticado → no puede volver a pantallas de auth
-      if (isAuthenticated && (isAtLogin || isAtRegister || isAtSplash || isAtOnboarding)) {
+      // 4. Si está autenticado pero la app está bloqueada
+      final isLocked = biometricState.value?.isLocked ?? false;
+      if (isAuthenticated && isLocked) {
+        return isAtLock ? null : '/lock';
+      }
+
+      // 5. Si ya está autenticado y desbloqueado → no puede volver a pantallas de auth ni lock
+      if (isAuthenticated && !isLocked && (isAtLogin || isAtRegister || isAtSplash || isAtOnboarding || isAtLock)) {
         return '/';
       }
 
@@ -182,6 +189,9 @@ class _NotifierListenable extends ChangeNotifier {
     });
     ref.listen(onboardingProvider, (prev, next) {
       if (prev?.value != next.value) notifyListeners();
+    });
+    ref.listen(biometricProvider, (prev, next) {
+      if (prev?.value?.isLocked != next.value?.isLocked) notifyListeners();
     });
   }
 }

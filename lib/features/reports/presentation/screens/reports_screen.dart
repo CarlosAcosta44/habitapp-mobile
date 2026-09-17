@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fl_chart/fl_chart.dart';
-import '../../domain/habit_stats.dart';
+import '../../data/models/habit_stats.dart';
 import '../../providers/reports_provider.dart';
-import '../../services/pdf_report_service.dart';
-
+import '../../data/services/pdf_report_service.dart';
 
 const _kGreen = Color(0xFF4CAF50);
 const _kOrange = Color(0xFFFF9800);
@@ -17,7 +16,6 @@ class ReportsScreen extends ConsumerStatefulWidget {
 }
 
 class _ReportsScreenState extends ConsumerState<ReportsScreen> {
-  int _selectedTab = 0; // 0: Semana, 1: Mes, 2: Año
 
   @override
   Widget build(BuildContext context) {
@@ -117,10 +115,9 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
           SizedBox(height: 24),
           FilledButton.icon(
             onPressed: () async {
-              final timeframeLabel = ['Semana', 'Mes', 'Año'][_selectedTab];
               await PdfReportService.generateAndDownloadPdf(
                 stats,
-                timeframe: timeframeLabel,
+                timeframe: 'General',
               );
             },
             icon: Icon(Icons.download, size: 18),
@@ -140,43 +137,7 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
   }
 
   Widget _buildSegmentedControl() {
-    return Container(
-      padding: EdgeInsets.all(4),
-      decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.surfaceContainerHighest,
-        borderRadius: BorderRadius.circular(24),
-      ),
-      child: Row(
-        children: ['Semana', 'Mes', 'Año'].asMap().entries.map((entry) {
-          final idx = entry.key;
-          final isSelected = _selectedTab == idx;
-          return Expanded(
-            child: GestureDetector(
-              onTap: () => setState(() => _selectedTab = idx),
-              child: Container(
-                padding: EdgeInsets.symmetric(vertical: 10),
-                decoration: BoxDecoration(
-                  color: isSelected
-                      ? Theme.of(context).colorScheme.primary
-                      : Colors.transparent,
-                  borderRadius: BorderRadius.circular(20),
-                ),
-                alignment: Alignment.center,
-                child: Text(
-                  entry.value,
-                  style: TextStyle(
-                    color: isSelected
-                        ? Theme.of(context).colorScheme.surface
-                        : Theme.of(context).colorScheme.onSurfaceVariant,
-                    fontWeight: isSelected ? FontWeight.bold : FontWeight.w600,
-                  ),
-                ),
-              ),
-            ),
-          );
-        }).toList(),
-      ),
-    );
+    return SizedBox.shrink(); // Tabs eliminadas por solicitud del usuario
   }
 
   Widget _buildGlobalCompliance(HabitStats stats) {
@@ -358,6 +319,18 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
       ),
       child: Column(
         children: [
+          if (constante == null && oportunidad == null)
+            Padding(
+              padding: const EdgeInsets.all(20.0),
+              child: Text(
+                'Completa tus hábitos para desbloquear tus insights.',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  color: Theme.of(context).colorScheme.onSurfaceVariant,
+                  fontSize: 14,
+                ),
+              ),
+            ),
           if (constante != null)
             ListTile(
               leading: Container(
@@ -708,7 +681,7 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
             ),
           ),
           SizedBox(height: 20),
-          // Grilla heatmap simulada (idealmente construirla con los datos de consistencia_mes)
+          // Grilla heatmap con datos reales
           GridView.builder(
             shrinkWrap: true,
             physics: NeverScrollableScrollPhysics(),
@@ -717,37 +690,25 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
               crossAxisSpacing: 8,
               mainAxisSpacing: 8,
             ),
-            itemCount: 28, // Mostrar 4 semanas
+            itemCount: stats.monthlyProgress.length,
             itemBuilder: (context, index) {
-              // Simular intensidad basada en el índice
-              int intensity = (index % 4);
-              Color color = Theme.of(context)
-                  .colorScheme
-                  .surfaceContainerHighest;
-              if (intensity == 1) {
-                color = Theme.of(context).colorScheme.primary
-                    .withValues(alpha: 0.3);
-              }
-              if (intensity == 2) {
-                color = Theme.of(context).colorScheme.primary
-                    .withValues(alpha: 0.6);
-              }
-              if (intensity == 3) {
+              final dp = stats.monthlyProgress[index];
+              int completed = dp.value.toInt();
+              
+              Color color = Theme.of(context).colorScheme.surfaceContainerHighest;
+              if (completed == 1) {
+                color = Theme.of(context).colorScheme.primary.withValues(alpha: 0.3);
+              } else if (completed == 2) {
+                color = Theme.of(context).colorScheme.primary.withValues(alpha: 0.6);
+              } else if (completed >= 3) {
                 color = Theme.of(context).colorScheme.primary;
               }
-              return Container(
-                decoration: BoxDecoration(
-                  color: color,
-                  borderRadius: BorderRadius.circular(6),
-                ),
-                alignment: Alignment.center,
-                child: Text(
-                  '${index + 1}',
-                  style: TextStyle(
-                    color: intensity == 3
-                        ? Colors.white
-                        : Theme.of(context).colorScheme.onSurfaceVariant,
-                    fontSize: 12,
+              return Tooltip(
+                message: '${dp.label}: $completed completados',
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: color,
+                    borderRadius: BorderRadius.circular(6),
                   ),
                 ),
               );
@@ -759,62 +720,6 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
   }
 
   Widget _buildSmartInsight(HabitStats stats) {
-    return Container(
-      padding: EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.05),
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(
-          color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.2),
-        ),
-      ),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Icon(Icons.lightbulb, color: Theme.of(context).colorScheme.primary),
-          SizedBox(width: 16),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  children: [
-                    Text(
-                      'Insight Inteligente',
-                      style: TextStyle(fontWeight: FontWeight.bold),
-                    ),
-                    SizedBox(width: 8),
-                    Container(
-                      padding: EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                      decoration: BoxDecoration(
-                        color: Theme.of(context).colorScheme.primary,
-                        borderRadius: BorderRadius.circular(4),
-                      ),
-                      child: Text(
-                        'IA HabitApp',
-                        style: TextStyle(
-                          color: Theme.of(context).colorScheme.surface,
-                          fontSize: 9,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-                SizedBox(height: 8),
-                Text(
-                  stats.smartInsight,
-                  style: TextStyle(
-                    color: Colors.grey.shade700,
-                    height: 1.5,
-                    fontSize: 13,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
+    return SizedBox.shrink(); // Removido por solicitud del usuario
   }
 }

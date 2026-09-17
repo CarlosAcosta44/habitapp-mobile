@@ -27,6 +27,9 @@ class AuthInterceptor extends Interceptor {
       options.headers['Authorization'] = 'Bearer $_cachedToken';
     }
     
+    // Set Timezone Offset for accurate daily streak tracking
+    options.headers['X-Timezone-Offset'] = DateTime.now().timeZoneOffset.inMinutes.toString();
+    
     super.onRequest(options, handler);
   }
 
@@ -36,10 +39,9 @@ class AuthInterceptor extends Interceptor {
     if (err.response?.statusCode == 401) {
       _cachedToken = null;
       await secureStorage.delete(key: 'access_token');
-      // Delay logout to next event loop to avoid Riverpod CircularDependencyError
-      // during provider builds or router redirects.
+      // Delay invalidation to next event loop to avoid Riverpod CircularDependencyError
       Future.microtask(() {
-        ref.read(authProvider.notifier).logout();
+        ref.invalidate(authProvider);
       });
     }
     super.onError(err, handler);

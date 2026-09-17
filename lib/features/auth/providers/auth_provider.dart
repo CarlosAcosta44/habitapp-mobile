@@ -45,15 +45,9 @@ class AuthNotifier extends _$AuthNotifier {
   Future<void> register(String email, String password, String nombre, String apellido) async {
     state = AsyncValue.loading();
     try {
-      final response = await _repository.register(email, password, nombre, apellido);
-      final token = response['access_token'];
-      if (token != null) {
-        AuthInterceptor.setToken(token);
-        await _storage.write(key: 'access_token', value: token);
-        state = AsyncValue.data(true);
-      } else {
-        throw Exception('Token not found in response');
-      }
+      await _repository.register(email, password, nombre, apellido);
+      // Auto-login since the backend now auto-confirms the email
+      await login(email, password);
     } catch (e, st) {
       state = AsyncValue.error(e, st);
     }

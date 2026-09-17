@@ -4,7 +4,7 @@ import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:printing/printing.dart';
 
-import '../domain/habit_stats.dart';
+import '../models/habit_stats.dart';
 
 class PdfReportService {
   /// Genera y descarga el reporte PDF estilizado para HabitApp

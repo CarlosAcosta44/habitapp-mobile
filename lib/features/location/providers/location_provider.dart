@@ -1,6 +1,6 @@
 import 'package:geolocator/geolocator.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-import '../services/location_service.dart';
+import '../data/services/location_service.dart';
 
 part 'location_provider.g.dart';
 
