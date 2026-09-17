@@ -26,14 +26,21 @@ class AuthNotifier extends _$AuthNotifier {
   }
 
   Future<void> login(String email, String password) async {
-    state = AsyncValue.loading();
+    state = const AsyncValue.loading();
     try {
       final response = await _repository.login(email, password);
       final token = response['access_token'];
+      final refreshToken = response['refresh_token'];
       if (token != null) {
         AuthInterceptor.setToken(token);
+        if (refreshToken != null) {
+          AuthInterceptor.setRefreshToken(refreshToken);
+        }
         await _storage.write(key: 'access_token', value: token);
-        state = AsyncValue.data(true);
+        if (refreshToken != null) {
+          await _storage.write(key: 'refresh_token', value: refreshToken);
+        }
+        state = const AsyncValue.data(true);
       } else {
         throw Exception('Token not found in response');
       }
@@ -56,7 +63,8 @@ class AuthNotifier extends _$AuthNotifier {
   Future<void> logout() async {
     AuthInterceptor.clearToken();
     await _storage.delete(key: 'access_token');
-    state = AsyncValue.data(false);
+    await _storage.delete(key: 'refresh_token');
+    state = const AsyncValue.data(false);
   }
 
   // --- SOCIAL LOGIN ---
@@ -84,13 +92,23 @@ class AuthNotifier extends _$AuthNotifier {
       }
       
       final authRepo = ref.read(authRepositoryProvider);
-      final accessToken = await authRepo.loginWithGoogle(idToken);
+      final response = await authRepo.loginWithGoogle(idToken);
+      final token = response['access_token'];
+      final refreshToken = response['refresh_token'];
       
-      final secureStorage = ref.read(secureStorageProvider);
-      AuthInterceptor.setToken(accessToken);
-      await secureStorage.write(key: 'access_token', value: accessToken);
-      
-      state = AsyncValue.data(true);
+      if (token != null) {
+        AuthInterceptor.setToken(token);
+        if (refreshToken != null) {
+          AuthInterceptor.setRefreshToken(refreshToken);
+        }
+        await _storage.write(key: 'access_token', value: token);
+        if (refreshToken != null) {
+          await _storage.write(key: 'refresh_token', value: refreshToken);
+        }
+        state = const AsyncValue.data(true);
+      } else {
+        throw Exception('Token not found in response');
+      }
     } catch (e, st) {
       state = AsyncValue.error(e, st);
     }
@@ -114,13 +132,23 @@ class AuthNotifier extends _$AuthNotifier {
       }
       
       final authRepo = ref.read(authRepositoryProvider);
-      final accessToken = await authRepo.loginWithApple(identityToken);
+      final response = await authRepo.loginWithApple(identityToken);
+      final token = response['access_token'];
+      final refreshToken = response['refresh_token'];
       
-      final secureStorage = ref.read(secureStorageProvider);
-      AuthInterceptor.setToken(accessToken);
-      await secureStorage.write(key: 'access_token', value: accessToken);
-      
-      state = AsyncValue.data(true);
+      if (token != null) {
+        AuthInterceptor.setToken(token);
+        if (refreshToken != null) {
+          AuthInterceptor.setRefreshToken(refreshToken);
+        }
+        await _storage.write(key: 'access_token', value: token);
+        if (refreshToken != null) {
+          await _storage.write(key: 'refresh_token', value: refreshToken);
+        }
+        state = const AsyncValue.data(true);
+      } else {
+        throw Exception('Token not found in response');
+      }
     } catch (e, st) {
       state = AsyncValue.error(e, st);
     }
