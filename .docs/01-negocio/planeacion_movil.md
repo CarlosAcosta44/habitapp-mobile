@@ -66,7 +66,7 @@ Este documento detalla el plan de acción para construir `HabitAppFrontend`. El 
     *   [ ] **US023:** Asignar una rutina prearmada a un cliente.
     *   [ ] **US024:** Visualización de Progreso del Cliente.
 *   **Breiner (Ubicación):**
-    *   [ ] **US033:** Utilizar mi ubicación (GPS).
+    *   [x] **US033:** Utilizar mi ubicación (GPS).
 *   **Carlos (Cámara y Biometría):**
     *   [ ] **US034:** Subir imágenes desde Cámara/Galería.
     *   [ ] **US035:** Seguridad Biométrica (Huella / FaceID).
