@@ -456,18 +456,19 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
         child: Container(
           padding: EdgeInsets.symmetric(vertical: 12),
           decoration: BoxDecoration(
-            color: isSelected ? Theme.of(context).colorScheme.secondary.withValues(alpha: 0.05) : Colors.transparent,
+            color: isSelected ? Theme.of(context).colorScheme.primary : Colors.transparent,
             borderRadius: BorderRadius.circular(12),
-            border: Border.all(color: isSelected ? Theme.of(context).colorScheme.secondary : Theme.of(context).colorScheme.outlineVariant, width: 1.5),
+            border: Border.all(color: isSelected ? Theme.of(context).colorScheme.primary : Theme.of(context).colorScheme.outlineVariant, width: 1.5),
+            boxShadow: isSelected ? [BoxShadow(color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.3), blurRadius: 4, offset: Offset(0, 2))] : [],
           ),
           child: Column(
             children: [
-              Icon(icon, size: 20, color: isSelected ? Theme.of(context).colorScheme.secondary : Theme.of(context).colorScheme.onSurfaceVariant),
+              Icon(icon, size: 20, color: isSelected ? Theme.of(context).colorScheme.surface : Theme.of(context).colorScheme.onSurfaceVariant),
               SizedBox(height: 6),
               Text(
                 text,
                 style: TextStyle(
-                  color: isSelected ? Theme.of(context).colorScheme.secondary : Theme.of(context).colorScheme.onSurfaceVariant,
+                  color: isSelected ? Theme.of(context).colorScheme.surface : Theme.of(context).colorScheme.onSurfaceVariant,
                   fontWeight: isSelected ? FontWeight.bold : FontWeight.w600,
                   fontSize: 11,
                 ),
