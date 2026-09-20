@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
 import '../../../auth/providers/biometric_provider.dart';
-import 'package:flutter_timezone/flutter_timezone.dart';
 
 import '../../providers/profile_provider.dart';
 
@@ -22,10 +21,11 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
   late TextEditingController _phoneController;
   late TextEditingController _genderController;
   late TextEditingController _dobController;
-  late TextEditingController _timezoneController;
+    bool _twoFactorEnabled = false;
   
-
-  bool _twoFactorEnabled = false;
+  late TextEditingController _currentPasswordController;
+  late TextEditingController _newPasswordController;
+  late TextEditingController _confirmPasswordController;
 
   @override
   void initState() {
@@ -36,25 +36,10 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
     _phoneController = TextEditingController(text: profile?.telefono ?? '');
     _genderController = TextEditingController(text: profile?.genero ?? 'Femenino');
     _dobController = TextEditingController(text: profile?.fechanacimiento ?? '14 de Mayo, 1994');
-    _timezoneController = TextEditingController(text: profile?.zonaHoraria ?? 'UTC -5 (Bogotá, Lima, Quito)');
     
-    // Autodetectar zona horaria si está vacía
-    if (profile != null && (profile.zonaHoraria == null || profile.zonaHoraria!.isEmpty)) {
-      _loadTimezone();
-    }
-  }
-
-  Future<void> _loadTimezone() async {
-    try {
-      final currentTimeZone = await FlutterTimezone.getLocalTimezone();
-      if (mounted) {
-        setState(() {
-          _timezoneController.text = currentTimeZone.identifier;
-        });
-      }
-    } catch (e) {
-      // Ignore timezone fetch error
-    }
+    _currentPasswordController = TextEditingController();
+    _newPasswordController = TextEditingController();
+    _confirmPasswordController = TextEditingController();
   }
 
   @override
@@ -64,7 +49,9 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
     _phoneController.dispose();
     _genderController.dispose();
     _dobController.dispose();
-    _timezoneController.dispose();
+    _currentPasswordController.dispose();
+    _newPasswordController.dispose();
+    _confirmPasswordController.dispose();
     super.dispose();
   }
 
@@ -133,7 +120,6 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
           'telefono': _phoneController.text,
           'genero': _genderController.text,
           'fechanacimiento': _dobController.text,
-          'zona_horaria': _timezoneController.text,
         });
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
@@ -147,6 +133,43 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
             SnackBar(content: Text('Error al guardar: $e')),
           );
         }
+      }
+    }
+  }
+
+  Future<void> _updatePassword() async {
+    final currentPassword = _currentPasswordController.text;
+    final newPassword = _newPasswordController.text;
+    final confirmPassword = _confirmPasswordController.text;
+
+    if (currentPassword.isEmpty || newPassword.isEmpty || confirmPassword.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Por favor llena todos los campos')));
+      return;
+    }
+
+    if (newPassword != confirmPassword) {
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Las contraseñas no coinciden')));
+      return;
+    }
+
+    if (newPassword.length < 6) {
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('La contraseña debe tener al menos 6 caracteres')));
+      return;
+    }
+
+    try {
+      await ref.read(profileProvider.notifier).updatePassword(currentPassword, newPassword);
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Contraseña actualizada con éxito')));
+        setState(() {
+          _currentPasswordController.clear();
+          _newPasswordController.clear();
+          _confirmPasswordController.clear();
+        });
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(e.toString().replaceAll('Exception: ', ''))));
       }
     }
   }
@@ -244,27 +267,10 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
                         ),
                         SizedBox(height: 16),
                         _buildTextField('Teléfono móvil', _phoneController, suffixIcon: Icons.phone_outlined),
-                        SizedBox(height: 16),
-                        _buildTextField('Género', _genderController, prefixIcon: Icons.people_outline, suffixIcon: Icons.expand_more),
-                        SizedBox(height: 16),
+                        const SizedBox(height: 16),
                         _buildTextField('Fecha de nacimiento', _dobController, prefixIcon: Icons.calendar_today_outlined, suffixIcon: Icons.cake_outlined),
-                      ],
-                    ),
-                  ),
-                  SizedBox(height: 32),
-
-                  // --- Preferencias ---
-                  _buildSectionTitle(Icons.settings_outlined, 'Preferencias'),
-                  SizedBox(height: 12),
-                  Container(
-                    padding: EdgeInsets.all(16),
-                    decoration: BoxDecoration(
-                      color: Theme.of(context).colorScheme.surface,
-                      borderRadius: BorderRadius.circular(16),
-                    ),
-                    child: Column(
-                      children: [
-                        _buildTextField('Zona Horaria', _timezoneController, prefixIcon: Icons.language_outlined, suffixIcon: Icons.expand_more),
+                        const SizedBox(height: 16),
+                        _buildDropdownField('Género', _genderController, ['Masculino', 'Femenino', 'Otro', 'Prefiero no decirlo'], prefixIcon: Icons.wc_outlined),
                       ],
                     ),
                   ),
@@ -282,65 +288,38 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        // Email
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text('Correo Electrónico', style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: Theme.of(context).colorScheme.onSurfaceVariant)),
-                            Container(
-                              padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                              decoration: BoxDecoration(color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.1), borderRadius: BorderRadius.circular(12)),
-                              child: Row(
-                                children: [
-                                  Icon(Icons.verified, color: Theme.of(context).colorScheme.primary, size: 12),
-                                  SizedBox(width: 4),
-                                  Text('Verificado', style: TextStyle(color: Theme.of(context).colorScheme.primary, fontSize: 10, fontWeight: FontWeight.bold)),
-                                ],
-                              ),
-                            )
-                          ],
-                        ),
-                        SizedBox(height: 8),
-                        Container(
-                          padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                          decoration: BoxDecoration(color: Theme.of(context).colorScheme.surfaceContainerHighest, borderRadius: BorderRadius.circular(12)),
-                          child: Row(
+                        // Contraseña Expandible
+                        Theme(
+                          data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
+                          child: ExpansionTile(
+                            tilePadding: EdgeInsets.zero,
+                            title: Text('Cambiar Contraseña', style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Theme.of(context).colorScheme.onSurfaceVariant)),
+                            leading: Icon(Icons.key_outlined, color: Theme.of(context).colorScheme.primary),
+                            onExpansionChanged: (expanded) {
+                            },
                             children: [
-                              Icon(Icons.mail_outline, color: Theme.of(context).colorScheme.onSurfaceVariant, size: 18),
-                              SizedBox(width: 12),
-                              Text(profile.correo ?? '${profile.idusuario.substring(0, 6)}@ejemplo.com', style: TextStyle(color: Theme.of(context).colorScheme.onSurface, fontSize: 14)),
-                              Spacer(),
-                              Container(
-                                padding: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                                decoration: BoxDecoration( borderRadius: BorderRadius.circular(8), color: Theme.of(context).colorScheme.surface),
-                                child: Text('Modificar', style: TextStyle(color: Theme.of(context).colorScheme.primary, fontWeight: FontWeight.bold, fontSize: 11)),
+                              SizedBox(height: 8),
+                              _buildTextField('Contraseña Actual', _currentPasswordController, obscureText: true),
+                              SizedBox(height: 16),
+                              _buildTextField('Nueva Contraseña', _newPasswordController, obscureText: true),
+                              SizedBox(height: 16),
+                              _buildTextField('Confirmar Nueva Contraseña', _confirmPasswordController, obscureText: true),
+                              SizedBox(height: 16),
+                              Align(
+                                alignment: Alignment.centerRight,
+                                child: ElevatedButton(
+                                  onPressed: _updatePassword,
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: Theme.of(context).colorScheme.primary,
+                                    foregroundColor: Theme.of(context).colorScheme.onPrimary,
+                                  ),
+                                  child: Text('Actualizar Contraseña'),
+                                ),
                               ),
+                              SizedBox(height: 16),
                             ],
                           ),
                         ),
-                        SizedBox(height: 16),
-
-                        // Contraseña
-                        Text('Contraseña', style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: Theme.of(context).colorScheme.onSurfaceVariant)),
-                        SizedBox(height: 8),
-                        Container(
-                          padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                          decoration: BoxDecoration(color: Theme.of(context).colorScheme.surfaceContainerHighest, borderRadius: BorderRadius.circular(12)),
-                          child: Row(
-                            children: [
-                              Icon(Icons.key_outlined, color: Theme.of(context).colorScheme.onSurfaceVariant, size: 18),
-                              SizedBox(width: 12),
-                              Text('••••••••••••', style: TextStyle(color: Theme.of(context).colorScheme.onSurface, fontSize: 14, letterSpacing: 2)),
-                              Spacer(),
-                              Container(
-                                padding: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                                decoration: BoxDecoration( borderRadius: BorderRadius.circular(8), color: Theme.of(context).colorScheme.surface),
-                                child: Text('Actualizar', style: TextStyle(color: Theme.of(context).colorScheme.primary, fontWeight: FontWeight.bold, fontSize: 11)),
-                              ),
-                            ],
-                          ),
-                        ),
-                        SizedBox(height: 16),
                         Divider(height: 1, color: Theme.of(context).colorScheme.outlineVariant),
                         SizedBox(height: 16),
 
@@ -460,16 +439,15 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
     );
   }
 
-
-
-  Widget _buildTextField(String label, TextEditingController controller, {IconData? prefixIcon, IconData? suffixIcon, Widget? prefixWidget}) {
+  Widget _buildTextField(String label, TextEditingController controller, {IconData? prefixIcon, IconData? suffixIcon, Widget? prefixWidget, bool obscureText = false}) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(label, style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: Theme.of(context).colorScheme.onSurfaceVariant)),
         SizedBox(height: 8),
-        TextFormField(
+        TextField(
           controller: controller,
+          obscureText: obscureText,
           style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: Theme.of(context).colorScheme.onSurface),
           decoration: InputDecoration(
             filled: true,
@@ -477,6 +455,49 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
             prefixIcon: prefixWidget ?? (prefixIcon != null ? Icon(prefixIcon, color: Theme.of(context).colorScheme.onSurfaceVariant, size: 18) : null),
             prefixIconConstraints: BoxConstraints(minWidth: 40, minHeight: 40),
             suffixIcon: suffixIcon != null ? Icon(suffixIcon, color: Theme.of(context).colorScheme.onSurfaceVariant, size: 18) : null,
+            contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+            border: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: BorderSide.none),
+            focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: BorderSide(color: Theme.of(context).colorScheme.primary)),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildDropdownField(String label, TextEditingController controller, List<String> items, {IconData? prefixIcon}) {
+    // Asegurarse de que el valor inicial esté en la lista, si no, usar el primero o null
+    String? currentValue = controller.text.isNotEmpty && items.contains(controller.text) ? controller.text : null;
+    if (currentValue == null && controller.text.isNotEmpty) {
+      currentValue = items.first; // fallback si viene algo raro
+      controller.text = currentValue;
+    }
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(label, style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: Theme.of(context).colorScheme.onSurfaceVariant)),
+        SizedBox(height: 8),
+        DropdownButtonFormField<String>(
+          initialValue: currentValue,
+          items: items.map((String value) {
+            return DropdownMenuItem<String>(
+              value: value,
+              child: Text(value),
+            );
+          }).toList(),
+          onChanged: (newValue) {
+            if (newValue != null) {
+              setState(() {
+                controller.text = newValue;
+              });
+            }
+          },
+          style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: Theme.of(context).colorScheme.onSurface),
+          decoration: InputDecoration(
+            filled: true,
+            fillColor: Theme.of(context).colorScheme.surfaceContainerHighest,
+            prefixIcon: prefixIcon != null ? Icon(prefixIcon, color: Theme.of(context).colorScheme.onSurfaceVariant, size: 18) : null,
+            prefixIconConstraints: BoxConstraints(minWidth: 40, minHeight: 40),
             contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
             border: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: BorderSide.none),
             focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: BorderSide(color: Theme.of(context).colorScheme.primary)),

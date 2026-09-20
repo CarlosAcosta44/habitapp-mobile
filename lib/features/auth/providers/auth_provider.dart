@@ -49,10 +49,10 @@ class AuthNotifier extends _$AuthNotifier {
     }
   }
 
-  Future<void> register(String email, String password, String nombre, String apellido) async {
+  Future<void> register(String email, String password, String nombre, String apellido, {String? genero, String? fechanacimiento}) async {
     state = AsyncValue.loading();
     try {
-      await _repository.register(email, password, nombre, apellido);
+      await _repository.register(email, password, nombre, apellido, genero: genero, fechanacimiento: fechanacimiento);
       // Auto-login since the backend now auto-confirms the email
       await login(email, password);
     } catch (e, st) {

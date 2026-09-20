@@ -24,7 +24,7 @@ class AuthRepository {
     }
   }
 
-  Future<Map<String, dynamic>> register(String email, String password, String nombre, String apellido) async {
+  Future<Map<String, dynamic>> register(String email, String password, String nombre, String apellido, {String? genero, String? fechanacimiento}) async {
     try {
       final response = await _dio.post(
         '/auth/register',
@@ -33,6 +33,8 @@ class AuthRepository {
           'password': password,
           'nombre': nombre,
           'apellido': apellido,
+          if (genero != null) 'genero': genero,
+          if (fechanacimiento != null) 'fechanacimiento': fechanacimiento,
         },
       );
       return response.data;
@@ -65,6 +67,17 @@ class AuthRepository {
     } on DioException catch (e) {
       throw Exception(
           e.response?.data['message'] ?? 'Error al iniciar sesión con Apple');
+    }
+  }
+
+  Future<void> updatePassword(String newPassword) async {
+    try {
+      await _dio.post(
+        '/auth/update-password',
+        data: {'password': newPassword},
+      );
+    } on DioException catch (e) {
+      throw Exception(e.response?.data['message'] ?? 'Error al actualizar contraseña');
     }
   }
 }

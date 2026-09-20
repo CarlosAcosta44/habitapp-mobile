@@ -44,7 +44,6 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
       titleHighlight: 'hábitos',
       subtitle: 'Cambia tu vida incorporando poco a poco rutinas saludables.',
       icon: Icons.check_circle_outline_rounded,
-      imageAsset: 'assets/images/logo-habitapp.png', // Por ahora usamos el logo aquí
     ),
     _Slide(
       titleNormal: 'Sigue tu\n',
@@ -90,17 +89,17 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                 children: [
                   Image.asset(
                     'assets/images/logo-habitapp.png',
-                    width: 28,
-                    height: 28,
+                    width: 36,
+                    height: 36,
                     errorBuilder: (context, error, stackTrace) =>
-                        Icon(Icons.extension, color: _kHighlightBlue, size: 28),
+                        Icon(Icons.extension, color: _kHighlightBlue, size: 36),
                   ),
                   SizedBox(width: 8),
                   Text(
                     'HabitApp',
                     style: TextStyle(
                       color: Theme.of(context).colorScheme.onSurface,
-                      fontSize: 20,
+                      fontSize: 26,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
@@ -247,7 +246,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                       Expanded(
                         child: _SocialButton(
                           fallbackIcon: Icons.facebook,
-                          color: Colors.black,
+                          color: Theme.of(context).brightness == Brightness.dark ? Colors.blueAccent : Colors.blue.shade800,
                           onTap: _continueWithSocial,
                         ),
                       ),

@@ -6,6 +6,7 @@ import '../../providers/habits_provider.dart';
 import '../../data/models/category_model.dart';
 import '../../data/models/habit_model.dart';
 import '../../data/repositories/habits_repository.dart';
+import '../../../notifications/data/services/notification_service.dart';
 
 const _kRed = Color(0xFFF76B6B);
 
@@ -23,7 +24,9 @@ class HabitDetailScreen extends ConsumerStatefulWidget {
 }
 
 class _HabitDetailScreenState extends ConsumerState<HabitDetailScreen> {
+  final List<TimeOfDay> _reminderTimes = [const TimeOfDay(hour: 8, minute: 0)];
   
+
   IconData _getCategoryIcon(String? iconName) {
     if (iconName == null) return Icons.category_outlined;
     switch (iconName.toLowerCase()) {
@@ -379,8 +382,8 @@ class _HabitDetailScreenState extends ConsumerState<HabitDetailScreen> {
                         SizedBox(height: 24),
                       ],
 
-                      // Recordatorios (Mocked UI)
-                      _buildRecordatoriosSection(),
+                      // Recordatorios
+                      _buildRecordatoriosSection(habit),
                       SizedBox(height: 32),
 
                       // Actions
@@ -683,7 +686,61 @@ class _HabitDetailScreenState extends ConsumerState<HabitDetailScreen> {
     );
   }
 
-  Widget _buildRecordatoriosSection() {
+  Future<void> _pickTime(int index, HabitModel habit) async {
+    final picked = await showTimePicker(
+      context: context,
+      initialTime: _reminderTimes[index],
+    );
+    if (picked != null) {
+      setState(() {
+        _reminderTimes[index] = picked;
+      });
+      _saveNotifications(habit);
+    }
+  }
+
+  void _addReminder(HabitModel habit) {
+    setState(() {
+      _reminderTimes.add(const TimeOfDay(hour: 8, minute: 0));
+    });
+    _saveNotifications(habit);
+  }
+
+  void _deleteReminder(int index, HabitModel habit) {
+    setState(() {
+      _reminderTimes.removeAt(index);
+    });
+    _saveNotifications(habit);
+  }
+
+  Future<void> _saveNotifications(HabitModel habit) async {
+    // 1. Cancel previous
+    await NotificationService().cancelHabitNotifications(habit.id.hashCode);
+    
+    // 2. Schedule new
+    for (var time in _reminderTimes) {
+      await NotificationService().scheduleHabitNotification(
+        id: habit.id.hashCode,
+        title: '¡Recordatorio de hábito!',
+        body: 'Es hora de: ${habit.nombre}',
+        hour: time.hour,
+        minute: time.minute,
+        daysOfWeek: habit.diasSemana,
+      );
+    }
+    
+    if (mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Recordatorios actualizados'),
+          backgroundColor: Colors.green,
+          duration: Duration(seconds: 1),
+        ),
+      );
+    }
+  }
+
+  Widget _buildRecordatoriosSection(HabitModel habit) {
     return Container(
       padding: EdgeInsets.all(20),
       decoration: BoxDecoration(
@@ -716,13 +773,23 @@ class _HabitDetailScreenState extends ConsumerState<HabitDetailScreen> {
             spacing: 8,
             runSpacing: 8,
             children: [
-              _buildTimeChip('08:00 AM'),
-              _buildTimeChip('12:00 PM'),
-              _buildTimeChip('16:00 PM'),
+              ..._reminderTimes.asMap().entries.map((entry) {
+                final index = entry.key;
+                final time = entry.value;
+                return InputChip(
+                  label: Text(time.format(context), style: TextStyle(color: Theme.of(context).colorScheme.onSurface, fontWeight: FontWeight.bold, fontSize: 12)),
+                  backgroundColor: Theme.of(context).colorScheme.surfaceContainerHighest,
+                  deleteIcon: Icon(Icons.close, size: 14),
+                  onDeleted: () => _deleteReminder(index, habit),
+                  onPressed: () => _pickTime(index, habit),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+                  side: BorderSide.none,
+                );
+              }),
               ActionChip(
-                onPressed: () {},
+                onPressed: () => _addReminder(habit),
                 avatar: Icon(Icons.add, size: 16, color: Theme.of(context).colorScheme.primary),
-                label: Text('Añadir recordatorio', style: TextStyle(color: Theme.of(context).colorScheme.primary, fontSize: 12, fontWeight: FontWeight.bold)),
+                label: Text('Añadir', style: TextStyle(color: Theme.of(context).colorScheme.primary, fontSize: 12, fontWeight: FontWeight.bold)),
                 backgroundColor: Theme.of(context).colorScheme.surface,
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
               )
@@ -740,24 +807,6 @@ class _HabitDetailScreenState extends ConsumerState<HabitDetailScreen> {
               Text('Campana de serenidad', style: TextStyle(color: Theme.of(context).colorScheme.onSurface, fontSize: 12, fontWeight: FontWeight.bold)),
             ],
           )
-        ],
-      ),
-    );
-  }
-
-  Widget _buildTimeChip(String time) {
-    return Container(
-      padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-      decoration: BoxDecoration(
-        color: Theme.of(context).scaffoldBackgroundColor,
-        borderRadius: BorderRadius.circular(20),
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(Icons.access_time, size: 14, color: Theme.of(context).colorScheme.primary),
-          SizedBox(width: 6),
-          Text(time, style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: Theme.of(context).colorScheme.onSurface)),
         ],
       ),
     );

@@ -7,6 +7,9 @@ import '../../../profile/providers/profile_provider.dart';
 import '../../../../core/theme/theme_provider.dart';
 
 
+import '../../../notifications/data/services/notification_service.dart';
+import 'package:audioplayers/audioplayers.dart';
+
 class SettingsScreen extends ConsumerStatefulWidget {
   const SettingsScreen({super.key});
 
@@ -17,7 +20,46 @@ class SettingsScreen extends ConsumerStatefulWidget {
 class _SettingsScreenState extends ConsumerState<SettingsScreen> {
   // Estados locales (Mockup) para los selectores
   bool _notificationsEnabled = true;
-  int _selectedSound = 0; // 0: Campanas, 1: Naturaleza, 2: Silencio
+  int _selectedSound = 0; // 0 = Campanas, 1: Naturaleza, 2: Silencio
+  final AudioPlayer _audioPlayer = AudioPlayer();
+
+  @override
+  void dispose() {
+    _audioPlayer.dispose();
+    super.dispose();
+  }
+
+  void _showNotAvailableSnackBar() {
+    if (mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Función no disponible en este momento'),
+          backgroundColor: Colors.orange,
+          duration: Duration(seconds: 2),
+        ),
+      );
+    }
+  }
+
+  Future<void> _playSound(int index) async {
+    setState(() => _selectedSound = index);
+    if (index == 0) {
+      try {
+        await _audioPlayer.play(AssetSource('sounds/bell.mp3'));
+      } catch (e) {
+        // Ignorar si el archivo no existe aún
+      }
+    } else if (index == 1) {
+      try {
+        await _audioPlayer.play(AssetSource('sounds/nature.mp3'));
+      } catch (e) {
+        // Ignorar si el archivo no existe aún
+      }
+    } else if (index == 2) {
+      await _audioPlayer.stop();
+    }
+  }
+
   bool _appleHealthEnabled = true;
   bool _privateModeEnabled = true;
 
@@ -90,7 +132,18 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
             _buildSectionHeader('PREFERENCIAS DE LA APP', Icons.tune),
             _buildThemeCard(themeMode),
             SizedBox(height: 12),
-            _buildToggleCard('Activar notificaciones', 'Recibir avisos y recordatorios de\nhábitos', Icons.notifications_active_outlined, _notificationsEnabled, (v) => setState(() => _notificationsEnabled = v)),
+            _buildToggleCard(
+              'Activar notificaciones',
+              'Recibir avisos y recordatorios de\nhábitos',
+              Icons.notifications_active_outlined,
+              _notificationsEnabled,
+              (v) async {
+                setState(() => _notificationsEnabled = v);
+                if (!v) {
+                  await NotificationService().cancelAllPendingNotifications();
+                }
+              },
+            ),
             SizedBox(height: 12),
             _buildSoundCard(),
             SizedBox(height: 24),
@@ -410,7 +463,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     final isSelected = _selectedSound == index;
     return Expanded(
       child: GestureDetector(
-        onTap: () => setState(() => _selectedSound = index),
+        onTap: () => _playSound(index),
         child: Container(
           padding: EdgeInsets.symmetric(vertical: 12),
           decoration: BoxDecoration(
@@ -450,8 +503,8 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
             'Conectado - Pasos y sueño',
             Icons.favorite_border,
             Theme.of(context).colorScheme.primary,
-            _appleHealthEnabled,
-            (v) => setState(() => _appleHealthEnabled = v),
+            false, // Forced to false
+            (v) => _showNotAvailableSnackBar(),
             subtitleDotColor: Theme.of(context).colorScheme.primary,
           ),
           Divider(height: 1, indent: 24, endIndent: 24, color: Theme.of(context).colorScheme.outlineVariant),
@@ -460,8 +513,8 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
             'Compartir hábitos de forma anónima',
             Icons.visibility_off_outlined,
             Theme.of(context).colorScheme.primary,
-            _privateModeEnabled,
-            (v) => setState(() => _privateModeEnabled = v),
+            false, // Forced to false
+            (v) => _showNotAvailableSnackBar(),
           ),
         ],
       ),

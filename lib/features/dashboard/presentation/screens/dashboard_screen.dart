@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import '../../splash/presentation/screens/splash_screen.dart';
 
 import '../../../habits/presentation/widgets/habit_card.dart';
 import '../../../habits/providers/habits_provider.dart';
@@ -76,6 +78,10 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
     final selectedDate = now.add(Duration(days: _selectedDayOffset));
     final selectedWeekday = selectedDate.weekday;
     final selectedDateString = "${selectedDate.year}-${selectedDate.month.toString().padLeft(2, '0')}-${selectedDate.day.toString().padLeft(2, '0')}";
+    final user = profileState.value;
+    final isPremium = user?.isPremium ?? false;
+    final dynamicQuote = ref.watch(dailyQuoteProvider);
+    final splashImage = ref.watch(splashImageProvider);
 
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
@@ -280,7 +286,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(24),
                               image: DecorationImage(
-                                image: AssetImage('assets/images/paisaje-dashboard.png'),
+                                image: AssetImage(splashImage),
                                 fit: BoxFit.cover,
                               ),
                             ),
@@ -289,7 +295,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 Text(
-                                  '«Cada nuevo amanecer es una nueva oportunidad»',
+                                  dynamicQuote != null ? '«${dynamicQuote.phrase}»' : '«Cada nuevo amanecer es una nueva oportunidad»',
                                   textAlign: TextAlign.center,
                                   style: TextStyle(
                                     fontSize: 16, 
@@ -297,6 +303,20 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                                     color: Theme.of(context).colorScheme.surface,
                                     shadows: [
                                       Shadow(color: Colors.black54, blurRadius: 6, offset: Offset(0, 2))
+                                    ],
+                                  ),
+                                ),
+                                SizedBox(height: 8),
+                                Text(
+                                  dynamicQuote != null && dynamicQuote.author.isNotEmpty ? '- ${dynamicQuote.author}' : '',
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                    fontSize: 12, 
+                                    fontWeight: FontWeight.w600, 
+                                    fontStyle: FontStyle.italic,
+                                    color: Theme.of(context).colorScheme.surface.withValues(alpha: 0.9),
+                                    shadows: [
+                                      Shadow(color: Colors.black54, blurRadius: 4, offset: Offset(0, 1))
                                     ],
                                   ),
                                 ),

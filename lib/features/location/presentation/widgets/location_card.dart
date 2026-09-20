@@ -82,8 +82,8 @@ class LocationCard extends ConsumerWidget {
                       color: colorScheme.onSurfaceVariant,
                     ),
                   ),
-                  data: (position) {
-                    if (position == null) {
+                  data: (result) {
+                    if (result == null) {
                       return Text(
                         'Sin permiso o GPS desactivado',
                         style: TextStyle(
@@ -92,8 +92,11 @@ class LocationCard extends ConsumerWidget {
                         ),
                       );
                     }
+                    
+                    final address = result.$2;
+
                     return Text(
-                      'Lat: ${position.latitude.toStringAsFixed(4)}, Lng: ${position.longitude.toStringAsFixed(4)}',
+                      address,
                       style: TextStyle(
                         fontSize: 12,
                         fontWeight: FontWeight.w600,
@@ -119,7 +122,7 @@ class LocationCard extends ConsumerWidget {
                   SnackBar(
                     content: Text(
                       pos != null
-                          ? 'Coordenadas obtenidas: ${pos.latitude.toStringAsFixed(4)}, ${pos.longitude.toStringAsFixed(4)}'
+                          ? 'Ubicación: ${pos.$2}'
                           : 'Ubicación denegada o GPS desactivado. La app continuará funcionando normalmente.',
                     ),
                     backgroundColor: pos != null ? colorScheme.primary : Colors.orange,

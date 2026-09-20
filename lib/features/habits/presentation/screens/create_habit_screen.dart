@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import '../../data/models/create_habit_dto.dart';
 import '../../data/models/category_model.dart';
 import '../../providers/habits_provider.dart';
+import '../../../notifications/data/services/notification_service.dart';
 
 
 IconData getCategoryIcon(String? iconName) {
@@ -56,6 +57,7 @@ class _CreateHabitScreenState extends ConsumerState<CreateHabitScreen> {
   bool _isLoading = false;
 
   final Set<int> _selectedDays = {1, 2, 3, 4, 5, 6, 7};
+  final List<TimeOfDay> _reminderTimes = [const TimeOfDay(hour: 8, minute: 0)];
 
   final List<Map<String, dynamic>> _dayList = [
     {'id': 1, 'label': 'L'},
@@ -146,19 +148,31 @@ class _CreateHabitScreenState extends ConsumerState<CreateHabitScreen> {
       diasSemana: sortedDays,
     );
 
-    final success = await ref.read(habitsDashboardProvider.notifier).createHabit(dto);
+    final createdHabit = await ref.read(habitsDashboardProvider.notifier).createHabit(dto);
 
     if (mounted) {
       setState(() => _isLoading = false);
-      if (success) {
-        context.pop();
+      if (createdHabit != null) {
+        for (var time in _reminderTimes) {
+          await NotificationService().scheduleHabitNotification(
+            id: createdHabit.id.hashCode,
+            title: '¡Recordatorio de hábito!',
+            body: 'Es hora de: ${createdHabit.nombre}',
+            hour: time.hour,
+            minute: time.minute,
+            daysOfWeek: sortedDays,
+          );
+        }
+        if (mounted) context.pop();
       } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Error al crear el hábito. Inténtalo de nuevo.'),
-            backgroundColor: Colors.redAccent,
-          ),
-        );
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('Error al crear el hábito. Inténtalo de nuevo.'),
+              backgroundColor: Colors.redAccent,
+            ),
+          );
+        }
       }
     }
   }
@@ -437,6 +451,24 @@ class _CreateHabitScreenState extends ConsumerState<CreateHabitScreen> {
     );
   }
 
+  Future<void> _pickTime(int index) async {
+    final picked = await showTimePicker(
+      context: context,
+      initialTime: _reminderTimes[index],
+    );
+    if (picked != null) {
+      setState(() {
+        _reminderTimes[index] = picked;
+      });
+    }
+  }
+
+  void _addReminder() {
+    setState(() {
+      _reminderTimes.add(const TimeOfDay(hour: 8, minute: 0));
+    });
+  }
+
   Widget _buildSoundCard() {
     return Container(
       decoration: BoxDecoration(
@@ -445,26 +477,68 @@ class _CreateHabitScreenState extends ConsumerState<CreateHabitScreen> {
         border: Border.all(color: Theme.of(context).colorScheme.surfaceContainerHighest),
       ),
       padding: EdgeInsets.all(16),
-      child: Row(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          CircleAvatar(
-            radius: 18,
-            backgroundColor: Colors.orange.withValues(alpha: 0.1),
-            child: Icon(Icons.notifications_active_outlined, color: Colors.orange, size: 18),
+          Row(
+            children: [
+              CircleAvatar(
+                radius: 18,
+                backgroundColor: Colors.orange.withValues(alpha: 0.1),
+                child: Icon(Icons.notifications_active_outlined, color: Colors.orange, size: 18),
+              ),
+              SizedBox(width: 16),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text('Sonido y Recordatorio', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14, color: Theme.of(context).colorScheme.onSurface)),
+                    Text('Campana de serenidad matutina', style: TextStyle(fontSize: 11, color: Theme.of(context).colorScheme.onSurfaceVariant)),
+                  ],
+                ),
+              ),
+              IconButton(
+                icon: Icon(Icons.add_circle_outline, color: Theme.of(context).colorScheme.primary),
+                onPressed: _addReminder,
+              ),
+            ],
           ),
-          SizedBox(width: 16),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text('Sonido y Recordatorio', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14, color: Theme.of(context).colorScheme.onSurface)),
-                Text('Campana de serenidad matutina', style: TextStyle(fontSize: 11, color: Theme.of(context).colorScheme.onSurfaceVariant)),
-              ],
-            ),
-          ),
-          Text('08:00', style: TextStyle(color: Theme.of(context).colorScheme.onSurfaceVariant, fontWeight: FontWeight.bold, fontSize: 12)),
-          SizedBox(width: 4),
-          Icon(Icons.chevron_right, color: Theme.of(context).colorScheme.onSurfaceVariant, size: 16),
+          if (_reminderTimes.isNotEmpty) ...[
+            SizedBox(height: 16),
+            Divider(height: 1),
+            SizedBox(height: 8),
+            ..._reminderTimes.asMap().entries.map((entry) {
+              final index = entry.key;
+              final time = entry.value;
+              return Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  GestureDetector(
+                    onTap: () => _pickTime(index),
+                    child: Container(
+                      padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                      decoration: BoxDecoration(
+                        color: Theme.of(context).colorScheme.surfaceContainerHighest,
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: Text(
+                        time.format(context),
+                        style: TextStyle(fontWeight: FontWeight.bold, color: Theme.of(context).colorScheme.onSurface),
+                      ),
+                    ),
+                  ),
+                  IconButton(
+                    icon: Icon(Icons.delete_outline, color: Colors.red),
+                    onPressed: () {
+                      setState(() {
+                        _reminderTimes.removeAt(index);
+                      });
+                    },
+                  ),
+                ],
+              );
+            }),
+          ]
         ],
       ),
     );
