@@ -20,7 +20,7 @@ class SettingsScreen extends ConsumerStatefulWidget {
 class _SettingsScreenState extends ConsumerState<SettingsScreen> {
   // Estados locales (Mockup) para los selectores
   bool _notificationsEnabled = true;
-  int _selectedSound = 0; // 0 = Campanas, 1: Naturaleza, 2: Silencio
+  int _selectedSound = 0; // 0 = Activado, 1 = Desactivado
   final AudioPlayer _audioPlayer = AudioPlayer();
 
   @override
@@ -45,17 +45,11 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     setState(() => _selectedSound = index);
     if (index == 0) {
       try {
-        await _audioPlayer.play(AssetSource('sounds/bell.mp3'));
+        await _audioPlayer.play(AssetSource('sounds/sound.mp3'));
       } catch (e) {
         // Ignorar si el archivo no existe aún
       }
-    } else if (index == 1) {
-      try {
-        await _audioPlayer.play(AssetSource('sounds/nature.mp3'));
-      } catch (e) {
-        // Ignorar si el archivo no existe aún
-      }
-    } else if (index == 2) {
+    } else {
       await _audioPlayer.stop();
     }
   }
@@ -444,11 +438,9 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
           SizedBox(height: 16),
           Row(
             children: [
-              _buildSoundButton('Campanas', Icons.graphic_eq, 0),
-              SizedBox(width: 10),
-              _buildSoundButton('Naturaleza', Icons.park_outlined, 1),
-              SizedBox(width: 10),
-              _buildSoundButton('Silencio', Icons.volume_off_outlined, 2),
+              _buildSoundButton('Activado', Icons.notifications_active_outlined, 0),
+              SizedBox(width: 16),
+              _buildSoundButton('Desactivado', Icons.volume_off_outlined, 1),
             ],
           )
         ],
