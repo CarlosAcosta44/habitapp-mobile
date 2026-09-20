@@ -60,9 +60,6 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     }
   }
 
-  bool _appleHealthEnabled = true;
-  bool _privateModeEnabled = true;
-
   void _confirmLogout(BuildContext context, WidgetRef ref) {
     showDialog(
       context: context,

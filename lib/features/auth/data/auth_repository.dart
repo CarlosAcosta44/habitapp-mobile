@@ -26,16 +26,18 @@ class AuthRepository {
 
   Future<Map<String, dynamic>> register(String email, String password, String nombre, String apellido, {String? genero, String? fechanacimiento}) async {
     try {
+      final Map<String, dynamic> data = {
+        'email': email,
+        'password': password,
+        'nombre': nombre,
+        'apellido': apellido,
+      };
+      if (genero != null) data['genero'] = genero;
+      if (fechanacimiento != null) data['fechanacimiento'] = fechanacimiento;
+
       final response = await _dio.post(
         '/auth/register',
-        data: {
-          'email': email,
-          'password': password,
-          'nombre': nombre,
-          'apellido': apellido,
-          if (genero != null) 'genero': genero,
-          if (fechanacimiento != null) 'fechanacimiento': fechanacimiento,
-        },
+        data: data,
       );
       return response.data;
     } on DioException catch (e) {

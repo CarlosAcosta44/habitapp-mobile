@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:flutter_svg/flutter_svg.dart';
-import '../../splash/presentation/screens/splash_screen.dart';
+import '../../../auth/presentation/screens/splash_screen.dart';
 
 import '../../../habits/presentation/widgets/habit_card.dart';
 import '../../../habits/providers/habits_provider.dart';
@@ -78,10 +77,8 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
     final selectedDate = now.add(Duration(days: _selectedDayOffset));
     final selectedWeekday = selectedDate.weekday;
     final selectedDateString = "${selectedDate.year}-${selectedDate.month.toString().padLeft(2, '0')}-${selectedDate.day.toString().padLeft(2, '0')}";
-    final user = profileState.value;
-    final isPremium = user?.isPremium ?? false;
-    final dynamicQuote = ref.watch(dailyQuoteProvider);
-    final splashImage = ref.watch(splashImageProvider);
+    final dynamicQuote = SplashData.dailyQuote;
+    final splashImage = SplashData.splashImage;
 
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,

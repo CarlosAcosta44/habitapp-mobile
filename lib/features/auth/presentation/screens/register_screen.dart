@@ -248,7 +248,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                                       ),
                                       SizedBox(height: 8),
                                       DropdownButtonFormField<String>(
-                                        value: _generoCtrl.text,
+                                        initialValue: _generoCtrl.text,
                                         items: ['Masculino', 'Femenino', 'Otro', 'Prefiero no decirlo']
                                             .map((String value) => DropdownMenuItem(value: value, child: Text(value)))
                                             .toList(),
@@ -392,9 +392,9 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                                       style: TextStyle(fontSize: 11, color: Theme.of(context).colorScheme.onSurfaceVariant, height: 1.4),
                                       children: [
                                         TextSpan(text: 'Acepto los '),
-                                        TextSpan(text: 'Términos de Servicio', style: TextStyle(color: _kGreenBadge, fontWeight: FontWeight.w600, decoration: TextDecoration.underline)),
+                                        TextSpan(text: 'Términos de Servicio', style: TextStyle(color: _kBlueBadge, fontWeight: FontWeight.w600, decoration: TextDecoration.underline)),
                                         TextSpan(text: ' y la '),
-                                        TextSpan(text: 'Política de Privacidad', style: TextStyle(color: _kGreenBadge, fontWeight: FontWeight.w600, decoration: TextDecoration.underline)),
+                                        TextSpan(text: 'Política de Privacidad', style: TextStyle(color: _kBlueBadge, fontWeight: FontWeight.w600, decoration: TextDecoration.underline)),
                                         TextSpan(text: ' de HabitApp.'),
                                       ],
                                     ),

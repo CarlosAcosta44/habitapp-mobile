@@ -11,14 +11,12 @@ class _Slide {
   final String titleHighlight;
   final String subtitle;
   final IconData icon;
-  final String? imageAsset;
 
   const _Slide({
     required this.titleNormal,
     required this.titleHighlight,
     required this.subtitle,
     required this.icon,
-    this.imageAsset,
   });
 }
 
@@ -125,14 +123,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                           width: double.infinity,
                           height: 240,
                           alignment: Alignment.center,
-                          child: slide.imageAsset != null
-                              ? Image.asset(
-                                  slide.imageAsset!,
-                                  fit: BoxFit.contain,
-                                  errorBuilder: (context, error, stackTrace) =>
-                                      Icon(slide.icon, size: 120, color: _kHighlightBlue),
-                                )
-                              : Icon(slide.icon, size: 120, color: _kHighlightBlue),
+                          child: Icon(slide.icon, size: 120, color: _kHighlightBlue),
                         ),
                         SizedBox(height: 40),
 

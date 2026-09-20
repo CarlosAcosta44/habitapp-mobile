@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import '../../dashboard/data/services/quotes_service.dart';
-import '../../auth/providers/auth_provider.dart';
+import '../../../dashboard/data/services/quotes_service.dart';
+import '../../providers/auth_provider.dart';
 
-// Provide the daily quote globally so the Dashboard can read it synchronously
-final dailyQuoteProvider = StateProvider<Quote?>((ref) => null);
-final splashImageProvider = StateProvider<String>((ref) => 'assets/images/Mañana.jpg');
+class SplashData {
+  static Quote? dailyQuote;
+  static String splashImage = 'assets/images/Mañana.jpg';
+}
 
 class SplashScreen extends ConsumerStatefulWidget {
   const SplashScreen({super.key});
@@ -60,8 +61,8 @@ class _SplashScreenState extends ConsumerState<SplashScreen> with SingleTickerPr
     }
 
     // Actualizamos los providers globales para el dashboard
-    ref.read(dailyQuoteProvider.notifier).state = _quote;
-    ref.read(splashImageProvider.notifier).state = _imagePath;
+    SplashData.dailyQuote = _quote;
+    SplashData.splashImage = _imagePath;
 
     // Aseguramos que la pantalla de carga dure al menos 3.5 segundos para que se aprecie
     await Future.delayed(const Duration(milliseconds: 3500));
@@ -70,6 +71,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen> with SingleTickerPr
 
     // Verificamos si está logueado para redirigir
     final authState = await ref.read(authProvider.future);
+    if (!mounted) return;
     if (authState) {
       context.go('/dashboard');
     } else {

@@ -207,6 +207,10 @@ class NotificationService {
     }
   }
 
+  Future<void> cancelAllPendingNotifications() async {
+    await _localNotificationsPlugin.cancelAll();
+  }
+
   tz.TZDateTime _nextInstanceOfTimeAndDay(int hour, int minute, int dayOfWeek) {
     final tz.TZDateTime now = tz.TZDateTime.now(tz.local);
     tz.TZDateTime scheduledDate =
