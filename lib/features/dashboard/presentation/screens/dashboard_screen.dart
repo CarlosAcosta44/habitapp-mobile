@@ -1,3 +1,4 @@
+import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -279,7 +280,6 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                           // ── Banner Paisaje Motivacional ──
                           Container(
                             width: double.infinity,
-                            padding: EdgeInsets.symmetric(horizontal: 24, vertical: 52),
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(24),
                               image: DecorationImage(
@@ -287,97 +287,51 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                                 fit: BoxFit.cover,
                               ),
                             ),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Text(
-                                  dynamicQuote != null ? '«${dynamicQuote.phrase}»' : '«Cada nuevo amanecer es una nueva oportunidad»',
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                    fontSize: 16, 
-                                    fontWeight: FontWeight.w800, 
-                                    color: Theme.of(context).colorScheme.surface,
-                                    shadows: [
-                                      Shadow(color: Colors.black54, blurRadius: 6, offset: Offset(0, 2))
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(24),
+                              child: BackdropFilter(
+                                filter: ImageFilter.blur(sigmaX: 3.0, sigmaY: 3.0),
+                                child: Container(
+                                  padding: EdgeInsets.symmetric(horizontal: 24, vertical: 52),
+                                  color: Colors.black.withValues(alpha: 0.35),
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Text(
+                                        dynamicQuote != null ? '«${dynamicQuote.phrase}»' : '«Cada nuevo amanecer es una nueva oportunidad»',
+                                        textAlign: TextAlign.center,
+                                        style: TextStyle(
+                                          fontSize: 16, 
+                                          fontWeight: FontWeight.w800, 
+                                          color: Colors.white,
+                                          shadows: [
+                                            Shadow(color: Colors.black87, blurRadius: 8, offset: Offset(0, 2))
+                                          ],
+                                        ),
+                                      ),
+                                      SizedBox(height: 8),
+                                      Text(
+                                        dynamicQuote != null && dynamicQuote.author.isNotEmpty ? '- ${dynamicQuote.author}' : '',
+                                        textAlign: TextAlign.center,
+                                        style: TextStyle(
+                                          fontSize: 12, 
+                                          fontWeight: FontWeight.w600, 
+                                          fontStyle: FontStyle.italic,
+                                          color: Colors.white.withValues(alpha: 0.9),
+                                          shadows: [
+                                            Shadow(color: Colors.black87, blurRadius: 6, offset: Offset(0, 1))
+                                          ],
+                                        ),
+                                      ),
                                     ],
                                   ),
                                 ),
-                                SizedBox(height: 8),
-                                Text(
-                                  dynamicQuote != null && dynamicQuote.author.isNotEmpty ? '- ${dynamicQuote.author}' : '',
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                    fontSize: 12, 
-                                    fontWeight: FontWeight.w600, 
-                                    fontStyle: FontStyle.italic,
-                                    color: Theme.of(context).colorScheme.surface.withValues(alpha: 0.9),
-                                    shadows: [
-                                      Shadow(color: Colors.black54, blurRadius: 4, offset: Offset(0, 1))
-                                    ],
-                                  ),
-                                ),
-                              ],
+                              ),
                             ),
                           ),
                           SizedBox(height: 28),
                           
-                          // ── Tus Retos ──
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text('Tus retos', style: TextStyle(fontSize: 18, fontWeight: FontWeight.w800, color: Theme.of(context).colorScheme.onSurface)),
-                              GestureDetector(
-                                onTap: () {},
-                                child: Row(
-                                  children: [
-                                    Text('Ver todos', style: TextStyle(color: Color(0xFF0F8A5D), fontWeight: FontWeight.w700, fontSize: 13)),
-                                    Icon(Icons.chevron_right, color: Color(0xFF0F8A5D), size: 16),
-                                  ],
-                                ),
-                              ),
-                            ],
-                          ),
-                          SizedBox(height: 16),
-                          SizedBox(
-                            height: 170,
-                            child: retosAsync.when(
-                              data: (retos) {
-                                if (retos.isEmpty) {
-                                  return Center(
-                                    child: Text('No hay retos activos.', style: TextStyle(color: Theme.of(context).colorScheme.onSurfaceVariant)),
-                                  );
-                                }
-                                return ListView.separated(
-                                  scrollDirection: Axis.horizontal,
-                                  clipBehavior: Clip.none,
-                                  itemCount: retos.length,
-                                  separatorBuilder: (_, i) => SizedBox(width: 16),
-                                  itemBuilder: (context, index) {
-                                    final reto = retos[index];
-                                    final color = index % 2 == 0 ? Theme.of(context).colorScheme.secondary : Color(0xFF0F8A5D);
-                                    
-                                    // Cálculo de progreso ficticio para demostración
-                                    final progresoMock = index % 2 == 0 ? 0.2 : 0.45;
-                                    final progressText = '${(progresoMock * 100).toInt()}% completado';
-
-                                    return _ChallengeCard(
-                                      title: reto['titulo'] ?? 'Reto',
-                                      subtitle: reto['descripcion'] ?? 'Únete ahora',
-                                      progressText: progressText,
-                                      progress: progresoMock,
-                                      color: color,
-                                      badgeText: '${reto['puntosRecompensa'] ?? 50} pts',
-                                    );
-                                  },
-                                );
-                              },
-                              loading: () => Center(child: CircularProgressIndicator()),
-                              error: (e, _) => Center(child: Text('Error al cargar retos')),
-                            ),
-                          ),
-                          SizedBox(height: 28),
-
                           // ── Encabezado Lista de Hábitos ──
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -458,47 +412,64 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                             ),
                           ),
 
-                          SizedBox(height: 24),
-                          // ── Quote Footer ──
-                          Container(
-                            padding: EdgeInsets.all(20),
-                            decoration: BoxDecoration(
-                              color: Theme.of(context).colorScheme.surface,
-                              borderRadius: BorderRadius.circular(24),
-                              border: Border.all(color: Colors.grey.shade100),
-                            ),
-                            child: Row(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Container(
-                                  padding: EdgeInsets.all(12),
-                                  decoration: BoxDecoration(
-                                    color: Theme.of(context).colorScheme.secondary.withValues(alpha: 0.1),
-                                    shape: BoxShape.circle,
-                                  ),
-                                  child: Icon(Icons.favorite_border_rounded, color: Theme.of(context).colorScheme.secondary, size: 20),
+                          SizedBox(height: 28),
+                          
+                          // ── Tus Retos ──
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text('Tus retos', style: TextStyle(fontSize: 18, fontWeight: FontWeight.w800, color: Theme.of(context).colorScheme.onSurface)),
+                              GestureDetector(
+                                onTap: () {},
+                                child: Row(
+                                  children: [
+                                    Text('Ver todos', style: TextStyle(color: Color(0xFF0F8A5D), fontWeight: FontWeight.w700, fontSize: 13)),
+                                    Icon(Icons.chevron_right, color: Color(0xFF0F8A5D), size: 16),
+                                  ],
                                 ),
-                                SizedBox(width: 16),
-                                Expanded(
-                                  child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        '“Una mente en calma construye grandes logros.”',
-                                        style: TextStyle(fontSize: 13, fontWeight: FontWeight.w800, color: Theme.of(context).colorScheme.onSurface),
-                                      ),
-                                      SizedBox(height: 8),
-                                      Text(
-                                        'Mantén el enfoque, ¡llevas el 67% de tu meta diaria!',
-                                        style: TextStyle(fontSize: 12, color: Theme.of(context).colorScheme.onSurfaceVariant),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ],
+                              ),
+                            ],
+                          ),
+                          SizedBox(height: 16),
+                          SizedBox(
+                            height: 170,
+                            child: retosAsync.when(
+                              data: (retos) {
+                                if (retos.isEmpty) {
+                                  return Center(
+                                    child: Text('No hay retos activos.', style: TextStyle(color: Theme.of(context).colorScheme.onSurfaceVariant)),
+                                  );
+                                }
+                                return ListView.separated(
+                                  scrollDirection: Axis.horizontal,
+                                  clipBehavior: Clip.none,
+                                  itemCount: retos.length,
+                                  separatorBuilder: (_, i) => SizedBox(width: 16),
+                                  itemBuilder: (context, index) {
+                                    final reto = retos[index];
+                                    final color = index % 2 == 0 ? Theme.of(context).colorScheme.secondary : Color(0xFF0F8A5D);
+                                    
+                                    // Cálculo de progreso ficticio para demostración
+                                    final progresoMock = index % 2 == 0 ? 0.2 : 0.45;
+                                    final progressText = '${(progresoMock * 100).toInt()}% completado';
+
+                                    return _ChallengeCard(
+                                      title: reto['titulo'] ?? 'Reto',
+                                      subtitle: reto['descripcion'] ?? 'Únete ahora',
+                                      progressText: progressText,
+                                      progress: progresoMock,
+                                      color: color,
+                                      badgeText: '${reto['puntosRecompensa'] ?? 50} pts',
+                                    );
+                                  },
+                                );
+                              },
+                              loading: () => Center(child: CircularProgressIndicator()),
+                              error: (e, _) => Center(child: Text('Error al cargar retos')),
                             ),
                           ),
-                          
+
+
                           SizedBox(height: 120), // Margen inferior para FAB y BottomNav
                         ],
                       ),
