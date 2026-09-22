@@ -1,18 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../providers/habits_provider.dart';
 import '../../data/models/category_model.dart';
 import '../../data/models/habit_model.dart';
-import '../../data/repositories/habits_repository.dart';
-import '../../../notifications/data/services/notification_service.dart';
+import '../../../notifications/providers/notification_provider.dart';
 
 const _kRed = Color(0xFFF76B6B);
-
-final habitStatsProvider = FutureProvider.family<HabitModel, String>((ref, id) async {
-  return ref.read(habitsRepositoryProvider).getHabitStats(id);
-});
 
 class HabitDetailScreen extends ConsumerStatefulWidget {
   final String habitId;
@@ -24,8 +20,67 @@ class HabitDetailScreen extends ConsumerStatefulWidget {
 }
 
 class _HabitDetailScreenState extends ConsumerState<HabitDetailScreen> {
-  final List<TimeOfDay> _reminderTimes = [const TimeOfDay(hour: 8, minute: 0)];
-  
+  List<TimeOfDay> _reminderTimes = [const TimeOfDay(hour: 8, minute: 0)];
+
+  /// Local optimistic progress value used during an in-flight API call.
+  /// When null the provider's value is used for rendering.
+  double? _localProgress;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadReminders();
+  }
+
+  Future<void> _loadReminders() async {
+    final prefs = await SharedPreferences.getInstance();
+    final key = 'reminders_${widget.habitId}';
+    final savedTimes = prefs.getStringList(key);
+    debugPrint('[Reminders] Loading key=$key → $savedTimes');
+    if (savedTimes != null && savedTimes.isNotEmpty) {
+      if (mounted) {
+        setState(() {
+          _reminderTimes = savedTimes.map((t) {
+            final parts = t.split(':');
+            return TimeOfDay(
+              hour: int.parse(parts[0]),
+              minute: int.parse(parts[1]),
+            );
+          }).toList();
+        });
+      }
+    }
+  }
+
+  /// Handles +1 / -1 progress updates using a local state variable so the
+  /// global Riverpod notifier is never mutated while Flutter is still
+  /// processing a pointer/gesture event. This eliminates the
+  /// `!_debugDuringDeviceUpdate` mouse_tracker assertion crash.
+  Future<void> _handleProgressChange(HabitModel habit, double delta) async {
+    final notifier = ref.read(habitsDashboardProvider.notifier);
+    final previousProgress = habit.progresoHoy;
+    final newProgress =
+        (previousProgress + delta).clamp(0.0, habit.metaDiaria).toDouble();
+
+    // Update local state immediately — this is safe because we are no longer
+    // inside a pointer event callback (we awaited before reaching here).
+    if (mounted) setState(() => _localProgress = newProgress);
+
+    try {
+      await notifier.avanzarProgreso(widget.habitId, delta);
+      if (!mounted) return;
+      ref.invalidate(habitStatsProvider(widget.habitId));
+      await notifier.refresh();
+    } catch (e) {
+      if (!mounted) return;
+      setState(() => _localProgress = previousProgress);
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error al guardar: $e')),
+      );
+    } finally {
+      if (mounted) setState(() => _localProgress = null);
+    }
+  }
 
   IconData _getCategoryIcon(String? iconName) {
     if (iconName == null) return Icons.category_outlined;
@@ -87,7 +142,7 @@ class _HabitDetailScreenState extends ConsumerState<HabitDetailScreen> {
               Text('Editar Hábito', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
               SizedBox(height: 24),
               FutureBuilder<List<CategoryModel>>(
-                future: ref.read(habitsRepositoryProvider).getCategorias(),
+                future: ref.read(categoriesProvider.future),
                 builder: (ctx, snapshot) {
                   if (!snapshot.hasData) return Center(child: CircularProgressIndicator());
                   final categories = snapshot.data!;
@@ -245,7 +300,7 @@ class _HabitDetailScreenState extends ConsumerState<HabitDetailScreen> {
                       updateData['idCategoria'] = selectedCategoryId;
                     }
                     try {
-                      await ref.read(habitsRepositoryProvider).updateHabit(widget.habitId, updateData);
+                      await ref.read(habitsDashboardProvider.notifier).updateHabit(widget.habitId, updateData);
                       ref.invalidate(habitStatsProvider(widget.habitId));
                       ref.read(habitsDashboardProvider.notifier).refresh();
                       if (!context.mounted) return;
@@ -268,7 +323,7 @@ class _HabitDetailScreenState extends ConsumerState<HabitDetailScreen> {
 
   Future<void> _updateState(String newState) async {
     try {
-      await ref.read(habitsRepositoryProvider).updateHabit(widget.habitId, {'estado': newState});
+      await ref.read(habitsDashboardProvider.notifier).updateHabit(widget.habitId, {'estado': newState});
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Hábito movido a $newState')));
         if (newState == 'Archivado' || newState == 'Inactivo' || newState == 'Completado') {
@@ -298,7 +353,7 @@ class _HabitDetailScreenState extends ConsumerState<HabitDetailScreen> {
     );
     if (conf == true) {
       try {
-        await ref.read(habitsRepositoryProvider).deleteHabit(widget.habitId);
+        await ref.read(habitsDashboardProvider.notifier).deleteHabit(widget.habitId);
         ref.read(habitsDashboardProvider.notifier).refresh();
         if (mounted) context.pop();
       } catch (e) {
@@ -495,7 +550,7 @@ class _HabitDetailScreenState extends ConsumerState<HabitDetailScreen> {
                     crossAxisAlignment: CrossAxisAlignment.baseline,
                     textBaseline: TextBaseline.alphabetic,
                     children: [
-                      Text('${habit.progresoHoy.toInt()}', style: TextStyle(fontSize: 24, fontWeight: FontWeight.w900, color: Theme.of(context).colorScheme.primary)),
+                      Text('${(_localProgress ?? habit.progresoHoy).toInt()}', style: TextStyle(fontSize: 24, fontWeight: FontWeight.w900, color: Theme.of(context).colorScheme.primary)),
                       Text(' / ${habit.metaDiaria.toInt()} ${habit.unidadMedida}', style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Theme.of(context).colorScheme.primary)),
                     ],
                   ),
@@ -509,25 +564,15 @@ class _HabitDetailScreenState extends ConsumerState<HabitDetailScreen> {
                       shape: BoxShape.circle,
                     ),
                     child: IconButton(
-                      onPressed: habit.diasSemana.contains(DateTime.now().weekday) && habit.progresoHoy > 0
-                          ? () async {
-                              final nuevoProgreso = (habit.progresoHoy - 1).clamp(0, habit.metaDiaria).toDouble();
-                              // Actualizar UI local inmediatamente (evita freeze)
-                              ref.read(habitsDashboardProvider.notifier).updateLocalProgress(widget.habitId, nuevoProgreso);
-                                try {
-                                  await ref.read(habitsRepositoryProvider).avanzarProgreso(widget.habitId, -1);
-                                  if (!mounted) return;
-                                  ref.invalidate(habitStatsProvider(widget.habitId));
-                                  // Refrescar dashboard en el siguiente microtask
-                                  Future.microtask(() {
-                                    if (mounted) ref.read(habitsDashboardProvider.notifier).refresh();
-                                  });
-                                } catch (_) {
-                                  if (!mounted) return;
-                                  // revertir
-                                  ref.read(habitsDashboardProvider.notifier).updateLocalProgress(widget.habitId, habit.progresoHoy);
-                                }
-                              }
+                      onPressed: habit.diasSemana.contains(DateTime.now().weekday) &&
+                              (_localProgress ?? habit.progresoHoy) > 0
+                          ? () {
+                              // Defer all state mutations to the next event loop
+                              // tick so Flutter finishes pointer-event processing
+                              // first — prevents mouse_tracker assertion crash.
+                              Future.microtask(() =>
+                                  _handleProgressChange(habit, -1));
+                            }
                           : null,
                       icon: Icon(Icons.remove, size: 20),
                       color: Theme.of(context).colorScheme.onSurface,
@@ -538,28 +583,12 @@ class _HabitDetailScreenState extends ConsumerState<HabitDetailScreen> {
                   SizedBox(width: 12),
                   FilledButton.icon(
                     onPressed: habit.diasSemana.contains(DateTime.now().weekday)
-                        ? () async {
-                            final nuevoProgreso = (habit.progresoHoy + 1).clamp(0, habit.metaDiaria).toDouble();
-                            // Actualizar UI local inmediatamente
-                            ref.read(habitsDashboardProvider.notifier).updateLocalProgress(widget.habitId, nuevoProgreso);
-                            try {
-                              await ref.read(habitsRepositoryProvider).avanzarProgreso(widget.habitId, 1);
-                              if (!mounted) return;
-                              ref.invalidate(habitStatsProvider(widget.habitId));
-                              // Refrescar dashboard en el siguiente microtask
-                              Future.microtask(() {
-                                if (mounted) ref.read(habitsDashboardProvider.notifier).refresh();
-                              });
-                              if (mounted) ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Progreso incrementado')));
-                            } catch (e) {
-                              if (!mounted) return;
-                              // revertir
-                              ref.read(habitsDashboardProvider.notifier).updateLocalProgress(widget.habitId, habit.progresoHoy);
-                              if (mounted) ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Error: $e')));
-                            }
+                        ? () {
+                            Future.microtask(() =>
+                                _handleProgressChange(habit, 1));
                           }
                         : null,
-                    icon: Icon(Icons.add, size: 16),
+                    icon: const Icon(Icons.add, size: 16),
                     label: Text('+1 ${habit.unidadMedida}'),
                     style: FilledButton.styleFrom(
                       backgroundColor: habit.diasSemana.contains(DateTime.now().weekday) ? Theme.of(context).colorScheme.primary : Theme.of(context).colorScheme.onSurfaceVariant,
@@ -575,9 +604,13 @@ class _HabitDetailScreenState extends ConsumerState<HabitDetailScreen> {
           ClipRRect(
             borderRadius: BorderRadius.circular(4),
             child: LinearProgressIndicator(
-              value: habit.metaDiaria > 0 ? (habit.progresoHoy / habit.metaDiaria).clamp(0.0, 1.0) : 0.0,
+              value: habit.metaDiaria > 0
+                  ? ((_localProgress ?? habit.progresoHoy) / habit.metaDiaria)
+                      .clamp(0.0, 1.0)
+                  : 0.0,
               backgroundColor: Colors.grey.shade100,
-              valueColor: AlwaysStoppedAnimation(Theme.of(context).colorScheme.primary),
+              valueColor: AlwaysStoppedAnimation(
+                  Theme.of(context).colorScheme.primary),
               minHeight: 8,
             ),
           ),
@@ -714,12 +747,14 @@ class _HabitDetailScreenState extends ConsumerState<HabitDetailScreen> {
   }
 
   Future<void> _saveNotifications(HabitModel habit) async {
+    final notifService = ref.read(notificationServiceProvider);
+
     // 1. Cancel previous
-    await NotificationService().cancelHabitNotifications(habit.id.hashCode);
-    
+    await notifService.cancelHabitNotifications(habit.id.hashCode);
+
     // 2. Schedule new
     for (var time in _reminderTimes) {
-      await NotificationService().scheduleHabitNotification(
+      await notifService.scheduleHabitNotification(
         id: habit.id.hashCode,
         title: '¡Recordatorio de hábito!',
         body: 'Es hora de: ${habit.nombre}',
@@ -728,10 +763,22 @@ class _HabitDetailScreenState extends ConsumerState<HabitDetailScreen> {
         daysOfWeek: habit.diasSemana,
       );
     }
-    
+
+    // 3. Persist to SharedPreferences
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final key = 'reminders_${habit.id}';
+      final stringList =
+          _reminderTimes.map((t) => '${t.hour}:${t.minute}').toList();
+      await prefs.setStringList(key, stringList);
+      debugPrint('[Reminders] Saved key=$key → $stringList');
+    } catch (e) {
+      debugPrint('Error saving reminders: $e');
+    }
+
     if (mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
+        const SnackBar(
           content: Text('Recordatorios actualizados'),
           backgroundColor: Colors.green,
           duration: Duration(seconds: 1),

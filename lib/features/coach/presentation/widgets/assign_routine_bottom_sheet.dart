@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../controllers/assign_routine_controller.dart';
-import '../../domain/client_summary.dart';
-import '../../domain/routine_summary.dart';
+import '../../providers/assign_routine_provider.dart';
+import '../../data/models/client_summary_model.dart';
+import '../../data/models/routine_summary_model.dart';
 
 class AssignRoutineBottomSheet extends ConsumerStatefulWidget {
   const AssignRoutineBottomSheet({super.key});

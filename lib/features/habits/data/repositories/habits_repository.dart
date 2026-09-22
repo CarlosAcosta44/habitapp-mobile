@@ -22,7 +22,7 @@ class HabitsRepository {
   /// Obtiene los hábitos del usuario para el dashboard con progreso de hoy
   Future<List<HabitModel>> getDashboardHabits() async {
     try {
-      final response = await _dio.get('/habits/dashboard');
+      final response = await _dio.get('/users/habits/dashboard');
       final data = response.data;
       if (data is List) {
         return data.map((e) {
@@ -45,7 +45,7 @@ class HabitsRepository {
   /// Obtiene los hábitos archivados del usuario
   Future<List<HabitModel>> getArchivedHabits() async {
     try {
-      final response = await _dio.get('/habits?estado=Inactivo');
+      final response = await _dio.get('/users/habits?estado=Inactivo');
       final data = response.data;
       if (data is List) {
         return data.map((e) => HabitModel.fromJson(e as Map<String, dynamic>)).toList();
@@ -69,7 +69,7 @@ class HabitsRepository {
     ];
 
     try {
-      final response = await _dio.get('/habits/categorias');
+      final response = await _dio.get('/users/habits/categorias');
       final data = response.data;
       if (data is List && data.isNotEmpty) {
         final parsed = data
@@ -95,7 +95,7 @@ class HabitsRepository {
   Future<HabitModel> createHabit(CreateHabitDto dto) async {
     try {
       final response = await _dio.post(
-        '/habits',
+        '/users/habits',
         data: dto.toJson(),
       );
       return HabitModel.fromJson(response.data as Map<String, dynamic>);
@@ -151,7 +151,7 @@ class HabitsRepository {
   /// Obtiene el detalle completo de un hábito con sus estadísticas
   Future<HabitModel> getHabitStats(String habitoId) async {
     try {
-      final response = await _dio.get('/habits/$habitoId/stats');
+      final response = await _dio.get('/users/habits/$habitoId/stats');
       final map = response.data as Map<String, dynamic>;
       if (map['registroHoy'] != null) {
         map['completadoHoy'] = map['registroHoy']['completado'] ?? false;
@@ -170,7 +170,7 @@ class HabitsRepository {
   Future<HabitModel> updateHabit(
       String habitoId, Map<String, dynamic> data) async {
     try {
-      final response = await _dio.patch('/habits/$habitoId', data: data);
+      final response = await _dio.patch('/users/habits/$habitoId', data: data);
       final map = response.data as Map<String, dynamic>;
       if (map['registroHoy'] != null) {
         map['completadoHoy'] = map['registroHoy']['completado'] ?? false;
@@ -188,7 +188,7 @@ class HabitsRepository {
   /// Elimina un hábito permanentemente
   Future<void> deleteHabit(String habitoId) async {
     try {
-      await _dio.delete('/habits/$habitoId');
+      await _dio.delete('/users/habits/$habitoId');
     } on DioException catch (e) {
       throw Exception(
         e.response?.data['message'] ?? 'Error al eliminar el hábito',

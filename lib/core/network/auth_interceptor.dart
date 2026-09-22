@@ -1,15 +1,13 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:riverpod_annotation/riverpod_annotation.dart';
-import '../../features/auth/providers/auth_provider.dart';
 
 class AuthInterceptor extends Interceptor {
   final FlutterSecureStorage secureStorage;
-  final Ref ref;
+  final void Function() onLogout;
   static String? _cachedToken;
   static String? _cachedRefreshToken;
 
-  AuthInterceptor(this.secureStorage, this.ref);
+  AuthInterceptor(this.secureStorage, this.onLogout);
 
   static void setToken(String token) {
     _cachedToken = token;
@@ -88,10 +86,8 @@ class AuthInterceptor extends Interceptor {
       await secureStorage.delete(key: 'access_token');
       await secureStorage.delete(key: 'refresh_token');
       
-      // Delay invalidation to avoid Riverpod CircularDependencyError
-      Future.delayed(const Duration(milliseconds: 100), () {
-        ref.read(authProvider.notifier).logout();
-      });
+      // Llamamos el callback de logout sin depender de Riverpod
+      onLogout();
     }
     super.onError(err, handler);
   }

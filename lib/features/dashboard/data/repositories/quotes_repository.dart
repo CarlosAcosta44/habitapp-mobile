@@ -2,7 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import '../../../../core/network/dio_client.dart';
 
-part 'quotes_service.g.dart';
+part 'quotes_repository.g.dart';
 
 class Quote {
   final String phrase;

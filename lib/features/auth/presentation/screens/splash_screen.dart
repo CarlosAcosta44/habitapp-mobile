@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import '../../../dashboard/data/services/quotes_service.dart';
+import '../../../dashboard/data/repositories/quotes_repository.dart';
 import '../../providers/auth_provider.dart';
 
 class SplashData {

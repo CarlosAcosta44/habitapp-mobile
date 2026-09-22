@@ -77,6 +77,11 @@ class ForumCommentsNotifier extends _$ForumCommentsNotifier {
     state = await AsyncValue.guard(() => _fetchComments(forumId));
   }
 
+  Future<String> uploadImage(String path) async {
+    final repository = ref.read(communityRepositoryProvider);
+    return await repository.uploadImage(path);
+  }
+
   Future<void> deleteComment(String forumId, String commentId) async {
     final repository = ref.read(communityRepositoryProvider);
     await repository.deleteComment(commentId);
@@ -167,6 +172,11 @@ class CommunityHabitsNotifier extends _$CommunityHabitsNotifier {
   Future<void> cloneHabit(String idhabito) async {
     final repository = ref.read(communityRepositoryProvider);
     await repository.cloneHabit(idhabito);
+  }
+
+  Future<void> shareHabit(String habitId) async {
+    final repository = ref.read(communityRepositoryProvider);
+    await repository.shareHabit(habitId);
   }
 
   Future<void> refresh() async {

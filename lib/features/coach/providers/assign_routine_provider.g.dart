@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'assign_routine_controller.dart';
+part of 'assign_routine_provider.dart';
 
 // **************************************************************************
 // RiverpodGenerator

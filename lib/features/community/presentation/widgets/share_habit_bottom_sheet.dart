@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../data/repositories/community_repository.dart';
+import '../../providers/community_provider.dart';
 import '../../providers/community_feed_provider.dart';
 import '../../../habits/providers/habits_provider.dart';
 
@@ -26,7 +26,7 @@ class _ShareHabitBottomSheetState extends ConsumerState<ShareHabitBottomSheet> {
     });
 
     try {
-      await ref.read(communityRepositoryProvider).shareHabit(habitId);
+      await ref.read(communityHabitsProvider.notifier).shareHabit(habitId);
       setState(() {
         _sharedHabits.add(habitId);
       });

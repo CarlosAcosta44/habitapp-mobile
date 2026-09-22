@@ -1,13 +1,13 @@
 import 'package:geolocator/geolocator.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-import '../data/services/location_service.dart';
+import '../data/repositories/location_repository.dart';
 
 part 'location_provider.g.dart';
 
 @Riverpod(keepAlive: true)
-LocationService locationService(Ref ref) {
-  return LocationService();
+LocationRepository locationRepository(Ref ref) {
+  return LocationRepository();
 }
 
 @Riverpod(keepAlive: true)
@@ -18,8 +18,8 @@ class UserLocationNotifier extends _$UserLocationNotifier {
   }
 
   Future<(Position, String)?> _fetchLocation() async {
-    final service = ref.read(locationServiceProvider);
-    final pos = await service.getCurrentPosition();
+    final repository = ref.read(locationRepositoryProvider);
+    final pos = await repository.getCurrentPosition();
     if (pos == null) return null;
 
     try {

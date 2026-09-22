@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fl_chart/fl_chart.dart';
 import '../../data/models/habit_stats.dart';
 import '../../providers/reports_provider.dart';
-import '../../data/services/pdf_report_service.dart';
+import '../../providers/pdf_report_provider.dart';
 
 const _kGreen = Color(0xFF4CAF50);
 const _kOrange = Color(0xFFFF9800);
@@ -122,13 +122,12 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
           SizedBox(height: 24),
           FilledButton.icon(
             onPressed: () async {
-              await PdfReportService.generateAndDownloadPdf(
-                stats,
-                timeframe: 'General',
-              );
+              await ref
+                  .read(pdfReportProvider.notifier)
+                  .generateAndDownload(stats, timeframe: 'General');
             },
-            icon: Icon(Icons.download, size: 18),
-            label: Text('Descargar reporte (PDF)'),
+            icon: const Icon(Icons.download, size: 18),
+            label: const Text('Descargar reporte (PDF)'),
             style: FilledButton.styleFrom(
               backgroundColor: Theme.of(context).colorScheme.primary,
               padding: EdgeInsets.symmetric(vertical: 16),

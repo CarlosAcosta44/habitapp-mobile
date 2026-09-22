@@ -3,7 +3,7 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../../profile/providers/profile_provider.dart';
-import '../data/reports_repository.dart';
+import '../data/repositories/reports_repository.dart';
 import '../data/models/habit_stats.dart';
 
 part 'reports_provider.g.dart';
