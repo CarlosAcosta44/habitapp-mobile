@@ -6,7 +6,7 @@ import 'package:printing/printing.dart';
 
 import '../models/habit_stats.dart';
 
-class PdfReportService {
+class PdfReportRepository {
   /// Genera y descarga el reporte PDF estilizado para HabitApp
   static Future<void> generateAndDownloadPdf(
     HabitStats stats, {

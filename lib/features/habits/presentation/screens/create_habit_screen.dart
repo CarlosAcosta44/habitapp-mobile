@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../../data/models/create_habit_dto.dart';
 import '../../data/models/category_model.dart';
 import '../../providers/habits_provider.dart';
-import '../../../notifications/data/services/notification_service.dart';
+import '../../../notifications/providers/notification_provider.dart';
 
 
 IconData getCategoryIcon(String? iconName) {
@@ -153,9 +154,10 @@ class _CreateHabitScreenState extends ConsumerState<CreateHabitScreen> {
     if (mounted) {
       setState(() => _isLoading = false);
       if (createdHabit != null) {
+        final notifService = ref.read(notificationServiceProvider);
         for (var time in _reminderTimes) {
           try {
-            await NotificationService().scheduleHabitNotification(
+            await notifService.scheduleHabitNotification(
               id: createdHabit.id.hashCode,
               title: '¡Recordatorio de hábito!',
               body: 'Es hora de: ${createdHabit.nombre}',
@@ -167,6 +169,18 @@ class _CreateHabitScreenState extends ConsumerState<CreateHabitScreen> {
             debugPrint('Error scheduling notification: $e');
           }
         }
+        // Persist reminder times AFTER the loop, keyed by the new habit UUID
+        try {
+          final prefs = await SharedPreferences.getInstance();
+          final key = 'reminders_${createdHabit.id}';
+          final stringList =
+              _reminderTimes.map((t) => '${t.hour}:${t.minute}').toList();
+          await prefs.setStringList(key, stringList);
+          debugPrint('[Reminders] Saved key=$key → $stringList');
+        } catch (e) {
+          debugPrint('Error saving reminders locally: $e');
+        }
+
         if (mounted) context.pop();
       } else {
         if (mounted) {

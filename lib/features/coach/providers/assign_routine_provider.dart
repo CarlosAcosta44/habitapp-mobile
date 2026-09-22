@@ -1,9 +1,9 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-import '../../data/coach_repository.dart';
-import '../../domain/client_summary.dart';
-import '../../domain/routine_summary.dart';
+import '../data/repositories/coach_repository.dart';
+import '../data/models/client_summary_model.dart';
+import '../data/models/routine_summary_model.dart';
 
-part 'assign_routine_controller.g.dart';
+part 'assign_routine_provider.g.dart';
 
 @riverpod
 Future<List<ClientSummary>> availableClients(Ref ref) {

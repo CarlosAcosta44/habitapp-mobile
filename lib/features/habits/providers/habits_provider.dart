@@ -1,3 +1,4 @@
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import '../../profile/providers/profile_provider.dart';
 import '../data/models/category_model.dart';
@@ -116,4 +117,27 @@ class HabitsDashboardNotifier extends _$HabitsDashboardNotifier {
       return false;
     }
   }
+
+  /// Actualiza los campos de un hábito existente
+  Future<void> updateHabit(String id, Map<String, dynamic> data) async {
+    final repository = ref.read(habitsRepositoryProvider);
+    await repository.updateHabit(id, data);
+  }
+
+  /// Elimina un hábito permanentemente
+  Future<void> deleteHabit(String id) async {
+    final repository = ref.read(habitsRepositoryProvider);
+    await repository.deleteHabit(id);
+  }
+
+  /// Avanza el progreso de un hábito
+  Future<void> avanzarProgreso(String id, double cantidad) async {
+    final repository = ref.read(habitsRepositoryProvider);
+    await repository.avanzarProgreso(id, cantidad);
+  }
 }
+
+final habitStatsProvider = FutureProvider.family<HabitModel, String>((ref, id) async {
+  final repository = ref.read(habitsRepositoryProvider);
+  return repository.getHabitStats(id);
+});

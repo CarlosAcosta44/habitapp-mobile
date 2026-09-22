@@ -7,7 +7,7 @@ import '../../../profile/providers/profile_provider.dart';
 import '../../../../core/theme/theme_provider.dart';
 
 
-import '../../../notifications/data/services/notification_service.dart';
+import '../../../notifications/providers/notification_provider.dart';
 import 'package:audioplayers/audioplayers.dart';
 
 class SettingsScreen extends ConsumerStatefulWidget {
@@ -131,7 +131,9 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
               (v) async {
                 setState(() => _notificationsEnabled = v);
                 if (!v) {
-                  await NotificationService().cancelAllPendingNotifications();
+                  await ref
+                      .read(notificationServiceProvider)
+                      .cancelAllPendingNotifications();
                 }
               },
             ),
