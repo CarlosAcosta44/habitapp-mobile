@@ -1,10 +1,6 @@
 import 'package:dio/dio.dart';
-import 'package:flutter/foundation.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import '../../../../core/network/dio_client.dart';
-import '../models/reto_model.dart';
-import '../models/post.dart';
-import '../models/challenge.dart';
 
 part 'community_repository.g.dart';
 
@@ -19,121 +15,191 @@ class CommunityRepository {
 
   CommunityRepository(this._dio);
 
-  static final List<RetoModel> _defaultRetos = [
-    const RetoModel(
-      id: 'reto-1',
-      titulo: 'Reto 7 Días de Hidratación 💧',
-      descripcion: 'Bebe al menos 2 litros de agua diariamente durante 7 días consecutivos. ¡Mantén tu cuerpo activo e hidratado!',
-      puntosRecompensa: 150,
-      categoria: 'Salud y Nutrición',
-      isJoined: false,
-      participantCount: 42,
-      currentProgress: 0,
-      targetCount: 7,
-      icono: 'water_drop',
-    ),
-    const RetoModel(
-      id: 'reto-2',
-      titulo: 'Maratón de Lectura 📚',
-      descripcion: 'Lee al menos 15 minutos al día durante 14 días. Desarrolla la disciplina del aprendizaje constante.',
-      puntosRecompensa: 300,
-      categoria: 'Crecimiento Personal',
-      isJoined: false,
-      participantCount: 89,
-      currentProgress: 0,
-      targetCount: 14,
-      icono: 'menu_book',
-    ),
-    const RetoModel(
-      id: 'reto-3',
-      titulo: 'Desafío 30 Minutos de Deporte 🏃‍♂️',
-      descripcion: 'Realiza al menos 30 minutos de actividad física diaria por 5 días esta semana. ¡Activa tu energía!',
-      puntosRecompensa: 250,
-      categoria: 'Deporte y Fitness',
-      isJoined: false,
-      participantCount: 128,
-      currentProgress: 0,
-      targetCount: 5,
-      icono: 'fitness_center',
-    ),
-    const RetoModel(
-      id: 'reto-4',
-      titulo: 'Semana de Meditación y Mente Clara 🧘‍♀️',
-      descripcion: 'Dedica 10 minutos cada mañana a respiración guiada o meditación para reducir el estrés.',
-      puntosRecompensa: 200,
-      categoria: 'Bienestar Mental',
-      isJoined: false,
-      participantCount: 64,
-      currentProgress: 0,
-      targetCount: 7,
-      icono: 'self_improvement',
-    ),
-  ];
-
-  /// Obtiene los retos activos de la comunidad
-  Future<List<RetoModel>> getRetos() async {
-    // Simula una petición de red con un retraso de 1 segundo
-    await Future.delayed(const Duration(seconds: 1));
-    return _defaultRetos;
-  }
-
-  /// Permite al usuario unirse a un reto determinado
-  Future<bool> joinChallenge(String retoId) async {
+  // ================= Foros =================
+  Future<List<dynamic>> getForums() async {
     try {
-      final response = await _dio.post(
-        '/community/retos/$retoId/join',
-        data: {'retoId': retoId},
-      );
-      return response.statusCode == 200 || response.statusCode == 201;
+      final response = await _dio.get('/comunidad/foros');
+      return response.data as List<dynamic>;
     } on DioException catch (e) {
-      debugPrint('Warn/Error al unirse al reto via API: ${e.message}. Manejando éxito local.');
-      return true;
-    } catch (e) {
-      debugPrint('Excepción al unirse al reto: $e');
-      return true;
+      throw Exception(e.response?.data?['message'] ?? 'Error al cargar los foros');
     }
   }
 
-  Future<List<Post>> getFeed({int page = 1, int limit = 10}) async {
+  Future<dynamic> createForum(String titulo, String descripcion, String categoria, {String? imagenUrl}) async {
     try {
-      final response = await _dio.get(
-        '/community/posts',
-        queryParameters: {'page': page, 'limit': limit},
-      );
-      if (response.statusCode == 200) {
-        final List<dynamic> data = response.data['data'] ?? response.data;
-        return data
-            .map((json) => Post.fromJson(json as Map<String, dynamic>))
-            .toList();
-      }
-      throw Exception('Failed to load community feed');
+      final response = await _dio.post('/comunidad/foros', data: {
+        'titulo': titulo,
+        'descripcion': descripcion,
+        'categoria': categoria,
+        'imagenUrl': ?imagenUrl,
+      });
+      return response.data;
     } on DioException catch (e) {
-      if (e.response?.statusCode == 404) return [];
-      throw Exception('Network error loading feed: ${e.message}');
+      throw Exception(e.response?.data['message'] ?? 'Error al crear foro');
     }
   }
 
-  Future<void> toggleLike(String postId) async {
+  Future<dynamic> updateForum(String id, {String? titulo, String? descripcion, String? categoria, String? imagenUrl}) async {
     try {
-      await _dio.post('/community/posts/$postId/like');
-    } catch (e) {
-      throw Exception('Failed to toggle like: $e');
+      final response = await _dio.put('/comunidad/foros/$id', data: {
+        'titulo': ?titulo,
+        'descripcion': ?descripcion,
+        'categoria': ?categoria,
+        'imagenUrl': ?imagenUrl,
+      });
+      return response.data;
+    } on DioException catch (e) {
+      throw Exception(e.response?.data['message'] ?? 'Error al actualizar foro');
     }
   }
 
-  Future<List<Challenge>> getChallenges() async {
+  Future<void> deleteForum(String id) async {
     try {
-      final response = await _dio.get('/community/challenges');
-      if (response.statusCode == 200) {
-        final List<dynamic> data = response.data['data'] ?? response.data;
-        return data
-            .map((json) => Challenge.fromJson(json as Map<String, dynamic>))
-            .toList();
-      }
-      throw Exception('Failed to load challenges');
+      await _dio.delete('/comunidad/foros/$id');
     } on DioException catch (e) {
-      if (e.response?.statusCode == 404) return [];
-      throw Exception('Network error loading challenges: ${e.message}');
+      throw Exception(e.response?.data['message'] ?? 'Error al eliminar foro');
+    }
+  }
+
+  Future<List<dynamic>> getComments(String forumId) async {
+    try {
+      final response = await _dio.get('/comunidad/foros/$forumId/comentarios');
+      return response.data as List<dynamic>;
+    } on DioException catch (e) {
+      throw Exception(e.response?.data['message'] ?? 'Error al obtener comentarios');
+    }
+  }
+
+  Future<dynamic> addComment(String forumId, String contenido, {String? parentId, String? imagenUrl}) async {
+    try {
+      final response = await _dio.post('/comunidad/foros/$forumId/comentarios', data: {
+        'contenido': contenido,
+        'parentId': ?parentId,
+        'imagenUrl': ?imagenUrl,
+      });
+      return response.data;
+    } on DioException catch (e) {
+      throw Exception(e.response?.data['message'] ?? 'Error al añadir comentario');
+    }
+  }
+
+  Future<void> deleteComment(String id) async {
+    try {
+      await _dio.delete('/comunidad/comentarios/$id');
+    } on DioException catch (e) {
+      throw Exception(e.response?.data['message'] ?? 'Error al eliminar comentario');
+    }
+  }
+
+  Future<String> uploadImage(String filePath) async {
+    try {
+      final formData = FormData.fromMap({
+        'file': await MultipartFile.fromFile(filePath),
+      });
+      final response = await _dio.post('/comunidad/upload-image', data: formData);
+      return response.data['url'];
+    } on DioException catch (e) {
+      throw Exception(e.response?.data['message'] ?? 'Error al subir la imagen');
+    }
+  }
+
+  Future<dynamic> updateComment(String id, String contenido, {String? imagenUrl}) async {
+    try {
+      final response = await _dio.put('/comunidad/comentarios/$id', data: {
+        'contenido': contenido,
+        'imagenUrl': ?imagenUrl,
+      });
+      return response.data;
+    } on DioException catch (e) {
+      throw Exception(e.response?.data['message'] ?? 'Error al actualizar comentario');
+    }
+  }
+
+
+  Future<dynamic> addReaction(String targetType, String targetId, String tipo) async {
+    try {
+      final response = await _dio.post('/comunidad/$targetType/$targetId/reacciones', data: {
+        'tipo': tipo,
+      });
+      return response.data;
+    } on DioException catch (e) {
+      throw Exception(e.response?.data['message'] ?? 'Error al añadir reacción');
+    }
+  }
+
+  // ================= Retos =================
+  Future<List<dynamic>> getRetos() async {
+    try {
+      final response = await _dio.get('/comunidad/retos');
+      return response.data as List<dynamic>;
+    } on DioException catch (e) {
+      throw Exception(e.response?.data?['message'] ?? 'Error al obtener reto');
+    }
+  }
+
+  Future<dynamic> joinReto(String retoId) async {
+    try {
+      final response = await _dio.post('/comunidad/retos/$retoId/unirse');
+      return response.data;
+    } on DioException catch (e) {
+      throw Exception(e.response?.data['message'] ?? 'Error al unirse al reto');
+    }
+  }
+
+  // ================= Especialistas =================
+  Future<List<dynamic>> getEspecialistas() async {
+    try {
+      final response = await _dio.get('/comunidad/especialistas');
+      return response.data as List<dynamic>;
+    } on DioException catch (e) {
+      throw Exception(e.response?.data['message'] ?? 'Error al obtener especialistas');
+    }
+  }
+
+  // ================= Artículos =================
+  Future<List<dynamic>> getArticulos() async {
+    try {
+      final response = await _dio.get('/comunidad/articulos');
+      return response.data as List<dynamic>;
+    } on DioException catch (e) {
+      throw Exception(e.response?.data['message'] ?? 'Error al obtener artículos');
+    }
+  }
+
+  // ================= Hábitos Comunitarios =================
+  Future<List<dynamic>> getCommunityHabits() async {
+    try {
+      final response = await _dio.get('/comunidad/habitos');
+      return response.data as List<dynamic>;
+    } on DioException catch (e) {
+      throw Exception(e.response?.data['message'] ?? 'Error al obtener hábitos comunitarios');
+    }
+  }
+
+  Future<dynamic> cloneHabit(String idhabito) async {
+    try {
+      final response = await _dio.post('/comunidad/habitos/$idhabito/clonar');
+      return response.data;
+    } on DioException catch (e) {
+      throw Exception(e.response?.data['message'] ?? 'Error al clonar hábito');
+    }
+  }
+
+  Future<dynamic> shareHabit(String idhabito) async {
+    try {
+      final response = await _dio.post('/comunidad/habitos/$idhabito/compartir');
+      return response.data;
+    } on DioException catch (e) {
+      throw Exception(e.response?.data['message'] ?? 'Error al compartir hábito');
+    }
+  }
+
+  Future<dynamic> deleteSharedHabit(String idhabito) async {
+    try {
+      final response = await _dio.delete('/comunidad/habitos/$idhabito');
+      return response.data;
+    } on DioException catch (e) {
+      throw Exception(e.response?.data['message'] ?? 'Error al eliminar hábito compartido');
     }
   }
 }

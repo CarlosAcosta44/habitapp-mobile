@@ -60,6 +60,40 @@ class AuthRepository {
     }
   }
 
+  Future<void> linkWithGoogle(String idToken) async {
+    try {
+      await _dio.post('/auth/google/link', data: {
+        'token': idToken,
+      });
+    } on DioException catch (e) {
+      throw Exception(
+          e.response?.data['message'] ?? 'Error al vincular con Google');
+    }
+  }
+
+  Future<Map<String, dynamic>> loginWithFacebook(String accessToken) async {
+    try {
+      final response = await _dio.post('/auth/facebook/token', data: {
+        'token': accessToken,
+      });
+      return response.data as Map<String, dynamic>;
+    } on DioException catch (e) {
+      throw Exception(
+          e.response?.data['message'] ?? 'Error al iniciar sesión con Facebook');
+    }
+  }
+
+  Future<void> linkWithFacebook(String accessToken) async {
+    try {
+      await _dio.post('/auth/facebook/link', data: {
+        'token': accessToken,
+      });
+    } on DioException catch (e) {
+      throw Exception(
+          e.response?.data['message'] ?? 'Error al vincular con Facebook');
+    }
+  }
+
   Future<Map<String, dynamic>> loginWithApple(String identityToken) async {
     try {
       final response = await _dio.post('/auth/apple/token', data: {

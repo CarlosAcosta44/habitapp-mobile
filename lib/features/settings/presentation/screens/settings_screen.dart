@@ -141,6 +141,9 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
             _buildSectionHeader('BIENESTAR Y PRIVACIDAD', Icons.shield_outlined),
             _buildPrivacyContainer(),
             SizedBox(height: 24),
+            _buildSectionHeader('CUENTAS VINCULADAS', Icons.link),
+            _buildLinkedAccountsCard(),
+            SizedBox(height: 24),
             _buildSectionHeader('ACOMPAÑAMIENTO', Icons.psychology_outlined),
             _buildCoachCard(),
             SizedBox(height: 12),
@@ -658,6 +661,57 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
             ),
           ),
           Icon(Icons.chevron_right, color: Theme.of(context).colorScheme.onSurfaceVariant, size: 20),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildLinkedAccountsCard() {
+    return Container(
+      decoration: BoxDecoration(
+        color: Theme.of(context).colorScheme.surface,
+        borderRadius: BorderRadius.circular(20),
+        boxShadow: [BoxShadow(color: Theme.of(context).colorScheme.shadow.withValues(alpha: 0.02), blurRadius: 10, offset: Offset(0, 4))],
+      ),
+      child: Column(
+        children: [
+          ListTile(
+            contentPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+            leading: Image.asset('assets/images/google_logo.png', width: 24, height: 24, errorBuilder: (c,e,s) => const Icon(Icons.g_mobiledata, size: 32)),
+            title: Text('Google', style: TextStyle(fontWeight: FontWeight.w600, fontSize: 16)),
+            subtitle: Text('Vincular cuenta', style: TextStyle(color: Theme.of(context).colorScheme.onSurfaceVariant, fontSize: 13)),
+            trailing: TextButton(
+              onPressed: () async {
+                final scaffoldMessenger = ScaffoldMessenger.of(context);
+                try {
+                  await ref.read(authProvider.notifier).linkWithGoogle();
+                  scaffoldMessenger.showSnackBar(SnackBar(content: Text('Cuenta de Google vinculada'), backgroundColor: Colors.green));
+                } catch(e) {
+                  scaffoldMessenger.showSnackBar(SnackBar(content: Text(e.toString()), backgroundColor: Colors.red));
+                }
+              },
+              child: Text('Vincular'),
+            ),
+          ),
+          Divider(height: 1, indent: 20, endIndent: 20),
+          ListTile(
+            contentPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+            leading: Icon(Icons.facebook, color: Colors.blue, size: 28),
+            title: Text('Facebook', style: TextStyle(fontWeight: FontWeight.w600, fontSize: 16)),
+            subtitle: Text('Vincular cuenta', style: TextStyle(color: Theme.of(context).colorScheme.onSurfaceVariant, fontSize: 13)),
+            trailing: TextButton(
+              onPressed: () async {
+                final scaffoldMessenger = ScaffoldMessenger.of(context);
+                try {
+                  await ref.read(authProvider.notifier).linkWithFacebook();
+                  scaffoldMessenger.showSnackBar(SnackBar(content: Text('Cuenta de Facebook vinculada'), backgroundColor: Colors.green));
+                } catch(e) {
+                  scaffoldMessenger.showSnackBar(SnackBar(content: Text(e.toString()), backgroundColor: Colors.red));
+                }
+              },
+              child: Text('Vincular'),
+            ),
+          ),
         ],
       ),
     );

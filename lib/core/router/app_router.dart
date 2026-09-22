@@ -22,6 +22,9 @@ import '../../features/reports/presentation/screens/reports_screen.dart';
 import '../../features/community/presentation/screens/community_screen.dart';
 import '../../features/community/presentation/screens/challenges_screen.dart';
 import '../../features/community/presentation/screens/challenge_detail_screen.dart';
+import '../../features/community/presentation/screens/forum_detail_screen.dart';
+import '../../features/auth/presentation/screens/complete_profile_screen.dart';
+import '../../features/profile/providers/profile_provider.dart';
 
 part 'app_router.g.dart';
 
@@ -142,6 +145,18 @@ GoRouter appRouter(Ref ref) {
         path: '/challenges',
         builder: (context, state) => const ChallengesScreen(),
       ),
+      GoRoute(
+        path: '/community/forum/:id',
+        builder: (context, state) {
+          final forumId = state.pathParameters['id']!;
+          final title = state.extra as String? ?? 'Foro';
+          return ForumDetailScreen(forumId: forumId, title: title);
+        },
+      ),
+      GoRoute(
+        path: '/complete-profile',
+        builder: (context, state) => CompleteProfileScreen(),
+      ),
     ],
     redirect: (context, state) {
       final authState = ref.read(authProvider);
@@ -173,8 +188,19 @@ GoRouter appRouter(Ref ref) {
         return isAtLock ? null : '/lock';
       }
 
-      // 5. Si ya está autenticado y desbloqueado → no puede volver a pantallas de auth ni lock
-      if (isAuthenticated && !isLocked && (isAtLogin || isAtRegister || isAtSplash || isAtOnboarding || isAtLock)) {
+      // 5. Verificar si falta completar el perfil (género o fecha de nacimiento)
+      final profileState = ref.read(profileProvider);
+      final profile = profileState.value;
+      final isAtCompleteProfile = loc == '/complete-profile';
+
+      if (isAuthenticated && profile != null) {
+        if (profile.genero == null || profile.fechanacimiento == null) {
+          return isAtCompleteProfile ? null : '/complete-profile';
+        }
+      }
+
+      // 6. Si ya está autenticado y desbloqueado → no puede volver a pantallas de auth ni lock
+      if (isAuthenticated && !isLocked && (isAtLogin || isAtRegister || isAtSplash || isAtOnboarding || isAtLock || (isAtCompleteProfile && profile != null && profile.genero != null && profile.fechanacimiento != null))) {
         return '/';
       }
 
@@ -195,6 +221,11 @@ class _NotifierListenable extends ChangeNotifier {
     });
     ref.listen(biometricProvider, (prev, next) {
       if (prev?.value?.isLocked != next.value?.isLocked) notifyListeners();
+    });
+    ref.listen(profileProvider, (prev, next) {
+      if (prev?.value?.genero != next.value?.genero || prev?.value?.fechanacimiento != next.value?.fechanacimiento) {
+        notifyListeners();
+      }
     });
   }
 }

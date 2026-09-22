@@ -140,6 +140,17 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                   data: (allHabits) {
                     final habits = allHabits.where((h) {
                       if (h.estado != 'Activo') return false;
+                      
+                      // Don't show habits on dates before they were created
+                      if (h.fechaInicio != null) {
+                        try {
+                          final startDate = DateTime.parse(h.fechaInicio!);
+                          final startDateOnly = DateTime(startDate.year, startDate.month, startDate.day);
+                          final selectedDateOnly = DateTime(selectedDate.year, selectedDate.month, selectedDate.day);
+                          if (selectedDateOnly.isBefore(startDateOnly)) return false;
+                        } catch (_) {}
+                      }
+
                       if (h.diasSemana.isEmpty) return true;
                       return h.diasSemana.contains(selectedWeekday);
                     }).toList();

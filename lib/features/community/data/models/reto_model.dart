@@ -4,7 +4,7 @@ part 'reto_model.freezed.dart';
 part 'reto_model.g.dart';
 
 Object? _readId(Map json, String key) {
-  return json['id'] ?? json['id_reto'] ?? json['idReto'] ?? '';
+  return json['id'] ?? json['id_reto'] ?? json['idReto'] ?? json['idreto'] ?? '';
 }
 
 Object? _readTitulo(Map json, String key) {

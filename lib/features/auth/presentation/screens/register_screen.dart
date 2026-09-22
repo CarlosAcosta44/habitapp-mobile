@@ -276,10 +276,27 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                                         style: TextStyle(fontWeight: FontWeight.w700, fontSize: 13, color: Theme.of(context).colorScheme.onSurface),
                                       ),
                                       SizedBox(height: 8),
-                                      _StyledField(
-                                        controller: _dobCtrl,
-                                        hint: 'YYYY-MM-DD',
-                                        prefixIcon: Icons.cake_outlined,
+                                      GestureDetector(
+                                        onTap: () async {
+                                          final date = await showDatePicker(
+                                            context: context,
+                                            initialDate: DateTime.now().subtract(const Duration(days: 365 * 18)),
+                                            firstDate: DateTime(1900),
+                                            lastDate: DateTime.now(),
+                                          );
+                                          if (date != null) {
+                                            setState(() {
+                                              _dobCtrl.text = "\${date.year}-\${date.month.toString().padLeft(2, '0')}-\${date.day.toString().padLeft(2, '0')}";
+                                            });
+                                          }
+                                        },
+                                        child: AbsorbPointer(
+                                          child: _StyledField(
+                                            controller: _dobCtrl,
+                                            hint: 'YYYY-MM-DD',
+                                            prefixIcon: Icons.cake_outlined,
+                                          ),
+                                        ),
                                       ),
                                     ],
                                   ),
@@ -454,7 +471,9 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                               children: [
                                 Expanded(
                                   child: ElevatedButton.icon(
-                                    onPressed: () {},
+                                    onPressed: () async {
+                                      await ref.read(authProvider.notifier).signInWithGoogle();
+                                    },
                                     style: ElevatedButton.styleFrom(
                                       backgroundColor: Theme.of(context).colorScheme.surfaceContainerHighest,
                                       foregroundColor: Theme.of(context).colorScheme.onSurface,
@@ -474,7 +493,9 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                                 SizedBox(width: 12),
                                 Expanded(
                                   child: ElevatedButton.icon(
-                                    onPressed: () {},
+                                    onPressed: () async {
+                                      await ref.read(authProvider.notifier).signInWithFacebook();
+                                    },
                                     style: ElevatedButton.styleFrom(
                                       backgroundColor: Theme.of(context).colorScheme.surfaceContainerHighest,
                                       foregroundColor: Theme.of(context).colorScheme.onSurface,

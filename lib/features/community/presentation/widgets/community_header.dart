@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
 const _kBlue = Color(0xFF2D82FA);
-const _kGreen = Color(0xFF0F8A5D);
 
 
 class CommunityHeader extends StatelessWidget {
@@ -23,7 +22,6 @@ class CommunityHeader extends StatelessWidget {
   });
 
   static const List<String> _filters = [
-    'Todo',
     'Foros de Apoyo',
     'Hábitos de la comunidad',
     'Artículos',
@@ -75,30 +73,7 @@ class CommunityHeader extends StatelessWidget {
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
                       color: colorScheme.onSurface,
-                      letterSpacing: -0.3,
                     ),
-                  ),
-                  const SizedBox(height: 2),
-                  Row(
-                    children: [
-                      Container(
-                        width: 7,
-                        height: 7,
-                        decoration: const BoxDecoration(
-                          color: _kGreen,
-                          shape: BoxShape.circle,
-                        ),
-                      ),
-                      const SizedBox(width: 6),
-                      Text(
-                        '4,890 miembros conectados',
-                        style: TextStyle(
-                          fontSize: 11,
-                          fontWeight: FontWeight.w500,
-                          color: colorScheme.onSurfaceVariant,
-                        ),
-                      ),
-                    ],
                   ),
                 ],
               ),

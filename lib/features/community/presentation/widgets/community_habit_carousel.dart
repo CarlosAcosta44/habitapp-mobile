@@ -142,7 +142,7 @@ class _CommunityHabitCard extends StatelessWidget {
                 width: 38,
                 height: 38,
                 decoration: BoxDecoration(
-                  color: habit.iconBgColor,
+                  color: theme.brightness == Brightness.dark ? habit.iconColor.withValues(alpha: 0.15) : habit.iconBgColor,
                   borderRadius: BorderRadius.circular(10),
                 ),
                 alignment: Alignment.center,
@@ -203,24 +203,30 @@ class _CommunityHabitCard extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Row(
-                children: [
-                  const Icon(
-                    Icons.group_outlined,
-                    size: 14,
-                    color: _kGreen,
-                  ),
-                  const SizedBox(width: 4),
-                  Text(
-                    habit.participantsCount,
-                    style: const TextStyle(
-                      fontSize: 10.5,
-                      fontWeight: FontWeight.w600,
+              Expanded(
+                child: Row(
+                  children: [
+                    const Icon(
+                      Icons.group_outlined,
+                      size: 14,
                       color: _kGreen,
                     ),
-                  ),
-                ],
+                    const SizedBox(width: 4),
+                    Expanded(
+                      child: Text(
+                        habit.participantsCount,
+                        overflow: TextOverflow.ellipsis,
+                        style: const TextStyle(
+                          fontSize: 10.5,
+                          fontWeight: FontWeight.w600,
+                          color: _kGreen,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
               ),
+              const SizedBox(width: 4),
               GestureDetector(
                 onTap: onAdd,
                 child: AnimatedContainer(

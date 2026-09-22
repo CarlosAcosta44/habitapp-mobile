@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../data/models/reto_model.dart';
-import '../../providers/retos_provider.dart';
+import '../../providers/community_provider.dart';
 
 class ChallengeDetailScreen extends ConsumerWidget {
   final String retoId;
@@ -31,7 +30,7 @@ class ChallengeDetailScreen extends ConsumerWidget {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
 
-    final retosAsync = ref.watch(communityRetosProvider);
+    final retosAsync = ref.watch(retosProvider);
 
     return Scaffold(
       appBar: AppBar(
@@ -44,15 +43,22 @@ class ChallengeDetailScreen extends ConsumerWidget {
           child: Text('Error al cargar la información del reto: $err'),
         ),
         data: (retos) {
-          final reto = retos.firstWhere(
-            (r) => r.id == retoId,
-            orElse: () => RetoModel(
-              id: retoId,
-              titulo: 'Reto de la Comunidad',
-              descripcion: 'Completa este reto diario para obtener puntos extra.',
-              puntosRecompensa: 150,
-            ),
+          final retoMap = retos.firstWhere(
+            (r) => r['idreto'] == retoId,
+            orElse: () => null,
           );
+          if (retoMap == null) return const Center(child: Text('Reto no encontrado'));
+
+          final isJoined = retoMap['is_joined'] == true || retoMap['isJoined'] == true;
+          final currentProgress = 0;
+          final targetCount = retoMap['meta_diaria'] ?? 0;
+          final progressPercentage = targetCount > 0 ? (currentProgress / targetCount) : 0.0;
+          final icon = 'emoji_events';
+          final category = retoMap['categoria'];
+          final title = retoMap['titulo'];
+          final points = retoMap['puntos_recompensa'] ?? 0;
+          final description = retoMap['descripcion'];
+          final participantCount = retoMap['participantes'] ?? 0;
 
           return SingleChildScrollView(
             physics: const BouncingScrollPhysics(),
@@ -88,21 +94,21 @@ class ChallengeDetailScreen extends ConsumerWidget {
                         radius: 36,
                         backgroundColor: Colors.white.withValues(alpha: 0.2),
                         child: Icon(
-                          _getIconData(reto.icono),
+                          _getIconData(icon),
                           size: 40,
                           color: Colors.white,
                         ),
                       ),
                       const SizedBox(height: 16),
-                      if (reto.categoria != null) ...[
+                      if (category != null) ...[
                         Container(
                           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
                           decoration: BoxDecoration(
-                            color: Colors.white.withValues(alpha: 0.25),
+                            color: Colors.white.withValues(alpha: 0.2),
                             borderRadius: BorderRadius.circular(20),
                           ),
                           child: Text(
-                            reto.categoria!.toUpperCase(),
+                            category.toUpperCase(),
                             style: const TextStyle(
                               color: Colors.white,
                               fontSize: 11,
@@ -114,7 +120,7 @@ class ChallengeDetailScreen extends ConsumerWidget {
                         const SizedBox(height: 10),
                       ],
                       Text(
-                        reto.titulo,
+                        title,
                         textAlign: TextAlign.center,
                         style: const TextStyle(
                           color: Colors.white,
@@ -136,7 +142,7 @@ class ChallengeDetailScreen extends ConsumerWidget {
                             const Icon(Icons.star_rounded, color: Colors.white, size: 18),
                             const SizedBox(width: 6),
                             Text(
-                              '+${reto.puntosRecompensa} Puntos de Recompensa',
+                              '+$points Puntos de Recompensa',
                               style: const TextStyle(
                                 color: Colors.white,
                                 fontSize: 13,
@@ -162,7 +168,7 @@ class ChallengeDetailScreen extends ConsumerWidget {
                 ),
                 const SizedBox(height: 10),
                 Text(
-                  reto.descripcion,
+                  description,
                   style: TextStyle(
                     fontSize: 15,
                     color: colorScheme.onSurfaceVariant,
@@ -192,7 +198,7 @@ class ChallengeDetailScreen extends ConsumerWidget {
                             ),
                             const SizedBox(height: 2),
                             Text(
-                              '${reto.targetCount} días',
+                              '$targetCount días',
                               style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: colorScheme.onSurface),
                             ),
                           ],
@@ -218,7 +224,7 @@ class ChallengeDetailScreen extends ConsumerWidget {
                             ),
                             const SizedBox(height: 2),
                             Text(
-                              '${reto.participantCount} inscritos',
+                              '$participantCount participantes',
                               style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: colorScheme.onSurface),
                             ),
                           ],
@@ -230,7 +236,7 @@ class ChallengeDetailScreen extends ConsumerWidget {
                 const SizedBox(height: 24),
 
                 // Si ya está unido, mostrar tarjeta de avance
-                if (reto.isJoined) ...[
+                if (isJoined) ...[
                   Container(
                     width: double.infinity,
                     padding: const EdgeInsets.all(16),
@@ -260,7 +266,7 @@ class ChallengeDetailScreen extends ConsumerWidget {
                         ClipRRect(
                           borderRadius: BorderRadius.circular(8),
                           child: LinearProgressIndicator(
-                            value: reto.progressPercentage,
+                            value: progressPercentage,
                             backgroundColor: colorScheme.primary.withValues(alpha: 0.2),
                             valueColor: AlwaysStoppedAnimation<Color>(colorScheme.primary),
                             minHeight: 10,
@@ -268,7 +274,7 @@ class ChallengeDetailScreen extends ConsumerWidget {
                         ),
                         const SizedBox(height: 8),
                         Text(
-                          'Has completado ${reto.currentProgress} de ${reto.targetCount} días.',
+                          '$currentProgress / $targetCount días',
                           style: TextStyle(
                             fontSize: 13,
                             color: colorScheme.onSurface,
@@ -286,20 +292,16 @@ class ChallengeDetailScreen extends ConsumerWidget {
                   width: double.infinity,
                   height: 54,
                   child: ElevatedButton(
-                    onPressed: reto.isJoined
+                    onPressed: isJoined
                         ? null
                         : () async {
-                            final notifier = ref.read(communityRetosProvider.notifier);
-                            final success = await notifier.joinChallenge(reto.id);
+                            final notifier = ref.read(retosProvider.notifier);
+                            await notifier.joinReto(retoId);
                             if (context.mounted) {
                               ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(
-                                  content: Text(
-                                    success
-                                        ? '¡Te has unido exitosamente al reto "${reto.titulo}"!'
-                                        : 'No se pudo procesar la solicitud.',
-                                  ),
-                                  backgroundColor: success ? colorScheme.primary : Colors.red,
+                                const SnackBar(
+                                  content: Text('¡Te uniste al reto!'),
+                                  backgroundColor: Colors.green,
                                 ),
                               );
                             }
@@ -316,11 +318,11 @@ class ChallengeDetailScreen extends ConsumerWidget {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Icon(
-                          reto.isJoined ? Icons.check_circle_rounded : Icons.add_circle_outline_rounded,
+                          isJoined ? Icons.check_circle_rounded : Icons.add_circle_outline_rounded,
                         ),
                         const SizedBox(width: 8),
                         Text(
-                          reto.isJoined ? '¡Ya estás participando en este reto!' : 'Unirme a este Reto',
+                          isJoined ? '¡Ya estás participando en este reto!' : 'Unirme a este Reto',
                           style: const TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.bold,

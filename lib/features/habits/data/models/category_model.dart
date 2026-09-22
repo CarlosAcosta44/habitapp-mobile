@@ -48,11 +48,24 @@ abstract class CategoryModel with _$CategoryModel {
       }
     }
     final nameLower = nombre.toLowerCase();
-    if (nameLower.contains('salud')) return Color(0xFF4CAF50);
-    if (nameLower.contains('deporte') || nameLower.contains('correr')) return Color(0xFFFF9800);
-    if (nameLower.contains('lectura') || nameLower.contains('estudio')) return Color(0xFF9C27B0);
-    if (nameLower.contains('mente') || nameLower.contains('mindfulness')) return Color(0xFF009688);
-    if (nameLower.contains('agua') || nameLower.contains('nutrición')) return Color(0xFF2196F3);
+    if (nameLower.contains('ejercicio') || nameLower.contains('deporte') || nameLower.contains('correr')) return Color(0xFFFF9800);
+    if (nameLower.contains('hidratación') || nameLower.contains('agua')) return Color(0xFF2196F3);
+    if (nameLower.contains('nutrición')) return Color(0xFF4CAF50);
+    if (nameLower.contains('productividad') || nameLower.contains('lectura') || nameLower.contains('estudio')) return Color(0xFF9C27B0);
+    if (nameLower.contains('salud mental') || nameLower.contains('mente') || nameLower.contains('mindfulness')) return Color(0xFF009688);
+    if (nameLower.contains('sueño')) return Color(0xFF3F51B5);
     return Color(0xFF3F51B5);
+  }
+
+  /// Retorna un objeto IconData derivado del nombre de la categoría
+  IconData get parsedIcon {
+    final nameLower = nombre.toLowerCase();
+    if (nameLower.contains('ejercicio') || nameLower.contains('deporte') || nameLower.contains('correr')) return Icons.fitness_center;
+    if (nameLower.contains('hidratación') || nameLower.contains('agua')) return Icons.water_drop;
+    if (nameLower.contains('nutrición')) return Icons.restaurant;
+    if (nameLower.contains('productividad') || nameLower.contains('lectura') || nameLower.contains('estudio')) return Icons.checklist;
+    if (nameLower.contains('salud mental') || nameLower.contains('mente') || nameLower.contains('mindfulness')) return Icons.self_improvement;
+    if (nameLower.contains('sueño')) return Icons.bedtime;
+    return Icons.star_border_rounded;
   }
 }

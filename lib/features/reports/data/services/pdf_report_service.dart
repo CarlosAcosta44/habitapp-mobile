@@ -189,7 +189,7 @@ class PdfReportService {
                                   ),
                                   pw.SizedBox(height: 4),
                                   pw.Text(
-                                    '${stats.currentStreak} días 🔥',
+                                    '${stats.currentStreak} días',
                                     style: pw.TextStyle(
                                       fontSize: 16,
                                       fontWeight: pw.FontWeight.bold,
@@ -223,7 +223,7 @@ class PdfReportService {
                                   ),
                                   pw.SizedBox(height: 4),
                                   pw.Text(
-                                    '+${stats.accumulatedPoints} pts ⭐',
+                                    '+${stats.accumulatedPoints} pts',
                                     style: pw.TextStyle(
                                       fontSize: 16,
                                       fontWeight: pw.FontWeight.bold,
@@ -437,7 +437,58 @@ class PdfReportService {
                 ),
                 pw.SizedBox(height: 20),
 
-                // ── 5. INSIGHT INTELIGENTE ──
+                // ── 5. MAPA DE ACTIVIDAD (HEATMAP) ──
+                if (stats.monthlyProgress.isNotEmpty) ...[
+                  pw.Container(
+                    width: double.infinity,
+                    padding: const pw.EdgeInsets.all(14),
+                    decoration: pw.BoxDecoration(
+                      color: bgCardColor,
+                      borderRadius: pw.BorderRadius.circular(12),
+                      border: pw.Border.all(color: PdfColors.grey300),
+                    ),
+                    child: pw.Column(
+                      crossAxisAlignment: pw.CrossAxisAlignment.start,
+                      children: [
+                        pw.Text(
+                          'Mapa de Actividad (Últimos 30 días)',
+                          style: pw.TextStyle(
+                            fontSize: 10,
+                            fontWeight: pw.FontWeight.bold,
+                            color: textGray,
+                          ),
+                        ),
+                        pw.SizedBox(height: 10),
+                        pw.Wrap(
+                          spacing: 4,
+                          runSpacing: 4,
+                          children: stats.monthlyProgress.map((dp) {
+                            final completed = dp.value.toInt();
+                            PdfColor color = PdfColors.grey300;
+                            if (completed == 1) {
+                              color = primaryBlue.shade(.3);
+                            } else if (completed == 2) {
+                              color = primaryBlue.shade(.6);
+                            } else if (completed >= 3) {
+                              color = primaryBlue;
+                            }
+                            return pw.Container(
+                              width: 12,
+                              height: 12,
+                              decoration: pw.BoxDecoration(
+                                color: color,
+                                borderRadius: pw.BorderRadius.circular(2),
+                              ),
+                            );
+                          }).toList(),
+                        ),
+                      ],
+                    ),
+                  ),
+                  pw.SizedBox(height: 20),
+                ],
+
+                // ── 6. INSIGHT INTELIGENTE ──
                 pw.Container(
                   width: double.infinity,
                   padding: const pw.EdgeInsets.all(14),
@@ -450,7 +501,7 @@ class PdfReportService {
                     crossAxisAlignment: pw.CrossAxisAlignment.start,
                     children: [
                       pw.Text(
-                        '💡 Insight Inteligente de IA',
+                        'Insight Inteligente de IA',
                         style: pw.TextStyle(
                           fontSize: 12,
                           fontWeight: pw.FontWeight.bold,
@@ -480,7 +531,7 @@ class PdfReportService {
                   mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
                   children: [
                     pw.Text(
-                      'HabitApp Mobile • Reporte Oficial generado de forma segura',
+                      'HabitApp Mobile - Reporte Oficial generado de forma segura',
                       style: pw.TextStyle(fontSize: 8, color: textGray),
                     ),
                     pw.Text(
