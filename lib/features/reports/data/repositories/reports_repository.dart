@@ -1,8 +1,8 @@
 import 'package:dio/dio.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-import '../../../core/network/dio_client.dart';
-import 'models/habit_stats.dart';
+import '../../../../core/network/dio_client.dart';
+import '../models/habit_stats.dart';
 
 part 'reports_repository.g.dart';
 

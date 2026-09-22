@@ -11,7 +11,7 @@ class FriendsRepository {
 
   Future<List<FriendModel>> getFriends() async {
     try {
-      final response = await _dio.get('/friends');
+      final response = await _dio.get('/users/friends');
       final data = response.data as List;
       return data.map((json) => FriendModel.fromJson(json)).toList();
     } on DioException catch (e) {
@@ -21,7 +21,7 @@ class FriendsRepository {
 
   Future<void> addFriend(String idAmigo) async {
     try {
-      await _dio.post('/friends', data: {'idAmigo': idAmigo});
+      await _dio.post('/users/friends', data: {'idAmigo': idAmigo});
     } on DioException catch (e) {
       throw Exception(e.response?.data['message'] ?? 'Error al agregar amigo');
     }
@@ -29,7 +29,7 @@ class FriendsRepository {
 
   Future<void> removeFriend(String idAmigo) async {
     try {
-      await _dio.delete('/friends/$idAmigo');
+      await _dio.delete('/users/friends/$idAmigo');
     } on DioException catch (e) {
       throw Exception(e.response?.data['message'] ?? 'Error al eliminar amigo');
     }

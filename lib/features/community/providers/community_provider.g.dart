@@ -33,7 +33,7 @@ final class ForumsNotifierProvider
   ForumsNotifier create() => ForumsNotifier();
 }
 
-String _$forumsNotifierHash() => r'7659636218daa9b9dcc632555c560832d2089437';
+String _$forumsNotifierHash() => r'646213905e360d357f45db56ced45a37744080d4';
 
 abstract class _$ForumsNotifier extends $AsyncNotifier<List<dynamic>> {
   FutureOr<List<dynamic>> build();
@@ -95,7 +95,7 @@ final class ForumCommentsNotifierProvider
 }
 
 String _$forumCommentsNotifierHash() =>
-    r'c3bf701e338103030654e8f93294824e68813614';
+    r'5a3a5506409a06967c9e8b9e8c1c7de5cb167627';
 
 final class ForumCommentsNotifierFamily extends $Family
     with
@@ -290,7 +290,7 @@ final class CommunityHabitsNotifierProvider
 }
 
 String _$communityHabitsNotifierHash() =>
-    r'084731b07e582616a1551f9d5c6c4e02516eb202';
+    r'efa56bd8fe8c5f1222e5e90e67eded97de1808cc';
 
 abstract class _$CommunityHabitsNotifier extends $AsyncNotifier<List<dynamic>> {
   FutureOr<List<dynamic>> build();

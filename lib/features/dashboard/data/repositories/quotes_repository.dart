@@ -2,7 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import '../../../../core/network/dio_client.dart';
 
-part 'quotes_service.g.dart';
+part 'quotes_repository.g.dart';
 
 class Quote {
   final String phrase;
@@ -25,7 +25,7 @@ class QuotesService {
 
   Future<Quote> getDailyQuote() async {
     try {
-      final response = await _dio.get('/quotes/daily');
+      final response = await _dio.get('/admin/quotes/daily');
       return Quote.fromJson(response.data);
     } catch (e) {
       // Fallback

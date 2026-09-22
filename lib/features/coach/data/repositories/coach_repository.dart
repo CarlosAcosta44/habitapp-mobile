@@ -1,9 +1,9 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-import '../../../core/network/dio_client.dart';
-import '../domain/client_summary.dart';
-import '../domain/routine_summary.dart';
+import '../../../../core/network/dio_client.dart';
+import '../models/client_summary_model.dart';
+import '../models/routine_summary_model.dart';
 
 part 'coach_repository.g.dart';
 

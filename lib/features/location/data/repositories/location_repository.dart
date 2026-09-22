@@ -1,7 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:geolocator/geolocator.dart';
 
-class LocationService {
+class LocationRepository {
   /// Verifica si los servicios de geolocalización (GPS) están encendidos en el dispositivo
   Future<bool> isLocationServiceEnabled() async {
     try {

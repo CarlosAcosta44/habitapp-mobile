@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
 import '../../providers/community_provider.dart';
-import '../../data/repositories/community_repository.dart';
 import '../../../profile/providers/profile_provider.dart';
 
 import '../widgets/time_formatter.dart';
@@ -76,8 +75,8 @@ class _ForumDetailScreenState extends ConsumerState<ForumDetailScreen> {
     try {
       String? imageUrl;
       if (_selectedImage != null) {
-        // We will call the repository to upload the image
-        imageUrl = await ref.read(communityRepositoryProvider).uploadImage(_selectedImage!.path);
+        // We will call the provider to upload the image
+        imageUrl = await ref.read(forumCommentsProvider(widget.forumId).notifier).uploadImage(_selectedImage!.path);
       }
 
       await ref
