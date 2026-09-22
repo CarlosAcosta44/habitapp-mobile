@@ -110,7 +110,7 @@ class HabitsRepository {
   Future<void> marcarCompletado(String habitoId) async {
     try {
       await _dio.post(
-        '/records/completar',
+        '/users/records/completar',
         data: {'idHabito': habitoId},
       );
     } on DioException catch (e) {
@@ -123,7 +123,7 @@ class HabitsRepository {
   /// Desmarca o remueve el cumplimiento de hoy
   Future<void> desmarcarCompletado(String habitoId) async {
     try {
-      await _dio.delete('/records/desmarcar/$habitoId');
+      await _dio.delete('/users/records/desmarcar/$habitoId');
     } on DioException catch (e) {
       throw Exception(
         e.response?.data['message'] ?? 'Error al desmarcar hábito',
@@ -135,7 +135,7 @@ class HabitsRepository {
   Future<void> avanzarProgreso(String habitoId, double cantidad) async {
     try {
       await _dio.patch(
-        '/records/progreso',
+        '/users/records/progreso',
         data: {
           'idHabito': habitoId,
           'cantidadASumar': cantidad,

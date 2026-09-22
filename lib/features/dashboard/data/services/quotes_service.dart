@@ -25,7 +25,7 @@ class QuotesService {
 
   Future<Quote> getDailyQuote() async {
     try {
-      final response = await _dio.get('/quotes/daily');
+      final response = await _dio.get('/admin/quotes/daily');
       return Quote.fromJson(response.data);
     } catch (e) {
       // Fallback
