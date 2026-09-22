@@ -332,7 +332,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                               children: [
                                 Expanded(
                                   child: ElevatedButton.icon(
-                                    onPressed: () {},
+                                    onPressed: () async {
+                                      await ref.read(authProvider.notifier).signInWithGoogle();
+                                    },
                                     style: ElevatedButton.styleFrom(
                                       backgroundColor: Theme.of(context).colorScheme.surfaceContainerHighest,
                                       foregroundColor: Theme.of(context).colorScheme.onSurface,
@@ -360,7 +362,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                                 SizedBox(width: 12),
                                 Expanded(
                                   child: ElevatedButton.icon(
-                                    onPressed: () {},
+                                    onPressed: () async {
+                                      await ref.read(authProvider.notifier).signInWithFacebook();
+                                    },
                                     style: ElevatedButton.styleFrom(
                                       backgroundColor: Theme.of(context).colorScheme.surfaceContainerHighest,
                                       foregroundColor: Theme.of(context).colorScheme.onSurface,

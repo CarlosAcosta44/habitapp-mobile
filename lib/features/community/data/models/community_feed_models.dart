@@ -11,6 +11,8 @@ class CommunityHabitItem {
   final String participantsCount;
   final String? badgeText;
   final bool isAdded;
+  final String userId;
+  final bool isMine;
 
   const CommunityHabitItem({
     required this.id,
@@ -22,6 +24,8 @@ class CommunityHabitItem {
     required this.participantsCount,
     this.badgeText,
     this.isAdded = false,
+    this.userId = '',
+    this.isMine = false,
   });
 
   CommunityHabitItem copyWith({bool? isAdded}) {
@@ -35,6 +39,8 @@ class CommunityHabitItem {
       participantsCount: participantsCount,
       badgeText: badgeText,
       isAdded: isAdded ?? this.isAdded,
+      userId: userId,
+      isMine: isMine,
     );
   }
 }
@@ -42,10 +48,13 @@ class CommunityHabitItem {
 /// Modelo para los posts de Foros y Círculos de Apoyo (Feed con Infinite Scroll)
 class ForumPostItem {
   final String id;
+  final String authorId;
   final String authorName;
   final String authorInitials;
+  final String authorAvatarUrl;
   final Color avatarColor;
   final String timeAgo;
+  final String? fechacreacion;
   final String tag;
   final String questionTitle;
   final String content;
@@ -55,10 +64,13 @@ class ForumPostItem {
 
   const ForumPostItem({
     required this.id,
+    required this.authorId,
     required this.authorName,
     required this.authorInitials,
+    this.authorAvatarUrl = '',
     required this.avatarColor,
     required this.timeAgo,
+    this.fechacreacion,
     required this.tag,
     required this.questionTitle,
     required this.content,
@@ -74,10 +86,13 @@ class ForumPostItem {
   }) {
     return ForumPostItem(
       id: id,
+      authorId: authorId,
       authorName: authorName,
       authorInitials: authorInitials,
+      authorAvatarUrl: authorAvatarUrl,
       avatarColor: avatarColor,
       timeAgo: timeAgo,
+      fechacreacion: fechacreacion,
       tag: tag,
       questionTitle: questionTitle,
       content: content,
@@ -96,10 +111,8 @@ class ClinicalArticleItem {
   final String readTime;
   final String title;
   final String description;
-  final String author;
-  final IconData icon;
-  final Color iconColor;
-  final Color iconBgColor;
+  final String publishDate;
+  final String content;
 
   const ClinicalArticleItem({
     required this.id,
@@ -108,10 +121,8 @@ class ClinicalArticleItem {
     required this.readTime,
     required this.title,
     required this.description,
-    required this.author,
-    required this.icon,
-    required this.iconColor,
-    required this.iconBgColor,
+    required this.publishDate,
+    required this.content,
   });
 }
 
@@ -120,25 +131,13 @@ class VerifiedSpecialistItem {
   final String id;
   final String name;
   final String specialty;
-  final double rating;
-  final int reviewsCount;
-  final String priceSession;
-  final bool isOnline;
-  final IconData icon;
-  final Color iconColor;
-  final Color iconBgColor;
+  final String avatarUrl;
 
   const VerifiedSpecialistItem({
     required this.id,
     required this.name,
     required this.specialty,
-    required this.rating,
-    required this.reviewsCount,
-    required this.priceSession,
-    this.isOnline = true,
-    required this.icon,
-    required this.iconColor,
-    required this.iconBgColor,
+    required this.avatarUrl,
   });
 }
 

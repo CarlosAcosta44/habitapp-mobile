@@ -5,8 +5,8 @@ import 'package:go_router/go_router.dart';
 import '../../providers/auth_provider.dart';
 
 
-const _kGreenBadge = Color(0xFF0F8A5D);
-const _kGreenBadgeBg = Color(0xFFE6F4EE);
+const _kBlueBadge = Color(0xFF2D82FA);
+const _kBlueBadgeBg = Color(0xFFEAF2FF);
 
 class RegisterScreen extends ConsumerStatefulWidget {
   const RegisterScreen({super.key});
@@ -22,6 +22,8 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
   final _emailCtrl = TextEditingController();
   final _passCtrl = TextEditingController();
   final _confirmPassCtrl = TextEditingController();
+  final _generoCtrl = TextEditingController(text: 'Masculino');
+  final _dobCtrl = TextEditingController();
   
   bool _obscure = true;
   bool _obscureConfirm = true;
@@ -34,6 +36,8 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
     _emailCtrl.dispose();
     _passCtrl.dispose();
     _confirmPassCtrl.dispose();
+    _generoCtrl.dispose();
+    _dobCtrl.dispose();
     super.dispose();
   }
 
@@ -55,6 +59,8 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
             _passCtrl.text,
             _nameCtrl.text.trim(),
             _apellidoCtrl.text.trim(),
+            genero: _generoCtrl.text,
+            fechanacimiento: _dobCtrl.text.isNotEmpty ? _dobCtrl.text : null,
           );
     }
   }
@@ -143,18 +149,18 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                     Container(
                       padding: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                       decoration: BoxDecoration(
-                        color: _kGreenBadgeBg,
+                        color: _kBlueBadgeBg,
                         borderRadius: BorderRadius.circular(20),
                       ),
                       child: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          Icon(Icons.eco, color: _kGreenBadge, size: 14),
+                          Icon(Icons.person_outline_rounded, color: _kBlueBadge, size: 14),
                           SizedBox(width: 6),
                           Text(
                             'Transformación Personal',
                             style: TextStyle(
-                              color: _kGreenBadge,
+                              color: _kBlueBadge,
                               fontSize: 12,
                               fontWeight: FontWeight.w700,
                             ),
@@ -226,6 +232,76 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                               hint: 'Soler',
                               prefixIcon: Icons.person_outline_rounded,
                               validator: (v) => v!.isEmpty ? 'Ingresa tu apellido' : null,
+                            ),
+                            SizedBox(height: 16),
+
+                            // ── Campo Género y Fecha ──
+                            Row(
+                              children: [
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        'Género',
+                                        style: TextStyle(fontWeight: FontWeight.w700, fontSize: 13, color: Theme.of(context).colorScheme.onSurface),
+                                      ),
+                                      SizedBox(height: 8),
+                                      DropdownButtonFormField<String>(
+                                        initialValue: _generoCtrl.text,
+                                        items: ['Masculino', 'Femenino', 'Otro', 'Prefiero no decirlo']
+                                            .map((String value) => DropdownMenuItem(value: value, child: Text(value)))
+                                            .toList(),
+                                        onChanged: (v) {
+                                          if (v != null) setState(() => _generoCtrl.text = v);
+                                        },
+                                        decoration: InputDecoration(
+                                          filled: true,
+                                          fillColor: Theme.of(context).colorScheme.surfaceContainerHighest,
+                                          contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                                          border: OutlineInputBorder(borderRadius: BorderRadius.circular(16), borderSide: BorderSide.none),
+                                        ),
+                                        style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: Theme.of(context).colorScheme.onSurface),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                SizedBox(width: 12),
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        'Fecha Nac.',
+                                        style: TextStyle(fontWeight: FontWeight.w700, fontSize: 13, color: Theme.of(context).colorScheme.onSurface),
+                                      ),
+                                      SizedBox(height: 8),
+                                      GestureDetector(
+                                        onTap: () async {
+                                          final date = await showDatePicker(
+                                            context: context,
+                                            initialDate: DateTime.now().subtract(const Duration(days: 365 * 18)),
+                                            firstDate: DateTime(1900),
+                                            lastDate: DateTime.now(),
+                                          );
+                                          if (date != null) {
+                                            setState(() {
+                                              _dobCtrl.text = "\${date.year}-\${date.month.toString().padLeft(2, '0')}-\${date.day.toString().padLeft(2, '0')}";
+                                            });
+                                          }
+                                        },
+                                        child: AbsorbPointer(
+                                          child: _StyledField(
+                                            controller: _dobCtrl,
+                                            hint: 'YYYY-MM-DD',
+                                            prefixIcon: Icons.cake_outlined,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ],
                             ),
                             SizedBox(height: 16),
 
@@ -333,9 +409,9 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                                       style: TextStyle(fontSize: 11, color: Theme.of(context).colorScheme.onSurfaceVariant, height: 1.4),
                                       children: [
                                         TextSpan(text: 'Acepto los '),
-                                        TextSpan(text: 'Términos de Servicio', style: TextStyle(color: _kGreenBadge, fontWeight: FontWeight.w600, decoration: TextDecoration.underline)),
+                                        TextSpan(text: 'Términos de Servicio', style: TextStyle(color: _kBlueBadge, fontWeight: FontWeight.w600, decoration: TextDecoration.underline)),
                                         TextSpan(text: ' y la '),
-                                        TextSpan(text: 'Política de Privacidad', style: TextStyle(color: _kGreenBadge, fontWeight: FontWeight.w600, decoration: TextDecoration.underline)),
+                                        TextSpan(text: 'Política de Privacidad', style: TextStyle(color: _kBlueBadge, fontWeight: FontWeight.w600, decoration: TextDecoration.underline)),
                                         TextSpan(text: ' de HabitApp.'),
                                       ],
                                     ),
@@ -395,7 +471,9 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                               children: [
                                 Expanded(
                                   child: ElevatedButton.icon(
-                                    onPressed: () {},
+                                    onPressed: () async {
+                                      await ref.read(authProvider.notifier).signInWithGoogle();
+                                    },
                                     style: ElevatedButton.styleFrom(
                                       backgroundColor: Theme.of(context).colorScheme.surfaceContainerHighest,
                                       foregroundColor: Theme.of(context).colorScheme.onSurface,
@@ -415,7 +493,9 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                                 SizedBox(width: 12),
                                 Expanded(
                                   child: ElevatedButton.icon(
-                                    onPressed: () {},
+                                    onPressed: () async {
+                                      await ref.read(authProvider.notifier).signInWithFacebook();
+                                    },
                                     style: ElevatedButton.styleFrom(
                                       backgroundColor: Theme.of(context).colorScheme.surfaceContainerHighest,
                                       foregroundColor: Theme.of(context).colorScheme.onSurface,

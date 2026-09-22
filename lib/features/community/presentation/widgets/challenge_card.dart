@@ -218,41 +218,7 @@ class ChallengeCard extends StatelessWidget {
                   ],
                 ),
 
-                // Barra de progreso si ya está unido
-                if (reto.isJoined) ...[
-                  const SizedBox(height: 12),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        'Progreso: ${reto.currentProgress}/${reto.targetCount} días',
-                        style: TextStyle(
-                          fontSize: 11,
-                          fontWeight: FontWeight.w600,
-                          color: colorScheme.onSurfaceVariant,
-                        ),
-                      ),
-                      Text(
-                        '${(reto.progressPercentage * 100).toInt()}%',
-                        style: TextStyle(
-                          fontSize: 11,
-                          fontWeight: FontWeight.w700,
-                          color: colorScheme.primary,
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 6),
-                  ClipRRect(
-                    borderRadius: BorderRadius.circular(6),
-                    child: LinearProgressIndicator(
-                      value: reto.progressPercentage,
-                      backgroundColor: colorScheme.primary.withValues(alpha: 0.12),
-                      valueColor: AlwaysStoppedAnimation<Color>(colorScheme.primary),
-                      minHeight: 6,
-                    ),
-                  ),
-                ],
+
               ],
             ),
           ),

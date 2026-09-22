@@ -33,7 +33,7 @@ final class BiometricNotifierProvider
   BiometricNotifier create() => BiometricNotifier();
 }
 
-String _$biometricNotifierHash() => r'ba90d02d021919ac617658da82bb1440e71b40bb';
+String _$biometricNotifierHash() => r'5eea0798b327ae0079dc29796bebff23d53567be';
 
 abstract class _$BiometricNotifier extends $AsyncNotifier<BiometricState> {
   FutureOr<BiometricState> build();

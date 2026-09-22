@@ -2,6 +2,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 import '../data/models/user_profile.dart';
 import '../data/models/user_stats.dart';
 import '../data/profile_repository.dart';
+import '../../auth/data/auth_repository.dart';
 
 part 'profile_provider.g.dart';
 
@@ -40,6 +41,29 @@ class ProfileNotifier extends _$ProfileNotifier {
       state = AsyncValue.data(updatedProfile);
     } catch (e, st) {
       state = AsyncValue.error(e, st);
+      rethrow;
+    }
+  }
+
+  Future<void> updatePassword(String currentPassword, String newPassword) async {
+    final currentProfile = state.value;
+    if (currentProfile == null || currentProfile.correo == null) {
+      throw Exception('Perfil no encontrado o sin correo');
+    }
+
+    try {
+      final authRepo = ref.read(authRepositoryProvider);
+      
+      // 1. Validate current password by attempting to login
+      try {
+        await authRepo.login(currentProfile.correo!, currentPassword);
+      } catch (e) {
+        throw Exception('La contraseña actual es incorrecta');
+      }
+
+      // 2. Update to new password
+      await authRepo.updatePassword(newPassword);
+    } catch (e) {
       rethrow;
     }
   }

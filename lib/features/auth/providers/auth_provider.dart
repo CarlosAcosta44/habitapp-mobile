@@ -1,6 +1,7 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 import '../../../core/network/auth_interceptor.dart';
 import '../../../core/network/dio_client.dart';
@@ -49,10 +50,10 @@ class AuthNotifier extends _$AuthNotifier {
     }
   }
 
-  Future<void> register(String email, String password, String nombre, String apellido) async {
+  Future<void> register(String email, String password, String nombre, String apellido, {String? genero, String? fechanacimiento}) async {
     state = AsyncValue.loading();
     try {
-      await _repository.register(email, password, nombre, apellido);
+      await _repository.register(email, password, nombre, apellido, genero: genero, fechanacimiento: fechanacimiento);
       // Auto-login since the backend now auto-confirms the email
       await login(email, password);
     } catch (e, st) {
@@ -111,6 +112,89 @@ class AuthNotifier extends _$AuthNotifier {
       }
     } catch (e, st) {
       state = AsyncValue.error(e, st);
+    }
+  }
+
+  Future<void> linkWithGoogle() async {
+    try {
+      final GoogleSignIn googleSignIn = GoogleSignIn();
+      final GoogleSignInAccount? googleUser = await googleSignIn.signIn();
+      
+      if (googleUser == null) {
+        return; // Cancelado por el usuario
+      }
+      
+      final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
+      final idToken = googleAuth.idToken;
+      
+      if (idToken == null) {
+        throw Exception('No se pudo obtener el ID Token de Google');
+      }
+      
+      final authRepo = ref.read(authRepositoryProvider);
+      await authRepo.linkWithGoogle(idToken);
+      // Actualizar el perfil u otras cosas si es necesario
+    } catch (e) {
+      throw Exception(e.toString());
+    }
+  }
+
+  Future<void> signInWithFacebook() async {
+    try {
+      state = const AsyncValue.loading();
+      
+      final LoginResult result = await FacebookAuth.instance.login(
+        permissions: ['public_profile', 'email'],
+      );
+      
+      if (result.status == LoginStatus.success) {
+        final AccessToken accessToken = result.accessToken!;
+        
+        final authRepo = ref.read(authRepositoryProvider);
+        final response = await authRepo.loginWithFacebook(accessToken.token);
+        final token = response['access_token'];
+        final refreshToken = response['refresh_token'];
+        
+        if (token != null) {
+          AuthInterceptor.setToken(token);
+          if (refreshToken != null) {
+            AuthInterceptor.setRefreshToken(refreshToken);
+          }
+          await _storage.write(key: 'access_token', value: token);
+          if (refreshToken != null) {
+            await _storage.write(key: 'refresh_token', value: refreshToken);
+          }
+          state = const AsyncValue.data(true);
+        } else {
+          throw Exception('Token not found in response');
+        }
+      } else if (result.status == LoginStatus.cancelled) {
+        state = const AsyncValue.data(false);
+      } else {
+        throw Exception(result.message ?? 'Error desconocido con Facebook');
+      }
+    } catch (e, st) {
+      state = AsyncValue.error(e, st);
+    }
+  }
+
+  Future<void> linkWithFacebook() async {
+    try {
+      final LoginResult result = await FacebookAuth.instance.login(
+        permissions: ['public_profile', 'email'],
+      );
+      
+      if (result.status == LoginStatus.success) {
+        final AccessToken accessToken = result.accessToken!;
+        final authRepo = ref.read(authRepositoryProvider);
+        await authRepo.linkWithFacebook(accessToken.token);
+      } else if (result.status == LoginStatus.cancelled) {
+        return; // Cancelado
+      } else {
+        throw Exception(result.message ?? 'Error desconocido con Facebook');
+      }
+    } catch (e) {
+      throw Exception(e.toString());
     }
   }
 

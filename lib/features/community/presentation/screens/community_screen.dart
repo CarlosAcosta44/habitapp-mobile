@@ -1,21 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-
-import '../../data/models/community_feed_models.dart';
 import '../../providers/community_feed_provider.dart';
-import '../widgets/community_header.dart';
-import '../widgets/community_habit_carousel.dart';
-import '../widgets/forum_post_card.dart';
 import '../widgets/clinical_article_card.dart';
+import '../widgets/community_habits_tab.dart';
+import '../widgets/community_header.dart';
+import '../widgets/create_forum_dialog.dart';
+import '../widgets/forum_post_card.dart';
 import '../widgets/verified_specialist_card.dart';
-import '../widgets/active_challenge_card_compact.dart';
 import '../../../profile/providers/profile_provider.dart';
 import 'challenges_screen.dart';
 
 const _kBlue = Color(0xFF2D82FA);
 const _kGreen = Color(0xFF0F8A5D);
-const _kPink = Color(0xFFE22D6F);
 
 class CommunityScreen extends ConsumerStatefulWidget {
   const CommunityScreen({super.key});
@@ -94,53 +91,170 @@ class _CommunityScreenState extends ConsumerState<CommunityScreen> {
 
                 const SizedBox(height: 20),
 
-                // 2. Sección: Hábitos de la comunidad (Visible en Todo o Hábitos Compartidos)
-                if (state.selectedFilterIndex == 0 || state.selectedFilterIndex == 2) ...[
-                  CommunityHabitCarousel(
+                // 2. Sección: Hábitos de la comunidad
+                if (state.selectedFilterIndex == 1) ...[
+                  CommunityHabitsTab(
                     habits: state.habits,
-                    onAddHabit: (id) {
-                      notifier.toggleHabitAdded(id);
+                    onAddHabit: (id) async {
                       final habit = state.habits.firstWhere((h) => h.id == id);
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content: Text(
-                            !habit.isAdded
-                                ? '¡Hábito "${habit.title}" añadido a tu rutina!'
-                                : 'Hábito removido.',
+                      if (habit.isAdded) return; // Ya está añadido
+
+                      try {
+                        await notifier.toggleHabitAdded(id);
+                        if (!context.mounted) return;
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text('¡Hábito "${habit.title}" añadido a tu rutina!'),
+                            backgroundColor: _kGreen,
+                            duration: const Duration(seconds: 2),
                           ),
-                          backgroundColor: !habit.isAdded ? _kGreen : Colors.grey[700],
-                          duration: const Duration(seconds: 2),
-                        ),
-                      );
+                        );
+                      } catch (e) {
+                        if (!context.mounted) return;
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text('No se pudo añadir el hábito: ${e.toString().replaceAll('Exception: ', '')}'),
+                            backgroundColor: Colors.red,
+                          ),
+                        );
+                      }
                     },
-                    onSeeAll: () {
-                      notifier.setFilter(2); // Filtra a hábitos
+                    onDeleteHabit: (id) async {
+                      try {
+                        await notifier.deleteSharedHabit(id);
+                        if (!context.mounted) return;
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text('Hábito eliminado de la comunidad.'),
+                            backgroundColor: _kGreen,
+                          ),
+                        );
+                      } catch (e) {
+                        if (!context.mounted) return;
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text('Error al eliminar: ${e.toString().replaceAll('Exception: ', '')}'),
+                            backgroundColor: Colors.red,
+                          ),
+                        );
+                      }
                     },
                   ),
                   const SizedBox(height: 24),
                 ],
 
-                if (state.selectedFilterIndex == 0 || state.selectedFilterIndex == 1) ...[
+                if (state.selectedFilterIndex == 0) ...[
+                    // Nuevo Hilo Banner
+                    Container(
+                      margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+                      padding: const EdgeInsets.all(16),
+                      decoration: BoxDecoration(
+                        color: const Color(0xFF6B4EFF).withValues(alpha: 0.1),
+                        borderRadius: BorderRadius.circular(16),
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          Row(
+                            children: [
+                              Container(
+                                padding: const EdgeInsets.all(10),
+                                decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
+                                child: const Icon(Icons.chat_bubble_outline_rounded, color: Color(0xFF6B4EFF), size: 20),
+                              ),
+                              const SizedBox(width: 12),
+                              const Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text('¿Quieres iniciar una conversación?', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14)),
+                                    SizedBox(height: 2),
+                                    Text('Crea un foro y conecta con la comunidad', style: TextStyle(fontSize: 12, color: Colors.grey)),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 16),
+                          ElevatedButton(
+                            onPressed: () {
+                              showModalBottomSheet(
+                                context: context,
+                                isScrollControlled: true,
+                                backgroundColor: Colors.transparent,
+                                builder: (context) => const CreateForumDialog(),
+                              );
+                            },
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: const Color(0xFF6B4EFF),
+                              foregroundColor: Colors.white,
+                              elevation: 0,
+                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+                              padding: const EdgeInsets.symmetric(vertical: 12),
+                            ),
+                            child: const Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Icon(Icons.add, size: 16),
+                                SizedBox(width: 4),
+                                Text('Crear foro', style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold)),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+
+
                   _buildSectionHeader(
                     context,
-                    icon: Icons.chat_bubble_outline_rounded,
-                    iconColor: _kPink,
-                    iconBgColor: isDark ? _kPink.withValues(alpha: 0.2) : const Color(0xFFFFEBF2),
-                    title: 'Foros y Círculos de Apoyo',
-                    actionText: 'Ver todos',
-                    onAction: () => notifier.setFilter(1),
+                    title: 'Foros de la Comunidad',
                   ),
                   const SizedBox(height: 12),
 
-                  // Lista de publicaciones del Feed
-                  ...(state.selectedFilterIndex == 0 ? state.posts.take(1) : state.posts).map((post) {
+                  // Active Posts
+                  ...state.posts.map((post) {
                     return Padding(
                       padding: const EdgeInsets.only(bottom: 14),
                       child: ForumPostCard(
                         post: post,
+                        currentUserId: profileState.value?.idusuario,
                         onToggleLike: () => notifier.toggleLike(post.id),
                         onParticipate: () {
-                          _showParticipateDialog(context, post);
+                          context.push('/community/forum/${post.id}', extra: post.questionTitle);
+                        },
+                        onEdit: () {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(content: Text('La edición estará disponible pronto.')),
+                          );
+                        },
+                        onDelete: () async {
+                          final confirm = await showDialog<bool>(
+                            context: context,
+                            builder: (c) => AlertDialog(
+                              title: const Text('Eliminar Foro'),
+                              content: const Text('¿Estás seguro de eliminar este foro? Esta acción no se puede deshacer.'),
+                              actions: [
+                                TextButton(onPressed: () => Navigator.pop(c, false), child: const Text('Cancelar')),
+                                TextButton(onPressed: () => Navigator.pop(c, true), child: const Text('Eliminar', style: TextStyle(color: Colors.red))),
+                              ],
+                            ),
+                          );
+                          if (confirm == true) {
+                            try {
+                              await notifier.deleteForum(post.id);
+                              if (context.mounted) {
+                                ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Foro eliminado')));
+                              }
+                            } catch (e) {
+                              if (context.mounted) {
+                                ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(e.toString())));
+                              }
+                            }
+                          }
                         },
                       ),
                     );
@@ -152,7 +266,7 @@ class _CommunityScreenState extends ConsumerState<CommunityScreen> {
                   const SizedBox(height: 16),
                 ],
 
-                if (state.selectedFilterIndex == 0 || state.selectedFilterIndex == 3) ...[
+                if (state.selectedFilterIndex == 2) ...[
                   _buildSectionHeader(
                     context,
                     icon: Icons.menu_book_rounded,
@@ -174,8 +288,83 @@ class _CommunityScreenState extends ConsumerState<CommunityScreen> {
                       child: ClinicalArticleCard(
                         article: article,
                         onTap: () {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(content: Text('Leyendo "${article.title}"')),
+                          showModalBottomSheet(
+                            context: context,
+                            isScrollControlled: true,
+                            backgroundColor: Colors.transparent,
+                            builder: (context) => Container(
+                              padding: const EdgeInsets.all(24),
+                              decoration: BoxDecoration(
+                                color: Theme.of(context).colorScheme.surface,
+                                borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
+                              ),
+                              constraints: BoxConstraints(
+                                maxHeight: MediaQuery.of(context).size.height * 0.85,
+                              ),
+                              child: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Text(
+                                        '${article.category} • ${article.readTime}',
+                                        style: TextStyle(
+                                          fontSize: 12,
+                                          fontWeight: FontWeight.w800,
+                                          color: article.categoryColor,
+                                          letterSpacing: 0.5,
+                                        ),
+                                      ),
+                                      IconButton(
+                                        onPressed: () => Navigator.of(context).pop(),
+                                        icon: const Icon(Icons.close),
+                                      ),
+                                    ],
+                                  ),
+                                  const SizedBox(height: 16),
+                                  Text(
+                                    article.title,
+                                    style: const TextStyle(
+                                      fontSize: 22,
+                                      fontWeight: FontWeight.bold,
+                                      height: 1.2,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 16),
+                                  Row(
+                                    children: [
+                                      const CircleAvatar(
+                                        radius: 14,
+                                        backgroundImage: NetworkImage('https://ui-avatars.com/api/?name=HabitApp&background=0D8ABC&color=fff'),
+                                      ),
+                                      const SizedBox(width: 8),
+                                      Text(
+                                        'HabitApp • Publicado el ${article.publishDate}',
+                                        style: TextStyle(
+                                          fontSize: 13,
+                                          color: Theme.of(context).colorScheme.onSurfaceVariant,
+                                          fontWeight: FontWeight.w500,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  const SizedBox(height: 24),
+                                  Expanded(
+                                    child: SingleChildScrollView(
+                                      child: Text(
+                                        article.content,
+                                        style: const TextStyle(
+                                          fontSize: 16,
+                                          height: 1.6,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
                           );
                         },
                       ),
@@ -185,8 +374,8 @@ class _CommunityScreenState extends ConsumerState<CommunityScreen> {
                   const SizedBox(height: 20),
                 ],
 
-                // 5. Sección: Especialistas Verificados (Visible en Todo o Especialistas)
-                if (state.selectedFilterIndex == 0 || state.selectedFilterIndex == 4) ...[
+                // 5. Sección: Especialistas Verificados
+                if (state.selectedFilterIndex == 3) ...[
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -213,26 +402,10 @@ class _CommunityScreenState extends ConsumerState<CommunityScreen> {
                               color: colorScheme.onSurface,
                             ),
                           ),
-                          const SizedBox(width: 8),
-                          Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-                            decoration: BoxDecoration(
-                              color: isDark ? _kBlue.withValues(alpha: 0.2) : const Color(0xFFEFF5FF),
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                            child: const Text(
-                              'En línea',
-                              style: TextStyle(
-                                fontSize: 10,
-                                fontWeight: FontWeight.bold,
-                                color: _kBlue,
-                              ),
-                            ),
-                          ),
                         ],
                       ),
                       GestureDetector(
-                        onTap: () => notifier.setFilter(4),
+                        onTap: () => notifier.setFilter(3),
                         child: const Text(
                           'Ver todos',
                           style: TextStyle(
@@ -262,15 +435,12 @@ class _CommunityScreenState extends ConsumerState<CommunityScreen> {
                         specialist: specialist,
                         onViewProfile: () {
                           ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(content: Text('Perfil de ${specialist.name}')),
+                            const SnackBar(content: Text('Funcionalidad no disponible')),
                           );
                         },
                         onBookSession: () {
                           ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              content: Text('Agendando sesión con ${specialist.name} (${specialist.priceSession})'),
-                              backgroundColor: _kBlue,
-                            ),
+                            const SnackBar(content: Text('Funcionalidad no disponible')),
                           );
                         },
                       ),
@@ -280,46 +450,8 @@ class _CommunityScreenState extends ConsumerState<CommunityScreen> {
                   const SizedBox(height: 20),
                 ],
 
-                // 6. Sección: Retos Comunitarios Activos (Navega a la pantalla de Retos de Breiner)
-                if (state.selectedFilterIndex == 0) ...[
-                  _buildSectionHeader(
-                    context,
-                    icon: Icons.local_fire_department_rounded,
-                    iconColor: const Color(0xFFFF9800),
-                    iconBgColor: isDark ? const Color(0xFFFF9800).withValues(alpha: 0.2) : const Color(0xFFFFF3E0),
-                    title: 'Retos Comunitarios Activos',
-                    actionText: 'Ver todos',
-                    onAction: () {
-                      notifier.setFilter(5); // Cambiar a la pestaña Retos
-                    },
-                  ),
-                  const SizedBox(height: 12),
-
-                  ActiveChallengeCardCompact(
-                    challenge: state.activeChallenge,
-                    onJoin: () {
-                      notifier.toggleJoinActiveChallenge();
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content: Text(
-                            !state.activeChallenge.isJoined
-                                ? '¡Te uniste a "${state.activeChallenge.title}"!'
-                                : 'Has salido del reto.',
-                          ),
-                          backgroundColor: !state.activeChallenge.isJoined ? _kGreen : colorScheme.onSurfaceVariant,
-                        ),
-                      );
-                    },
-                    onSeeAll: () {
-                      notifier.setFilter(5); // Cambiar a la pestaña Retos
-                    },
-                  ),
-
-                  const SizedBox(height: 40),
-                ],
-
-                // 7. Pestaña de Retos Completa (Visible solo en índice 5)
-                if (state.selectedFilterIndex == 5) ...[
+                // 7. Pestaña de Retos Completa
+                if (state.selectedFilterIndex == 4) ...[
                   const ChallengesView(),
                   const SizedBox(height: 40),
                 ],
@@ -334,27 +466,28 @@ class _CommunityScreenState extends ConsumerState<CommunityScreen> {
   /// Encabezado reutilizable de cada sección
   Widget _buildSectionHeader(
     BuildContext context, {
-    required IconData icon,
-    required Color iconColor,
-    required Color iconBgColor,
     required String title,
-    required String actionText,
-    required VoidCallback onAction,
+    IconData? icon,
+    Color? iconColor,
+    Color? iconBgColor,
+    String? actionText,
+    VoidCallback? onAction,
   }) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Row(
           children: [
-            Container(
-              padding: const EdgeInsets.all(6),
-              decoration: BoxDecoration(
-                color: iconBgColor,
-                borderRadius: BorderRadius.circular(8),
+            if (icon != null)
+              Container(
+                padding: const EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                  color: iconBgColor ?? Colors.transparent,
+                  shape: BoxShape.circle,
+                ),
+                child: Icon(icon, color: iconColor ?? Colors.black, size: 18),
               ),
-              child: Icon(icon, color: iconColor, size: 18),
-            ),
-            const SizedBox(width: 8),
+            if (icon != null) const SizedBox(width: 8),
             Text(
               title,
               style: TextStyle(
@@ -365,17 +498,18 @@ class _CommunityScreenState extends ConsumerState<CommunityScreen> {
             ),
           ],
         ),
-        GestureDetector(
-          onTap: onAction,
-          child: Text(
-            actionText,
-            style: const TextStyle(
-              fontSize: 12,
-              fontWeight: FontWeight.w700,
-              color: _kGreen,
+        if (actionText != null)
+          GestureDetector(
+            onTap: onAction,
+            child: Text(
+              actionText,
+              style: const TextStyle(
+                fontSize: 12,
+                fontWeight: FontWeight.w700,
+                color: _kGreen,
+              ),
             ),
           ),
-        ),
       ],
     );
   }
@@ -430,115 +564,4 @@ class _CommunityScreenState extends ConsumerState<CommunityScreen> {
     return const SizedBox.shrink();
   }
 
-  /// Diálogo para responder a una publicación
-  void _showParticipateDialog(BuildContext context, ForumPostItem post) {
-    final textController = TextEditingController();
-
-    final theme = Theme.of(context);
-    final colorScheme = theme.colorScheme;
-    
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      backgroundColor: theme.scaffoldBackgroundColor,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
-      ),
-      builder: (ctx) {
-        return Padding(
-          padding: EdgeInsets.only(
-            left: 20,
-            right: 20,
-            top: 20,
-            bottom: MediaQuery.of(ctx).viewInsets.bottom + 20,
-          ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    'Responder a ${post.authorName}',
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                      color: colorScheme.onSurface,
-                    ),
-                  ),
-                  IconButton(
-                    icon: const Icon(Icons.close, size: 20),
-                    onPressed: () => Navigator.pop(ctx),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 8),
-              Text(
-                post.questionTitle,
-                style: TextStyle(
-                  fontSize: 13,
-                  color: colorScheme.onSurfaceVariant,
-                  fontStyle: FontStyle.italic,
-                ),
-              ),
-              const SizedBox(height: 14),
-              TextField(
-                controller: textController,
-                maxLines: 4,
-                autofocus: true,
-                style: TextStyle(color: colorScheme.onSurface),
-                decoration: InputDecoration(
-                  hintText: 'Escribe tu respuesta o técnica de apoyo...',
-                  hintStyle: TextStyle(fontSize: 13, color: colorScheme.onSurfaceVariant.withValues(alpha: 0.6)),
-                  filled: true,
-                  fillColor: theme.brightness == Brightness.dark 
-                      ? colorScheme.surfaceContainerHighest 
-                      : const Color(0xFFF7F7F9),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(16),
-                    borderSide: BorderSide.none,
-                  ),
-                ),
-              ),
-              const SizedBox(height: 16),
-              SizedBox(
-                width: double.infinity,
-                height: 46,
-                child: ElevatedButton(
-                  onPressed: () {
-                    final text = textController.text.trim();
-                    if (text.isNotEmpty) {
-                      Navigator.pop(ctx);
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text('¡Tu respuesta fue publicada en el foro!'),
-                          backgroundColor: _kGreen,
-                        ),
-                      );
-                    }
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: _kBlue,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(16),
-                    ),
-                    elevation: 0,
-                  ),
-                  child: const Text(
-                    'Publicar respuesta',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 14,
-                    ),
-                  ),
-                ),
-              ),
-            ],
-          ),
-        );
-      },
-    );
-  }
 }

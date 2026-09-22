@@ -24,16 +24,20 @@ class AuthRepository {
     }
   }
 
-  Future<Map<String, dynamic>> register(String email, String password, String nombre, String apellido) async {
+  Future<Map<String, dynamic>> register(String email, String password, String nombre, String apellido, {String? genero, String? fechanacimiento}) async {
     try {
+      final Map<String, dynamic> data = {
+        'email': email,
+        'password': password,
+        'nombre': nombre,
+        'apellido': apellido,
+      };
+      if (genero != null) data['genero'] = genero;
+      if (fechanacimiento != null) data['fechanacimiento'] = fechanacimiento;
+
       final response = await _dio.post(
         '/auth/register',
-        data: {
-          'email': email,
-          'password': password,
-          'nombre': nombre,
-          'apellido': apellido,
-        },
+        data: data,
       );
       return response.data;
     } on DioException catch (e) {
@@ -56,6 +60,40 @@ class AuthRepository {
     }
   }
 
+  Future<void> linkWithGoogle(String idToken) async {
+    try {
+      await _dio.post('/auth/google/link', data: {
+        'token': idToken,
+      });
+    } on DioException catch (e) {
+      throw Exception(
+          e.response?.data['message'] ?? 'Error al vincular con Google');
+    }
+  }
+
+  Future<Map<String, dynamic>> loginWithFacebook(String accessToken) async {
+    try {
+      final response = await _dio.post('/auth/facebook/token', data: {
+        'token': accessToken,
+      });
+      return response.data as Map<String, dynamic>;
+    } on DioException catch (e) {
+      throw Exception(
+          e.response?.data['message'] ?? 'Error al iniciar sesión con Facebook');
+    }
+  }
+
+  Future<void> linkWithFacebook(String accessToken) async {
+    try {
+      await _dio.post('/auth/facebook/link', data: {
+        'token': accessToken,
+      });
+    } on DioException catch (e) {
+      throw Exception(
+          e.response?.data['message'] ?? 'Error al vincular con Facebook');
+    }
+  }
+
   Future<Map<String, dynamic>> loginWithApple(String identityToken) async {
     try {
       final response = await _dio.post('/auth/apple/token', data: {
@@ -65,6 +103,17 @@ class AuthRepository {
     } on DioException catch (e) {
       throw Exception(
           e.response?.data['message'] ?? 'Error al iniciar sesión con Apple');
+    }
+  }
+
+  Future<void> updatePassword(String newPassword) async {
+    try {
+      await _dio.post(
+        '/auth/update-password',
+        data: {'password': newPassword},
+      );
+    } on DioException catch (e) {
+      throw Exception(e.response?.data['message'] ?? 'Error al actualizar contraseña');
     }
   }
 }

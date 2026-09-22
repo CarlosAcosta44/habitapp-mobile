@@ -3,6 +3,9 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter/foundation.dart';
+import 'package:timezone/timezone.dart' as tz;
+import 'package:timezone/data/latest_all.dart' as tz;
+import 'package:flutter_timezone/flutter_timezone.dart';
 import '../../../../firebase_options.dart'; // El usuario debe generar este archivo
 
 /// Top-level function para manejar notificaciones en background de FCM
@@ -34,6 +37,16 @@ class NotificationService {
       FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
 
       await _setupLocalNotifications();
+      
+      // Initialize timezone
+      tz.initializeTimeZones();
+      try {
+        final locationInfo = await FlutterTimezone.getLocalTimezone();
+        tz.setLocalLocation(tz.getLocation(locationInfo.identifier));
+      } catch (e) {
+        tz.setLocalLocation(tz.getLocation('America/Bogota'));
+      }
+
       await requestPermissions();
       _setupForegroundMessageHandlers();
       
@@ -154,5 +167,62 @@ class NotificationService {
       ),
       payload: payload,
     );
+  }
+
+  Future<void> scheduleHabitNotification({
+    required int id,
+    required String title,
+    required String body,
+    required int hour,
+    required int minute,
+    required List<int> daysOfWeek,
+  }) async {
+    for (int day in daysOfWeek) {
+      final scheduledDate = _nextInstanceOfTimeAndDay(hour, minute, day);
+
+      await _localNotificationsPlugin.zonedSchedule(
+        id: id * 10 + day, // Generar un ID único por día para el hábito
+        title: title,
+        body: body,
+        scheduledDate: scheduledDate,
+        notificationDetails: const NotificationDetails(
+          android: AndroidNotificationDetails(
+            'habitapp_high_importance_channel',
+            'Recordatorios de Hábitos',
+            channelDescription: 'Recordatorios de hábitos',
+            importance: Importance.max,
+            priority: Priority.high,
+          ),
+          iOS: DarwinNotificationDetails(),
+        ),
+        androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
+        matchDateTimeComponents: DateTimeComponents.dayOfWeekAndTime,
+      );
+    }
+  }
+
+  Future<void> cancelHabitNotifications(int habitId) async {
+    for (int day = 1; day <= 7; day++) {
+      await _localNotificationsPlugin.cancel(id: habitId * 10 + day);
+    }
+  }
+
+  Future<void> cancelAllPendingNotifications() async {
+    await _localNotificationsPlugin.cancelAll();
+  }
+
+  tz.TZDateTime _nextInstanceOfTimeAndDay(int hour, int minute, int dayOfWeek) {
+    final tz.TZDateTime now = tz.TZDateTime.now(tz.local);
+    tz.TZDateTime scheduledDate =
+        tz.TZDateTime(tz.local, now.year, now.month, now.day, hour, minute);
+
+    if (scheduledDate.isBefore(now)) {
+      scheduledDate = scheduledDate.add(const Duration(days: 1));
+    }
+
+    while (scheduledDate.weekday != dayOfWeek) {
+      scheduledDate = scheduledDate.add(const Duration(days: 1));
+    }
+    return scheduledDate;
   }
 }

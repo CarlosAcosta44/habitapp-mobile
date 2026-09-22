@@ -55,7 +55,7 @@ String _$locationServiceHash() => r'347d171ff0e8ffe39618ec7b7608be7bd7c86f0a';
 final userLocationProvider = UserLocationNotifierProvider._();
 
 final class UserLocationNotifierProvider
-    extends $AsyncNotifierProvider<UserLocationNotifier, Position?> {
+    extends $AsyncNotifierProvider<UserLocationNotifier, (Position, String)?> {
   UserLocationNotifierProvider._()
     : super(
         from: null,
@@ -76,19 +76,21 @@ final class UserLocationNotifierProvider
 }
 
 String _$userLocationNotifierHash() =>
-    r'4b3c358b5a645f90371f4293f16b70756e8a725f';
+    r'935ae7d03af2054548eea270a08904541f8b1f44';
 
-abstract class _$UserLocationNotifier extends $AsyncNotifier<Position?> {
-  FutureOr<Position?> build();
+abstract class _$UserLocationNotifier
+    extends $AsyncNotifier<(Position, String)?> {
+  FutureOr<(Position, String)?> build();
   @$mustCallSuper
   @override
   WhenComplete runBuild() {
-    final ref = this.ref as $Ref<AsyncValue<Position?>, Position?>;
+    final ref =
+        this.ref as $Ref<AsyncValue<(Position, String)?>, (Position, String)?>;
     final element =
         ref.element
             as $ClassProviderElement<
-              AnyNotifier<AsyncValue<Position?>, Position?>,
-              AsyncValue<Position?>,
+              AnyNotifier<AsyncValue<(Position, String)?>, (Position, String)?>,
+              AsyncValue<(Position, String)?>,
               Object?,
               Object?
             >;

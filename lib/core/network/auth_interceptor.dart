@@ -88,9 +88,9 @@ class AuthInterceptor extends Interceptor {
       await secureStorage.delete(key: 'access_token');
       await secureStorage.delete(key: 'refresh_token');
       
-      // Delay invalidation to next event loop to avoid Riverpod CircularDependencyError
-      Future.microtask(() {
-        ref.invalidate(authProvider);
+      // Delay invalidation to avoid Riverpod CircularDependencyError
+      Future.delayed(const Duration(milliseconds: 100), () {
+        ref.read(authProvider.notifier).logout();
       });
     }
     super.onError(err, handler);

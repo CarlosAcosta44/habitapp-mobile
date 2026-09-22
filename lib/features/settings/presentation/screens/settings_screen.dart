@@ -7,6 +7,9 @@ import '../../../profile/providers/profile_provider.dart';
 import '../../../../core/theme/theme_provider.dart';
 
 
+import '../../../notifications/data/services/notification_service.dart';
+import 'package:audioplayers/audioplayers.dart';
+
 class SettingsScreen extends ConsumerStatefulWidget {
   const SettingsScreen({super.key});
 
@@ -17,9 +20,39 @@ class SettingsScreen extends ConsumerStatefulWidget {
 class _SettingsScreenState extends ConsumerState<SettingsScreen> {
   // Estados locales (Mockup) para los selectores
   bool _notificationsEnabled = true;
-  int _selectedSound = 0; // 0: Campanas, 1: Naturaleza, 2: Silencio
-  bool _appleHealthEnabled = true;
-  bool _privateModeEnabled = true;
+  int _selectedSound = 0; // 0 = Activado, 1 = Desactivado
+  final AudioPlayer _audioPlayer = AudioPlayer();
+
+  @override
+  void dispose() {
+    _audioPlayer.dispose();
+    super.dispose();
+  }
+
+  void _showNotAvailableSnackBar() {
+    if (mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Función no disponible en este momento'),
+          backgroundColor: Colors.orange,
+          duration: Duration(seconds: 2),
+        ),
+      );
+    }
+  }
+
+  Future<void> _playSound(int index) async {
+    setState(() => _selectedSound = index);
+    if (index == 0) {
+      try {
+        await _audioPlayer.play(AssetSource('sounds/sound.mp3'));
+      } catch (e) {
+        // Ignorar si el archivo no existe aún
+      }
+    } else {
+      await _audioPlayer.stop();
+    }
+  }
 
   void _confirmLogout(BuildContext context, WidgetRef ref) {
     showDialog(
@@ -90,12 +123,26 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
             _buildSectionHeader('PREFERENCIAS DE LA APP', Icons.tune),
             _buildThemeCard(themeMode),
             SizedBox(height: 12),
-            _buildToggleCard('Activar notificaciones', 'Recibir avisos y recordatorios de\nhábitos', Icons.notifications_active_outlined, _notificationsEnabled, (v) => setState(() => _notificationsEnabled = v)),
+            _buildToggleCard(
+              'Activar notificaciones',
+              'Recibir avisos y recordatorios de\nhábitos',
+              Icons.notifications_active_outlined,
+              _notificationsEnabled,
+              (v) async {
+                setState(() => _notificationsEnabled = v);
+                if (!v) {
+                  await NotificationService().cancelAllPendingNotifications();
+                }
+              },
+            ),
             SizedBox(height: 12),
             _buildSoundCard(),
             SizedBox(height: 24),
             _buildSectionHeader('BIENESTAR Y PRIVACIDAD', Icons.shield_outlined),
             _buildPrivacyContainer(),
+            SizedBox(height: 24),
+            _buildSectionHeader('CUENTAS VINCULADAS', Icons.link),
+            _buildLinkedAccountsCard(),
             SizedBox(height: 24),
             _buildSectionHeader('ACOMPAÑAMIENTO', Icons.psychology_outlined),
             _buildCoachCard(),
@@ -394,11 +441,9 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
           SizedBox(height: 16),
           Row(
             children: [
-              _buildSoundButton('Campanas', Icons.graphic_eq, 0),
-              SizedBox(width: 10),
-              _buildSoundButton('Naturaleza', Icons.park_outlined, 1),
-              SizedBox(width: 10),
-              _buildSoundButton('Silencio', Icons.volume_off_outlined, 2),
+              _buildSoundButton('Activado', Icons.notifications_active_outlined, 0),
+              SizedBox(width: 16),
+              _buildSoundButton('Desactivado', Icons.volume_off_outlined, 1),
             ],
           )
         ],
@@ -410,22 +455,23 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     final isSelected = _selectedSound == index;
     return Expanded(
       child: GestureDetector(
-        onTap: () => setState(() => _selectedSound = index),
+        onTap: () => _playSound(index),
         child: Container(
           padding: EdgeInsets.symmetric(vertical: 12),
           decoration: BoxDecoration(
-            color: isSelected ? Theme.of(context).colorScheme.secondary.withValues(alpha: 0.05) : Colors.transparent,
+            color: isSelected ? Theme.of(context).colorScheme.primary : Colors.transparent,
             borderRadius: BorderRadius.circular(12),
-            border: Border.all(color: isSelected ? Theme.of(context).colorScheme.secondary : Theme.of(context).colorScheme.outlineVariant, width: 1.5),
+            border: Border.all(color: isSelected ? Theme.of(context).colorScheme.primary : Theme.of(context).colorScheme.outlineVariant, width: 1.5),
+            boxShadow: isSelected ? [BoxShadow(color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.3), blurRadius: 4, offset: Offset(0, 2))] : [],
           ),
           child: Column(
             children: [
-              Icon(icon, size: 20, color: isSelected ? Theme.of(context).colorScheme.secondary : Theme.of(context).colorScheme.onSurfaceVariant),
+              Icon(icon, size: 20, color: isSelected ? Theme.of(context).colorScheme.surface : Theme.of(context).colorScheme.onSurfaceVariant),
               SizedBox(height: 6),
               Text(
                 text,
                 style: TextStyle(
-                  color: isSelected ? Theme.of(context).colorScheme.secondary : Theme.of(context).colorScheme.onSurfaceVariant,
+                  color: isSelected ? Theme.of(context).colorScheme.surface : Theme.of(context).colorScheme.onSurfaceVariant,
                   fontWeight: isSelected ? FontWeight.bold : FontWeight.w600,
                   fontSize: 11,
                 ),
@@ -450,8 +496,8 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
             'Conectado - Pasos y sueño',
             Icons.favorite_border,
             Theme.of(context).colorScheme.primary,
-            _appleHealthEnabled,
-            (v) => setState(() => _appleHealthEnabled = v),
+            false, // Forced to false
+            (v) => _showNotAvailableSnackBar(),
             subtitleDotColor: Theme.of(context).colorScheme.primary,
           ),
           Divider(height: 1, indent: 24, endIndent: 24, color: Theme.of(context).colorScheme.outlineVariant),
@@ -460,8 +506,8 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
             'Compartir hábitos de forma anónima',
             Icons.visibility_off_outlined,
             Theme.of(context).colorScheme.primary,
-            _privateModeEnabled,
-            (v) => setState(() => _privateModeEnabled = v),
+            false, // Forced to false
+            (v) => _showNotAvailableSnackBar(),
           ),
         ],
       ),
@@ -615,6 +661,57 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
             ),
           ),
           Icon(Icons.chevron_right, color: Theme.of(context).colorScheme.onSurfaceVariant, size: 20),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildLinkedAccountsCard() {
+    return Container(
+      decoration: BoxDecoration(
+        color: Theme.of(context).colorScheme.surface,
+        borderRadius: BorderRadius.circular(20),
+        boxShadow: [BoxShadow(color: Theme.of(context).colorScheme.shadow.withValues(alpha: 0.02), blurRadius: 10, offset: Offset(0, 4))],
+      ),
+      child: Column(
+        children: [
+          ListTile(
+            contentPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+            leading: Image.asset('assets/images/google_logo.png', width: 24, height: 24, errorBuilder: (c,e,s) => const Icon(Icons.g_mobiledata, size: 32)),
+            title: Text('Google', style: TextStyle(fontWeight: FontWeight.w600, fontSize: 16)),
+            subtitle: Text('Vincular cuenta', style: TextStyle(color: Theme.of(context).colorScheme.onSurfaceVariant, fontSize: 13)),
+            trailing: TextButton(
+              onPressed: () async {
+                final scaffoldMessenger = ScaffoldMessenger.of(context);
+                try {
+                  await ref.read(authProvider.notifier).linkWithGoogle();
+                  scaffoldMessenger.showSnackBar(SnackBar(content: Text('Cuenta de Google vinculada'), backgroundColor: Colors.green));
+                } catch(e) {
+                  scaffoldMessenger.showSnackBar(SnackBar(content: Text(e.toString()), backgroundColor: Colors.red));
+                }
+              },
+              child: Text('Vincular'),
+            ),
+          ),
+          Divider(height: 1, indent: 20, endIndent: 20),
+          ListTile(
+            contentPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+            leading: Icon(Icons.facebook, color: Colors.blue, size: 28),
+            title: Text('Facebook', style: TextStyle(fontWeight: FontWeight.w600, fontSize: 16)),
+            subtitle: Text('Vincular cuenta', style: TextStyle(color: Theme.of(context).colorScheme.onSurfaceVariant, fontSize: 13)),
+            trailing: TextButton(
+              onPressed: () async {
+                final scaffoldMessenger = ScaffoldMessenger.of(context);
+                try {
+                  await ref.read(authProvider.notifier).linkWithFacebook();
+                  scaffoldMessenger.showSnackBar(SnackBar(content: Text('Cuenta de Facebook vinculada'), backgroundColor: Colors.green));
+                } catch(e) {
+                  scaffoldMessenger.showSnackBar(SnackBar(content: Text(e.toString()), backgroundColor: Colors.red));
+                }
+              },
+              child: Text('Vincular'),
+            ),
+          ),
         ],
       ),
     );

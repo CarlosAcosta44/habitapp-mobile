@@ -34,90 +34,70 @@ class ClinicalArticleCard extends StatelessWidget {
             ),
           ],
         ),
-        child: Row(
+        child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Article Icon
-            Container(
-              width: 52,
-              height: 52,
-              decoration: BoxDecoration(
-                color: article.iconBgColor,
-                borderRadius: BorderRadius.circular(16),
-              ),
-              alignment: Alignment.center,
-              child: Icon(
-                article.icon,
-                color: article.iconColor,
-                size: 28,
-              ),
-            ),
-            const SizedBox(width: 14),
-            // Text contents
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Top row: Category • Read time and Bookmark
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  // Category tag & read time
-                  Row(
-                    children: [
-                      Text(
-                        article.category,
-                        style: TextStyle(
-                          fontSize: 10,
-                          fontWeight: FontWeight.w800,
-                          color: article.categoryColor,
-                          letterSpacing: 0.5,
-                        ),
-                      ),
-                      const SizedBox(width: 4),
-                      Text(
-                        '· ${article.readTime}',
-                        style: TextStyle(
-                          fontSize: 10.5,
-                          color: colorScheme.onSurfaceVariant,
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 3),
-                  // Title
                   Text(
-                    article.title,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
+                    '${article.category} • ${article.readTime}',
                     style: TextStyle(
-                      fontSize: 13.5,
-                      fontWeight: FontWeight.bold,
-                      color: colorScheme.onSurface,
+                      fontSize: 10,
+                      fontWeight: FontWeight.w800,
+                      color: article.categoryColor,
+                      letterSpacing: 0.5,
                     ),
                   ),
-                  const SizedBox(height: 2),
-                  // Description
+                  IconButton(
+                    onPressed: () {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(content: Text('Funcionalidad no disponible')),
+                      );
+                    },
+                    icon: Icon(Icons.bookmark_border, size: 18, color: colorScheme.onSurfaceVariant),
+                    padding: EdgeInsets.zero,
+                    constraints: const BoxConstraints(),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 8),
+              
+              // Title
+              Text(
+                article.title,
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+                style: TextStyle(
+                  fontSize: 15,
+                  fontWeight: FontWeight.bold,
+                  color: colorScheme.onSurface,
+                  height: 1.2,
+                ),
+              ),
+              const SizedBox(height: 12),
+              
+              // Bottom row: Avatar, Author & Publish Date
+              Row(
+                children: [
+                  CircleAvatar(
+                    radius: 10,
+                    backgroundImage: NetworkImage('https://ui-avatars.com/api/?name=HabitApp&background=0D8ABC&color=fff'),
+                  ),
+                  const SizedBox(width: 6),
                   Text(
-                    article.description,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
+                    'HabitApp • ${article.publishDate}',
                     style: TextStyle(
                       fontSize: 11,
-                      color: colorScheme.onSurfaceVariant,
-                    ),
-                  ),
-                  const SizedBox(height: 4),
-                  // Author
-                  Text(
-                    article.author,
-                    style: TextStyle(
-                      fontSize: 10.5,
                       color: colorScheme.onSurfaceVariant,
                       fontWeight: FontWeight.w500,
                     ),
                   ),
                 ],
               ),
-            ),
-          ],
-        ),
+            ],
+          ),
       ),
     );
   }

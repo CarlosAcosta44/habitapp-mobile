@@ -201,7 +201,7 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
               ),
               SizedBox(height: 8),
               Text(
-                '${stats.completedDays} de ${stats.totalExpectedDays} hábitos completados',
+                '${stats.completedDays} de ${stats.totalExpectedDays} completados esta semana',
                 style: TextStyle(
                   fontSize: 14,
                   color: Theme.of(context).colorScheme.onSurfaceVariant,
@@ -727,6 +727,47 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
   }
 
   Widget _buildSmartInsight(HabitStats stats) {
-    return SizedBox.shrink(); // Removido por solicitud del usuario
+    if (stats.smartInsight.isEmpty) return const SizedBox.shrink();
+    
+    final colorScheme = Theme.of(context).colorScheme;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: isDark ? colorScheme.primaryContainer.withValues(alpha: 0.2) : const Color(0xFFEBF3FE),
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: colorScheme.primary.withValues(alpha: 0.3)),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Icon(Icons.lightbulb_outline, color: colorScheme.primary, size: 20),
+              const SizedBox(width: 8),
+              Text(
+                'Insight Inteligente de IA',
+                style: TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.bold,
+                  color: colorScheme.primary,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 12),
+          Text(
+            stats.smartInsight,
+            style: TextStyle(
+              fontSize: 13,
+              color: colorScheme.onSurface,
+              height: 1.4,
+            ),
+          ),
+        ],
+      ),
+    );
   }
 }

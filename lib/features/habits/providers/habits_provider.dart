@@ -51,15 +51,15 @@ class HabitsDashboardNotifier extends _$HabitsDashboardNotifier {
   }
 
   /// Crea un nuevo hábito y recarga el dashboard
-  Future<bool> createHabit(CreateHabitDto dto) async {
+  Future<HabitModel?> createHabit(CreateHabitDto dto) async {
     final repository = ref.read(habitsRepositoryProvider);
     try {
-      await repository.createHabit(dto);
+      final habit = await repository.createHabit(dto);
       await refresh();
-      return true;
+      return habit;
     } catch (e, stack) {
       state = AsyncValue.error(e, stack);
-      return false;
+      return null;
     }
   }
 

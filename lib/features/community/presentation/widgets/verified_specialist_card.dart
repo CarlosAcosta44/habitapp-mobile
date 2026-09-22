@@ -41,38 +41,12 @@ class VerifiedSpecialistCard extends StatelessWidget {
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Avatar with Online dot
-              Stack(
-                children: [
-                  Container(
-                    width: 48,
-                    height: 48,
-                    decoration: BoxDecoration(
-                      color: specialist.iconBgColor,
-                      borderRadius: BorderRadius.circular(14),
-                    ),
-                    alignment: Alignment.center,
-                    child: Icon(
-                      specialist.icon,
-                      color: specialist.iconColor,
-                      size: 26,
-                    ),
-                  ),
-                  if (specialist.isOnline)
-                    Positioned(
-                      bottom: 0,
-                      right: 0,
-                      child: Container(
-                        width: 12,
-                        height: 12,
-                        decoration: BoxDecoration(
-                          color: _kGreen,
-                          shape: BoxShape.circle,
-                          border: Border.all(color: colorScheme.surface, width: 2),
-                        ),
-                      ),
-                    ),
-                ],
+              // Avatar
+              CircleAvatar(
+                radius: 24,
+                backgroundColor: specialist.avatarUrl.isEmpty ? _kBlue : null,
+                backgroundImage: specialist.avatarUrl.isNotEmpty ? NetworkImage(specialist.avatarUrl) : null,
+                child: specialist.avatarUrl.isEmpty ? const Icon(Icons.person, color: Colors.white) : null,
               ),
 
               const SizedBox(width: 12),
@@ -82,37 +56,14 @@ class VerifiedSpecialistCard extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // Name & Rating
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          specialist.name,
-                          style: TextStyle(
-                            fontSize: 13.5,
-                            fontWeight: FontWeight.bold,
-                            color: colorScheme.onSurface,
-                          ),
-                        ),
-                        Row(
-                          children: [
-                            const Icon(
-                              Icons.star_rounded,
-                              size: 15,
-                              color: Color(0xFFFF9800),
-                            ),
-                            const SizedBox(width: 2),
-                            Text(
-                              '${specialist.rating} (${specialist.reviewsCount})',
-                                style: TextStyle(
-                                  fontSize: 11,
-                                  fontWeight: FontWeight.bold,
-                                  color: colorScheme.onSurface,
-                                ),
-                            ),
-                          ],
-                        ),
-                      ],
+                    // Name
+                    Text(
+                      specialist.name,
+                      style: TextStyle(
+                        fontSize: 13.5,
+                        fontWeight: FontWeight.bold,
+                        color: colorScheme.onSurface,
+                      ),
                     ),
 
                     const SizedBox(height: 2),
@@ -125,27 +76,6 @@ class VerifiedSpecialistCard extends StatelessWidget {
                         color: _kGreen,
                         fontWeight: FontWeight.w600,
                       ),
-                    ),
-
-                    const SizedBox(height: 2),
-
-                    // Price & mode
-                    Row(
-                      children: [
-                        Icon(
-                          Icons.laptop_mac_rounded,
-                          size: 12,
-                          color: colorScheme.onSurfaceVariant,
-                        ),
-                        const SizedBox(width: 4),
-                        Text(
-                          'Online  •  ${specialist.priceSession}',
-                          style: TextStyle(
-                            fontSize: 10.5,
-                            color: colorScheme.onSurfaceVariant,
-                          ),
-                        ),
-                      ],
                     ),
                   ],
                 ),
@@ -169,7 +99,7 @@ class VerifiedSpecialistCard extends StatelessWidget {
                     ),
                     alignment: Alignment.center,
                     child: Text(
-                      'Ver perfil',
+                      'Mensaje',
                       style: TextStyle(
                         fontSize: 12,
                         fontWeight: FontWeight.w700,
