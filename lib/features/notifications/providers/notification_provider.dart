@@ -1,9 +1,9 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../data/services/notification_service.dart';
+import '../data/repositories/notification_repository.dart';
 
-/// Exposes [NotificationService] as a lazily-created singleton.
+/// Exposes [NotificationRepository] as a lazily-created singleton.
 /// All presentation-layer code must use this provider instead of
-/// instantiating [NotificationService] directly.
-final notificationServiceProvider = Provider<NotificationService>((ref) {
-  return NotificationService();
+/// instantiating [NotificationRepository] directly.
+final notificationRepositoryProvider = Provider<NotificationRepository>((ref) {
+  return NotificationRepository();
 });

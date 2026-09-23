@@ -182,12 +182,16 @@ class _ShareHabitBottomSheetState extends ConsumerState<ShareHabitBottomSheet> {
                                   children: [
                                     const Icon(Icons.local_fire_department, size: 14, color: _kGreen),
                                     const SizedBox(width: 4),
-                                    Text(
-                                      'Racha de $streak días • ${habit.progresoHoy.toInt()}/${habit.metaDiaria} ${habit.unidadMedida} hoy',
-                                      style: TextStyle(
-                                        fontSize: 11,
-                                        fontWeight: FontWeight.w600,
-                                        color: colorScheme.onSurfaceVariant,
+                                    Expanded(
+                                      child: Text(
+                                        'Racha de $streak días • ${habit.progresoHoy.toInt()}/${habit.metaDiaria} ${habit.unidadMedida} hoy',
+                                        style: TextStyle(
+                                          fontSize: 11,
+                                          fontWeight: FontWeight.w600,
+                                          color: colorScheme.onSurfaceVariant,
+                                        ),
+                                        overflow: TextOverflow.ellipsis,
+                                        maxLines: 1,
                                       ),
                                     ),
                                   ],

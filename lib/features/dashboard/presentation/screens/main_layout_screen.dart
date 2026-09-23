@@ -26,7 +26,7 @@ class MainLayoutScreen extends StatelessWidget {
       extendBody: false,
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: navigationShell,
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+      floatingActionButtonLocation: const StaticFloatingActionButtonLocation(FloatingActionButtonLocation.centerDocked),
       floatingActionButton: Container(
         width: 64,
         height: 64,
@@ -150,5 +150,31 @@ class _NavItem extends StatelessWidget {
         ],
       ),
     );
+  }
+}
+
+/// Custom FAB location to prevent the FAB from elevating when a SnackBar appears.
+/// It wraps an existing FloatingActionButtonLocation and zeroes out the snackBarSize.
+class StaticFloatingActionButtonLocation extends FloatingActionButtonLocation {
+  final FloatingActionButtonLocation location;
+
+  const StaticFloatingActionButtonLocation(this.location);
+
+  @override
+  Offset getOffset(ScaffoldPrelayoutGeometry scaffoldGeometry) {
+    // Copy the geometry but zero out the snackBarSize to prevent shifting
+    final modifiedGeometry = ScaffoldPrelayoutGeometry(
+      bottomSheetSize: scaffoldGeometry.bottomSheetSize,
+      contentBottom: scaffoldGeometry.contentBottom,
+      contentTop: scaffoldGeometry.contentTop,
+      floatingActionButtonSize: scaffoldGeometry.floatingActionButtonSize,
+      minInsets: scaffoldGeometry.minInsets,
+      scaffoldSize: scaffoldGeometry.scaffoldSize,
+      snackBarSize: Size.zero, // This prevents shifting!
+      textDirection: scaffoldGeometry.textDirection,
+      materialBannerSize: scaffoldGeometry.materialBannerSize,
+      minViewPadding: scaffoldGeometry.minViewPadding,
+    );
+    return location.getOffset(modifiedGeometry);
   }
 }

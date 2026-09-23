@@ -6,7 +6,7 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
 import 'firebase_options.dart';
-import 'features/notifications/data/services/notification_service.dart';
+import 'features/notifications/data/repositories/notification_repository.dart';
 import 'core/theme/app_theme.dart';
 import 'core/theme/theme_provider.dart';
 
@@ -28,7 +28,7 @@ void main() async {
     );
 
     // Inicializar notificaciones
-    await NotificationService().initialize();
+    await NotificationRepository().initialize();
   }
 
   runApp(

@@ -132,7 +132,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                 setState(() => _notificationsEnabled = v);
                 if (!v) {
                   await ref
-                      .read(notificationServiceProvider)
+                      .read(notificationRepositoryProvider)
                       .cancelAllPendingNotifications();
                 }
               },

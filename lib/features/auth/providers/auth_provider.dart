@@ -75,7 +75,7 @@ class AuthNotifier extends _$AuthNotifier {
       state = AsyncValue.loading();
       
       final GoogleSignIn googleSignIn = GoogleSignIn(
-        // clientId: 'PONER_AQUI_CLIENT_ID_SI_ES_IOS',
+        serverClientId: '964868283203-03dia1hcs0tldoab5tusugcr21gms149.apps.googleusercontent.com',
       );
       
       final GoogleSignInAccount? googleUser = await googleSignIn.signIn();
@@ -117,7 +117,9 @@ class AuthNotifier extends _$AuthNotifier {
 
   Future<void> linkWithGoogle() async {
     try {
-      final GoogleSignIn googleSignIn = GoogleSignIn();
+      final GoogleSignIn googleSignIn = GoogleSignIn(
+        serverClientId: '964868283203-03dia1hcs0tldoab5tusugcr21gms149.apps.googleusercontent.com',
+      );
       final GoogleSignInAccount? googleUser = await googleSignIn.signIn();
       
       if (googleUser == null) {

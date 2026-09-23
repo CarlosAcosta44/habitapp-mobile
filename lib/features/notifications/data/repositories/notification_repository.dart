@@ -15,10 +15,10 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   debugPrint("Handling a background message: ${message.messageId}");
 }
 
-class NotificationService {
-  static final NotificationService _instance = NotificationService._internal();
-  factory NotificationService() => _instance;
-  NotificationService._internal();
+class NotificationRepository {
+  static final NotificationRepository _instance = NotificationRepository._internal();
+  factory NotificationRepository() => _instance;
+  NotificationRepository._internal();
 
   final FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
   final FlutterLocalNotificationsPlugin _localNotificationsPlugin = FlutterLocalNotificationsPlugin();
@@ -52,7 +52,7 @@ class NotificationService {
       
       _isInitialized = true;
     } catch (e) {
-      debugPrint("Error inicializando NotificationService: $e");
+      debugPrint("Error inicializando NotificationRepository: $e");
     }
   }
 
@@ -176,12 +176,17 @@ class NotificationService {
     required int hour,
     required int minute,
     required List<int> daysOfWeek,
+    required int index, // Índice del recordatorio para evitar colisión si hay varios en el mismo día
   }) async {
     for (int day in daysOfWeek) {
       final scheduledDate = _nextInstanceOfTimeAndDay(hour, minute, day);
 
+      // Generar un ID único por hábito, por día y por índice de recordatorio
+      final uniqueId = (id.abs() % 10000) * 1000 + day * 100 + index;
+
       await _localNotificationsPlugin.zonedSchedule(
-        id: id * 10 + day, // Generar un ID único por día para el hábito
+        id: uniqueId,
+
         title: title,
         body: body,
         scheduledDate: scheduledDate,
@@ -202,8 +207,12 @@ class NotificationService {
   }
 
   Future<void> cancelHabitNotifications(int habitId) async {
+    // Cancelamos para los 7 días y hasta 10 posibles recordatorios por día (índices 0 a 9)
     for (int day = 1; day <= 7; day++) {
-      await _localNotificationsPlugin.cancel(id: habitId * 10 + day);
+      for (int index = 0; index < 10; index++) {
+        final uniqueId = (habitId.hashCode.abs() % 10000) * 1000 + day * 100 + index;
+        await _localNotificationsPlugin.cancel(id: uniqueId);
+      }
     }
   }
 

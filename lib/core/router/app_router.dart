@@ -9,6 +9,7 @@ import '../../features/auth/presentation/screens/lock_screen.dart';
 import '../../features/auth/providers/biometric_provider.dart';
 import '../../features/onboarding/presentation/screens/onboarding_screen.dart';
 import '../../features/onboarding/providers/onboarding_provider.dart';
+import '../../features/auth/providers/splash_provider.dart';
 import '../../features/dashboard/presentation/screens/dashboard_screen.dart';
 import '../../features/dashboard/presentation/screens/main_layout_screen.dart';
 import '../../features/profile/presentation/screens/edit_profile_screen.dart';
@@ -162,6 +163,7 @@ GoRouter appRouter(Ref ref) {
       final authState = ref.read(authProvider);
       final onboardingState = ref.read(onboardingProvider);
       final biometricState = ref.read(biometricProvider);
+      final isSplashShowing = ref.read(splashProvider);
 
       final loc = state.matchedLocation;
       final isAtSplash = loc == '/splash';
@@ -169,6 +171,11 @@ GoRouter appRouter(Ref ref) {
       final isAtLogin = loc == '/login';
       final isAtRegister = loc == '/register';
       final isAtLock = loc == '/lock';
+
+      // 0. Si Splash está mostrándose por el temporizador, forzar ruta a splash
+      if (isSplashShowing) {
+        return isAtSplash ? null : '/splash';
+      }
 
       // 1. Mientras cargan los providers → mantener en Splash
       if (authState.isLoading || onboardingState.isLoading || biometricState.isLoading) {
@@ -218,6 +225,9 @@ class _NotifierListenable extends ChangeNotifier {
     });
     ref.listen(onboardingProvider, (prev, next) {
       if (prev?.value != next.value) notifyListeners();
+    });
+    ref.listen(splashProvider, (prev, next) {
+      if (prev != next) notifyListeners();
     });
     ref.listen(biometricProvider, (prev, next) {
       if (prev?.value?.isLocked != next.value?.isLocked) notifyListeners();
