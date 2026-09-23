@@ -7,6 +7,7 @@ import '../../providers/habits_provider.dart';
 import '../../data/models/category_model.dart';
 import '../../data/models/habit_model.dart';
 import '../../../notifications/providers/notification_provider.dart';
+import '../../../../core/theme/theme_provider.dart';
 
 const _kRed = Color(0xFFF76B6B);
 
@@ -33,7 +34,8 @@ class _HabitDetailScreenState extends ConsumerState<HabitDetailScreen> {
   }
 
   Future<void> _loadReminders() async {
-    final prefs = await SharedPreferences.getInstance();
+    // Usamos el provider para evitar problemas de asincronía o instancias inconsistentes
+    final prefs = ref.read(sharedPreferencesProvider);
     final key = 'reminders_${widget.habitId}';
     final savedTimes = prefs.getStringList(key);
     debugPrint('[Reminders] Loading key=$key → $savedTimes');
@@ -747,21 +749,24 @@ class _HabitDetailScreenState extends ConsumerState<HabitDetailScreen> {
   }
 
   Future<void> _saveNotifications(HabitModel habit) async {
-    final notifService = ref.read(notificationServiceProvider);
+    final notifRepo = ref.read(notificationRepositoryProvider);
 
     // 1. Cancel previous
-    await notifService.cancelHabitNotifications(habit.id.hashCode);
+    await notifRepo.cancelHabitNotifications(habit.id.hashCode);
 
     // 2. Schedule new
+    int index = 0;
     for (var time in _reminderTimes) {
-      await notifService.scheduleHabitNotification(
+      await notifRepo.scheduleHabitNotification(
         id: habit.id.hashCode,
         title: '¡Recordatorio de hábito!',
         body: 'Es hora de: ${habit.nombre}',
         hour: time.hour,
         minute: time.minute,
         daysOfWeek: habit.diasSemana,
+        index: index,
       );
+      index++;
     }
 
     // 3. Persist to SharedPreferences

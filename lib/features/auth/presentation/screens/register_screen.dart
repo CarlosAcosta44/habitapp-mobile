@@ -248,9 +248,10 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                                       ),
                                       SizedBox(height: 8),
                                       DropdownButtonFormField<String>(
+                                        isExpanded: true,
                                         initialValue: _generoCtrl.text,
                                         items: ['Masculino', 'Femenino', 'Otro', 'Prefiero no decirlo']
-                                            .map((String value) => DropdownMenuItem(value: value, child: Text(value)))
+                                            .map((String value) => DropdownMenuItem(value: value, child: Text(value, overflow: TextOverflow.ellipsis)))
                                             .toList(),
                                         onChanged: (v) {
                                           if (v != null) setState(() => _generoCtrl.text = v);

@@ -154,17 +154,20 @@ class _CreateHabitScreenState extends ConsumerState<CreateHabitScreen> {
     if (mounted) {
       setState(() => _isLoading = false);
       if (createdHabit != null) {
-        final notifService = ref.read(notificationServiceProvider);
+        final notifRepo = ref.read(notificationRepositoryProvider);
+        int index = 0;
         for (var time in _reminderTimes) {
           try {
-            await notifService.scheduleHabitNotification(
+            await notifRepo.scheduleHabitNotification(
               id: createdHabit.id.hashCode,
               title: '¡Recordatorio de hábito!',
               body: 'Es hora de: ${createdHabit.nombre}',
               hour: time.hour,
               minute: time.minute,
               daysOfWeek: sortedDays,
+              index: index,
             );
+            index++;
           } catch (e) {
             debugPrint('Error scheduling notification: $e');
           }

@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../../dashboard/data/repositories/quotes_repository.dart';
 import '../../providers/auth_provider.dart';
+import '../../providers/splash_provider.dart';
 
 class SplashData {
   static Quote? dailyQuote;
@@ -55,9 +56,17 @@ class _SplashScreenState extends ConsumerState<SplashScreen> with SingleTickerPr
     // Al mismo tiempo que animamos, cargamos la frase del backend y verificamos autenticación
     try {
       final quote = await ref.read(quotesServiceProvider).getDailyQuote();
-      _quote = quote;
+      if (mounted) {
+        setState(() {
+          _quote = quote;
+        });
+      }
     } catch (e) {
-      _quote = Quote(phrase: 'Transforma tus metas en hábitos y tus hábitos en realidad.', author: 'HabitApp');
+      if (mounted) {
+        setState(() {
+          _quote = Quote(phrase: 'Transforma tus metas en hábitos y tus hábitos en realidad.', author: 'HabitApp');
+        });
+      }
     }
 
     // Actualizamos los providers globales para el dashboard
@@ -69,13 +78,16 @@ class _SplashScreenState extends ConsumerState<SplashScreen> with SingleTickerPr
 
     if (!mounted) return;
 
+    // Liberamos el bloqueo del splash
+    ref.read(splashProvider.notifier).complete();
+
     // Verificamos si está logueado para redirigir
     final authState = await ref.read(authProvider.future);
     if (!mounted) return;
     if (authState) {
-      context.go('/dashboard');
+      context.go('/'); // The path in app_router is '/' not '/dashboard'
     } else {
-      context.go('/login'); // O onboarding dependiendo del flujo
+      context.go('/onboarding');
     }
   }
 
@@ -117,12 +129,27 @@ class _SplashScreenState extends ConsumerState<SplashScreen> with SingleTickerPr
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Spacer(),
-                  Image.asset(
-                    'assets/images/logo-habitapp.png',
-                    width: 64,
-                    height: 64,
+                  Column(
+                    children: [
+                      Image.asset(
+                        'assets/images/logo-habitapp.png',
+                        width: 80,
+                        height: 80,
+                      ),
+                      const SizedBox(height: 12),
+                      const Text(
+                        'HabitApp',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 28,
+                          fontWeight: FontWeight.w900,
+                          letterSpacing: 1.2,
+                          shadows: [Shadow(color: Colors.black54, blurRadius: 15, offset: Offset(0, 3))],
+                        ),
+                      ),
+                    ],
                   ),
-                  SizedBox(height: 24),
+                  SizedBox(height: 32),
                   Text(
                     _quote?.phrase ?? 'Cargando tu día...',
                     textAlign: TextAlign.center,
