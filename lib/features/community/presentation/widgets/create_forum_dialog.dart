@@ -130,138 +130,140 @@ class _CreateForumDialogState extends ConsumerState<CreateForumDialog> {
         left: 20,
         right: 20,
       ),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // Drag handle
-          Center(
-            child: Container(
-              width: 40,
-              height: 4,
-              margin: const EdgeInsets.only(bottom: 16),
-              decoration: BoxDecoration(
-                color: Colors.grey.withValues(alpha: 0.3),
-                borderRadius: BorderRadius.circular(4),
+      child: SingleChildScrollView(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Drag handle
+            Center(
+              child: Container(
+                width: 40,
+                height: 4,
+                margin: const EdgeInsets.only(bottom: 16),
+                decoration: BoxDecoration(
+                  color: Colors.grey.withValues(alpha: 0.3),
+                  borderRadius: BorderRadius.circular(4),
+                ),
               ),
             ),
-          ),
-          
-          // Header
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text('Crear un Foro', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: onSurfaceColor)),
-                    const SizedBox(height: 4),
-                    Text(
-                      'Comparte tus dudas, experiencias o reflexiones con la comunidad',
-                      style: TextStyle(fontSize: 12, color: isDark ? Colors.grey[400] : Colors.grey[600]),
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(width: 12),
-              GestureDetector(
-                onTap: () => Navigator.pop(context),
-                child: Container(
-                  padding: const EdgeInsets.all(6),
-                  decoration: BoxDecoration(
-                    color: primaryLightColor,
-                    shape: BoxShape.circle,
-                  ),
-                  child: Icon(Icons.close, size: 16, color: onSurfaceColor.withValues(alpha: 0.6)),
-                ),
-              ),
-            ],
-          ),
-          
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 16),
-            child: Divider(color: isDark ? Colors.grey[800] : const Color(0xFFF0F0F0)),
-          ),
-          
-          _buildTextField(
-            context: context,
-            label: 'Categoría / Etiqueta temática',
-            hintText: 'Ej: Ansiedad, Mindfulness o Hábitos',
-            controller: _categoryController,
-          ),
-          
-          const SizedBox(height: 16),
-          
-          _buildTextField(
-            context: context,
-            label: 'Título del foro',
-            hintText: '¿Cómo gestionáis la ansiedad matutina?',
-            controller: _titleController,
-          ),
-          
-          const SizedBox(height: 16),
-          
-          _buildTextField(
-            context: context,
-            label: '¿Qué quieres compartir o preguntar?',
-            hintText: 'Llevo varios días notando una sensación de aceleración nada más levantarme. ¿Qué rutinas o respiraciones os ayudan más en los primeros 15 minutos?',
-            controller: _descriptionController,
-            maxLines: 4,
-            maxLength: 500,
-            trailingLabel: Text(
-              '${_descriptionController.text.length} / 500',
-              style: TextStyle(fontSize: 11, color: isDark ? Colors.grey[500] : Colors.grey),
-            ),
-          ),
-          
-          const SizedBox(height: 24),
-          
-          // Buttons
-          Row(
-            children: [
-              Expanded(
-                flex: 1,
-                child: ElevatedButton(
-                  onPressed: () => Navigator.pop(context),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: primaryLightColor,
-                    foregroundColor: onSurfaceColor,
-                    elevation: 0,
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-                    padding: const EdgeInsets.symmetric(vertical: 14),
-                  ),
-                  child: const Text('Cancelar', style: TextStyle(fontWeight: FontWeight.bold)),
-                ),
-              ),
-              const SizedBox(width: 12),
-              Expanded(
-                flex: 2,
-                child: ElevatedButton(
-                  onPressed: _isLoading ? null : _submit,
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFF2563EB),
-                    foregroundColor: Colors.white,
-                    elevation: 0,
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-                    padding: const EdgeInsets.symmetric(vertical: 14),
-                  ),
-                  child: _isLoading 
-                    ? const SizedBox(height: 16, width: 16, child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2))
-                    : const Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Icon(Icons.send_rounded, size: 16, color: Colors.white),
-                          SizedBox(width: 8),
-                          Text('Publicar Foro', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white)),
-                        ],
+            
+            // Header
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text('Crear un Foro', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: onSurfaceColor)),
+                      const SizedBox(height: 4),
+                      Text(
+                        'Comparte tus dudas, experiencias o reflexiones con la comunidad',
+                        style: TextStyle(fontSize: 12, color: isDark ? Colors.grey[400] : Colors.grey[600]),
                       ),
+                    ],
+                  ),
                 ),
+                const SizedBox(width: 12),
+                GestureDetector(
+                  onTap: () => Navigator.pop(context),
+                  child: Container(
+                    padding: const EdgeInsets.all(6),
+                    decoration: BoxDecoration(
+                      color: primaryLightColor,
+                      shape: BoxShape.circle,
+                    ),
+                    child: Icon(Icons.close, size: 16, color: onSurfaceColor.withValues(alpha: 0.6)),
+                  ),
+                ),
+              ],
+            ),
+            
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 16),
+              child: Divider(color: isDark ? Colors.grey[800] : const Color(0xFFF0F0F0)),
+            ),
+            
+            _buildTextField(
+              context: context,
+              label: 'Categoría / Etiqueta temática',
+              hintText: 'Ej: Ansiedad, Mindfulness o Hábitos',
+              controller: _categoryController,
+            ),
+            
+            const SizedBox(height: 16),
+            
+            _buildTextField(
+              context: context,
+              label: 'Título del foro',
+              hintText: '¿Cómo gestionáis la ansiedad matutina?',
+              controller: _titleController,
+            ),
+            
+            const SizedBox(height: 16),
+            
+            _buildTextField(
+              context: context,
+              label: '¿Qué quieres compartir o preguntar?',
+              hintText: 'Llevo varios días notando una sensación de aceleración nada más levantarme. ¿Qué rutinas o respiraciones os ayudan más en los primeros 15 minutos?',
+              controller: _descriptionController,
+              maxLines: 4,
+              maxLength: 500,
+              trailingLabel: Text(
+                '${_descriptionController.text.length} / 500',
+                style: TextStyle(fontSize: 11, color: isDark ? Colors.grey[500] : Colors.grey),
               ),
-            ],
-          ),
-        ],
+            ),
+            
+            const SizedBox(height: 24),
+            
+            // Buttons
+            Row(
+              children: [
+                Expanded(
+                  flex: 1,
+                  child: ElevatedButton(
+                    onPressed: () => Navigator.pop(context),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: primaryLightColor,
+                      foregroundColor: onSurfaceColor,
+                      elevation: 0,
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+                      padding: const EdgeInsets.symmetric(vertical: 14),
+                    ),
+                    child: const Text('Cancelar', style: TextStyle(fontWeight: FontWeight.bold)),
+                  ),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  flex: 2,
+                  child: ElevatedButton(
+                    onPressed: _isLoading ? null : _submit,
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color(0xFF2563EB),
+                      foregroundColor: Colors.white,
+                      elevation: 0,
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+                      padding: const EdgeInsets.symmetric(vertical: 14),
+                    ),
+                    child: _isLoading 
+                      ? const SizedBox(height: 16, width: 16, child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2))
+                      : const Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(Icons.send_rounded, size: 16, color: Colors.white),
+                            SizedBox(width: 8),
+                            Text('Publicar Foro', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white)),
+                          ],
+                        ),
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }
