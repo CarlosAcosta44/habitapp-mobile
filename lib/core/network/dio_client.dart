@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import '../../features/auth/providers/auth_provider.dart';
@@ -12,6 +13,16 @@ FlutterSecureStorage secureStorage(Ref ref) {
   return FlutterSecureStorage();
 }
 
+String _resolveApiBaseUrl() {
+  if (dotenv.isInitialized) {
+    final envUrl = dotenv.maybeGet('API_URL') ?? dotenv.maybeGet('API_BASE_URL');
+    if (envUrl != null && envUrl.trim().isNotEmpty) {
+      return envUrl.trim();
+    }
+  }
+  return 'https://habitapp-api-hnbba0c8cqfvc2hj.chilecentral-01.azurewebsites.net/api/v1';
+}
+
 // Provider for Dio client
 @Riverpod(keepAlive: true)
 Dio dioClient(Ref ref) {
@@ -19,7 +30,7 @@ Dio dioClient(Ref ref) {
   
   final dio = Dio(
     BaseOptions(
-      baseUrl: 'https://habitapp-api-hnbba0c8cqfvc2hj.chilecentral-01.azurewebsites.net/api/v1',
+      baseUrl: _resolveApiBaseUrl(),
       connectTimeout: const Duration(seconds: 10),
       receiveTimeout: const Duration(seconds: 30),
       headers: {

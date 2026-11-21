@@ -52,6 +52,7 @@ class AuthInterceptor extends Interceptor {
           ));
 
           final response = await refreshDio.post('/auth/refresh', data: {
+            'refreshToken': _cachedRefreshToken,
             'refresh_token': _cachedRefreshToken,
           });
 

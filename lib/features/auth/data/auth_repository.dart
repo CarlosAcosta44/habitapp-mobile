@@ -49,8 +49,8 @@ class AuthRepository {
 
   Future<Map<String, dynamic>> loginWithGoogle(String idToken) async {
     try {
-      final response = await _dio.post('/auth/google/token', data: {
-        'token': idToken,
+      final response = await _dio.post('/auth/google', data: {
+        'idToken': idToken,
       });
       // El backend devuelve { "access_token": "...", "refresh_token": "..." }
       return response.data as Map<String, dynamic>;
@@ -62,8 +62,8 @@ class AuthRepository {
 
   Future<void> linkWithGoogle(String idToken) async {
     try {
-      await _dio.post('/auth/google/link', data: {
-        'token': idToken,
+      await _dio.post('/auth/google', data: {
+        'idToken': idToken,
       });
     } on DioException catch (e) {
       throw Exception(
@@ -73,8 +73,8 @@ class AuthRepository {
 
   Future<Map<String, dynamic>> loginWithFacebook(String accessToken) async {
     try {
-      final response = await _dio.post('/auth/facebook/token', data: {
-        'token': accessToken,
+      final response = await _dio.post('/auth/facebook', data: {
+        'accessToken': accessToken,
       });
       return response.data as Map<String, dynamic>;
     } on DioException catch (e) {
@@ -85,8 +85,8 @@ class AuthRepository {
 
   Future<void> linkWithFacebook(String accessToken) async {
     try {
-      await _dio.post('/auth/facebook/link', data: {
-        'token': accessToken,
+      await _dio.post('/auth/facebook', data: {
+        'accessToken': accessToken,
       });
     } on DioException catch (e) {
       throw Exception(
@@ -106,14 +106,38 @@ class AuthRepository {
     }
   }
 
-  Future<void> updatePassword(String newPassword) async {
+  Future<void> resetPassword(String email) async {
     try {
       await _dio.post(
+        '/auth/reset-password',
+        data: {'email': email},
+      );
+    } on DioException catch (e) {
+      throw Exception(
+          e.response?.data['message'] ?? 'Error al solicitar recuperación de contraseña');
+    }
+  }
+
+  Future<void> updatePassword(String newPassword, {String? token}) async {
+    try {
+      await _dio.put(
         '/auth/update-password',
-        data: {'password': newPassword},
+        data: {
+          'token': ?token,
+          'newPassword': newPassword,
+          'password': newPassword,
+        },
       );
     } on DioException catch (e) {
       throw Exception(e.response?.data['message'] ?? 'Error al actualizar contraseña');
+    }
+  }
+
+  Future<void> logout() async {
+    try {
+      await _dio.post('/auth/logout');
+    } on DioException {
+      // Limpieza local continúa aunque el token ya haya expirado en servidor
     }
   }
 }

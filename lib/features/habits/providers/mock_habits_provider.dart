@@ -40,27 +40,8 @@ class MockHabit {
 class MockHabits extends Notifier<List<MockHabit>> {
   @override
   List<MockHabit> build() {
-    return [
-      MockHabit(
-        id: '1',
-        title: 'Beber agua',
-        subtitle: '500/2000 ML',
-        icon: Icons.water_drop,
-        initialProgress: 0.25,
-      ),
-      MockHabit(
-        id: '2',
-        title: 'Caminar',
-        subtitle: '0/10000 PASOS',
-        icon: Icons.directions_walk,
-      ),
-      MockHabit(
-        id: '3',
-        title: 'Regar plantas',
-        subtitle: '0/1',
-        icon: Icons.local_florist,
-      ),
-    ];
+    // Política Zero-Mock Data (Regla de Oro #2): Estado inicial vacío sin datos quemados.
+    return [];
   }
 
   void toggleHabit(String id) {

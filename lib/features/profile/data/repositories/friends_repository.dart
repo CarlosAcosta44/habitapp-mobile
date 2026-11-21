@@ -21,9 +21,20 @@ class FriendsRepository {
 
   Future<void> addFriend(String idAmigo) async {
     try {
-      await _dio.post('/users/friends', data: {'idAmigo': idAmigo});
+      await _dio.post('/users/friends', data: {'targetUserId': idAmigo});
     } on DioException catch (e) {
       throw Exception(e.response?.data['message'] ?? 'Error al agregar amigo');
+    }
+  }
+
+  Future<List<FriendModel>> getSuggestions({int limit = 12}) async {
+    try {
+      final response = await _dio.get('/users/friends/suggestions?limit=$limit');
+      final data = response.data as List;
+      return data.map((json) => FriendModel.fromJson(json)).toList();
+    } on DioException catch (e) {
+      throw Exception(
+          e.response?.data['message'] ?? 'Error al obtener sugerencias de amigos');
     }
   }
 

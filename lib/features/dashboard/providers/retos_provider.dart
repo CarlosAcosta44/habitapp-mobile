@@ -5,7 +5,7 @@ import '../../../core/network/dio_client.dart';
 final retosProvider = FutureProvider<List<dynamic>>((ref) async {
   final dio = ref.watch(dioClientProvider);
   try {
-    final response = await dio.get('/community/retos');
+    final response = await dio.get('/users/community/retos');
     return response.data as List<dynamic>;
   } catch (e) {
     debugPrint('Error fetching retos: $e');
