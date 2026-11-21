@@ -12,11 +12,22 @@ class ClientSummary {
   });
 
   factory ClientSummary.fromJson(Map<String, dynamic> json) {
+    final clientData = json['client'] is Map<String, dynamic>
+        ? json['client'] as Map<String, dynamic>
+        : json;
+    final composedName =
+        '${clientData['nombre'] ?? ''} ${clientData['apellido'] ?? ''}'.trim();
     return ClientSummary(
-      id: json['id'] as String,
-      fullName: json['fullName'] ?? json['name'] ?? '',
-      email: json['email'] ?? '',
-      avatarUrl: json['avatarUrl'] as String?,
+      id: (clientData['id'] ?? clientData['idusuario'] ?? '').toString(),
+      fullName: (clientData['fullName'] ??
+              clientData['full_name'] ??
+              clientData['name'] ??
+              composedName)
+          .toString(),
+      email: (clientData['email'] ?? clientData['correo'] ?? '').toString(),
+      avatarUrl: (clientData['avatarUrl'] ??
+          clientData['avatar_url'] ??
+          clientData['fotoperfil']) as String?,
     );
   }
 }

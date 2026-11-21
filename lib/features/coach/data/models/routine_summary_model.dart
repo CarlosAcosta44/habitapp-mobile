@@ -12,11 +12,13 @@ class RoutineSummary {
   });
 
   factory RoutineSummary.fromJson(Map<String, dynamic> json) {
+    final habitsList = json['routine_habits'] as List?;
     return RoutineSummary(
-      id: json['id'] as String,
-      title: json['title'] ?? '',
-      description: json['description'] ?? '',
-      totalExercises: json['totalExercises'] as int? ?? 0,
+      id: (json['id'] ?? json['idrutina'] ?? '').toString(),
+      title: (json['title'] ?? json['name'] ?? json['objetivo'] ?? '').toString(),
+      description: (json['description'] ?? json['descripcion'] ?? '').toString(),
+      totalExercises:
+          json['totalExercises'] as int? ?? habitsList?.length ?? 0,
     );
   }
 }

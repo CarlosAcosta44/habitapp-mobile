@@ -51,6 +51,37 @@ class ProfileRepository {
           e.response?.data['message'] ?? 'Error al subir la foto de perfil');
     }
   }
+
+  Future<Map<String, dynamic>?> getMyTrainer() async {
+    try {
+      final response = await _dio.get('/users/me/trainer');
+      if (response.data is Map<String, dynamic>) {
+        return response.data as Map<String, dynamic>;
+      }
+      return null;
+    } on DioException catch (e) {
+      throw Exception(
+          e.response?.data['message'] ?? 'Error al consultar entrenador asignado');
+    }
+  }
+
+  Future<void> linkTrainer(String trainerId) async {
+    try {
+      await _dio.post('/users/me/trainer/$trainerId');
+    } on DioException catch (e) {
+      throw Exception(
+          e.response?.data['message'] ?? 'Error al vincular con el entrenador');
+    }
+  }
+
+  Future<void> unlinkTrainer(String trainerId) async {
+    try {
+      await _dio.delete('/users/me/trainer/$trainerId');
+    } on DioException catch (e) {
+      throw Exception(
+          e.response?.data['message'] ?? 'Error al desvincular del entrenador');
+    }
+  }
 }
 
 @riverpod

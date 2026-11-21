@@ -146,6 +146,25 @@ class CommunityRepository {
     }
   }
 
+  Future<dynamic> leaveReto(String retoId) async {
+    try {
+      final response = await _dio.post('/users/community/retos/$retoId/salir');
+      return response.data;
+    } on DioException catch (e) {
+      throw Exception(e.response?.data['message'] ?? 'Error al abandonar el reto');
+    }
+  }
+
+  Future<dynamic> checkinReto(String retoId) async {
+    try {
+      final response = await _dio.post('/users/community/retos/$retoId/checkin');
+      return response.data;
+    } on DioException catch (e) {
+      throw Exception(
+          e.response?.data['message'] ?? 'Error al registrar avance en el reto');
+    }
+  }
+
   // ================= Especialistas =================
   Future<List<dynamic>> getEspecialistas() async {
     try {
