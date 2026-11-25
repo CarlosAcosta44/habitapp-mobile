@@ -22,15 +22,15 @@ class PageIndicator extends StatelessWidget {
         (index) {
           final isSelected = index == currentIndex;
           return AnimatedContainer(
-            duration: Duration(milliseconds: 300),
+            duration: const Duration(milliseconds: 300),
             curve: Curves.easeInOut,
-            margin: EdgeInsets.symmetric(horizontal: 4.0),
+            margin: const EdgeInsets.symmetric(horizontal: 4.0),
             height: 8.0,
             width: isSelected ? 24.0 : 8.0,
             decoration: BoxDecoration(
               color: isSelected
                   ? activeColor
-                  : Color(0xFFCBD5E1), // Slate 300
+                  : const Color(0xFFCBD5E1), // Slate 300
               borderRadius: BorderRadius.circular(4.0),
             ),
           );

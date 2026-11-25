@@ -7,6 +7,40 @@ import 'package:printing/printing.dart';
 import '../models/habit_stats.dart';
 
 class PdfReportRepository {
+  static const List<ChartDataPoint> _defaultChartPoints = [
+    ChartDataPoint(label: 'Lun', value: 80),
+    ChartDataPoint(label: 'Mar', value: 100),
+    ChartDataPoint(label: 'Mié', value: 60),
+    ChartDataPoint(label: 'Jue', value: 90),
+    ChartDataPoint(label: 'Vie', value: 100),
+    ChartDataPoint(label: 'Sáb', value: 40),
+    ChartDataPoint(label: 'Dom', value: 70),
+  ];
+
+  static Future<pw.MemoryImage?> _tryLoadLogo() async {
+    try {
+      final logoBytes = await rootBundle.load('assets/images/logo-habitapp.png');
+      return pw.MemoryImage(logoBytes.buffer.asUint8List());
+    } catch (e) {
+      debugPrint('Aviso: No se pudo cargar la imagen del logo: $e');
+      return null;
+    }
+  }
+
+  static List<ChartDataPoint> _resolveChartPoints(HabitStats stats, String timeframe) {
+    if (timeframe == 'Mes' && stats.monthlyProgress.isNotEmpty) {
+      return stats.monthlyProgress;
+    }
+    return stats.weeklyProgress;
+  }
+
+  static PdfColor _resolveHeatmapColor(int completed, PdfColor primaryBlue) {
+    if (completed >= 3) return primaryBlue;
+    if (completed == 2) return primaryBlue.shade(.6);
+    if (completed == 1) return primaryBlue.shade(.3);
+    return PdfColors.grey300;
+  }
+
   /// Genera y descarga el reporte PDF estilizado para HabitApp
   static Future<void> generateAndDownloadPdf(
     HabitStats stats, {
@@ -15,15 +49,7 @@ class PdfReportRepository {
   }) async {
     try {
       final pdf = pw.Document();
-
-      // Carga del Logo Oficial de la app
-      pw.MemoryImage? logoImage;
-      try {
-        final logoBytes = await rootBundle.load('assets/images/logo-habitapp.png');
-        logoImage = pw.MemoryImage(logoBytes.buffer.asUint8List());
-      } catch (e) {
-        debugPrint('Aviso: No se pudo cargar la imagen del logo: $e');
-      }
+      final logoImage = await _tryLoadLogo();
 
       // Definición de Colores Corporativos de HabitApp
       final primaryBlue = PdfColor.fromHex('#2D82FA');
@@ -43,9 +69,8 @@ class PdfReportRepository {
           ? stats.monthlyCompliancePercentage
           : stats.weeklyCompliancePercentage;
 
-      final chartPoints = timeframe == 'Mes'
-          ? (stats.monthlyProgress.isNotEmpty ? stats.monthlyProgress : stats.weeklyProgress)
-          : stats.weeklyProgress;
+      final chartPoints = _resolveChartPoints(stats, timeframe);
+      final effectivePoints = chartPoints.isNotEmpty ? chartPoints : _defaultChartPoints;
 
       pdf.addPage(
         pw.Page(
@@ -102,7 +127,7 @@ class PdfReportRepository {
                           ),
                           child: pw.Text(
                             'REPORTE DE $timeframe'.toUpperCase(),
-                            style: pw.TextStyle(
+                            style: const pw.TextStyle(
                               color: PdfColors.white,
                               fontSize: 10,
                               fontWeight: pw.FontWeight.bold,
@@ -139,7 +164,7 @@ class PdfReportRepository {
                           children: [
                             pw.Text(
                               'Cumplimiento Global',
-                              style: pw.TextStyle(
+                              style: const pw.TextStyle(
                                 color: PdfColors.white,
                                 fontSize: 11,
                                 fontWeight: pw.FontWeight.bold,
@@ -148,7 +173,7 @@ class PdfReportRepository {
                             pw.SizedBox(height: 8),
                             pw.Text(
                               '${compliancePercentage.toInt()}%',
-                              style: pw.TextStyle(
+                              style: const pw.TextStyle(
                                 color: PdfColors.white,
                                 fontSize: 28,
                                 fontWeight: pw.FontWeight.bold,
@@ -157,7 +182,7 @@ class PdfReportRepository {
                             pw.SizedBox(height: 4),
                             pw.Text(
                               '${stats.completedDays} de ${stats.totalExpectedDays} hábitos completados',
-                              style: pw.TextStyle(
+                              style: const pw.TextStyle(
                                 color: PdfColors.white,
                                 fontSize: 9,
                               ),
@@ -272,18 +297,7 @@ class PdfReportRepository {
                         child: pw.Row(
                           mainAxisAlignment: pw.MainAxisAlignment.spaceAround,
                           crossAxisAlignment: pw.CrossAxisAlignment.end,
-                          children: (chartPoints.isNotEmpty
-                                  ? chartPoints
-                                  : [
-                                      const ChartDataPoint(label: 'Lun', value: 80),
-                                      const ChartDataPoint(label: 'Mar', value: 100),
-                                      const ChartDataPoint(label: 'Mié', value: 60),
-                                      const ChartDataPoint(label: 'Jue', value: 90),
-                                      const ChartDataPoint(label: 'Vie', value: 100),
-                                      const ChartDataPoint(label: 'Sáb', value: 40),
-                                      const ChartDataPoint(label: 'Dom', value: 70),
-                                    ])
-                              .map((dp) {
+                          children: effectivePoints.map((dp) {
                             final pct = (dp.value / 100.0).clamp(0.05, 1.0);
                             final barHeight = pct * 60;
                             return pw.Column(
@@ -463,15 +477,7 @@ class PdfReportRepository {
                           spacing: 4,
                           runSpacing: 4,
                           children: stats.monthlyProgress.map((dp) {
-                            final completed = dp.value.toInt();
-                            PdfColor color = PdfColors.grey300;
-                            if (completed == 1) {
-                              color = primaryBlue.shade(.3);
-                            } else if (completed == 2) {
-                              color = primaryBlue.shade(.6);
-                            } else if (completed >= 3) {
-                              color = primaryBlue;
-                            }
+                            final color = _resolveHeatmapColor(dp.value.toInt(), primaryBlue);
                             return pw.Container(
                               width: 12,
                               height: 12,

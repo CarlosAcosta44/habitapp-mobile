@@ -11,64 +11,61 @@ class ReportsRepository {
 
   ReportsRepository(this._dio);
 
+  List<ChartDataPoint> _parseWeeklyProgress(List<dynamic> volumenSemanal) {
+    const diasSemana = ['L', 'M', 'M', 'J', 'V', 'S', 'D'];
+    final weeklyProgress = <ChartDataPoint>[];
+    for (int i = 0; i < volumenSemanal.length && i < diasSemana.length; i++) {
+      weeklyProgress.add(ChartDataPoint(
+        label: diasSemana[i],
+        value: (volumenSemanal[i] as num).toDouble(),
+      ));
+    }
+    return weeklyProgress;
+  }
+
+  List<ChartDataPoint> _parseMonthlyProgress(List<dynamic> consistenciaMes) {
+    return consistenciaMes
+        .map((item) => ChartDataPoint(
+              label: item['fecha'],
+              value: (item['activos'] as num).toDouble(),
+            ))
+        .toList();
+  }
+
+  InsightData? _parseInsight(dynamic raw, {bool includeStreak = false}) {
+    if (raw == null) return null;
+    return InsightData(
+      name: raw['nombre'],
+      streak: includeStreak ? (raw['racha'] ?? 0) : null,
+      rate: (raw['rate'] as num?)?.toDouble() ?? 0.0,
+    );
+  }
+
+  HabitStats _mapToHabitStats(Map<String, dynamic> data) {
+    final globalCompliance = (data['cumplimiento_global'] as num?)?.toDouble() ?? 0.0;
+    return HabitStats(
+      weeklyCompliancePercentage: globalCompliance,
+      monthlyCompliancePercentage: globalCompliance,
+      completedDays: data['total_cumplido'] ?? 0,
+      totalExpectedDays: data['total_esperado'] ?? 0,
+      currentStreak: data['racha_actual'] ?? 0,
+      maxStreak: data['racha_maxima'] ?? 0,
+      accumulatedPoints: data['puntos_totales'] ?? 0,
+      smartInsight: data['insight'] ?? 'Continúa así para mantener tu consistencia.',
+      weeklyProgress: _parseWeeklyProgress(data['volumen_semanal'] ?? []),
+      monthlyProgress: _parseMonthlyProgress(data['consistencia_mes'] as List<dynamic>? ?? []),
+      mostConsistentHabit: _parseInsight(data['mas_constante'], includeStreak: true),
+      improvementOpportunity: _parseInsight(data['oportunidad_mejora']),
+    );
+  }
+
   Future<HabitStats> getHabitStats(String currentUserId, {String? targetUserId}) async {
     final idToFetch = targetUserId ?? currentUserId;
     try {
       final response = await _dio.get('/reports/user/$idToFetch');
 
       if (response.statusCode == 200) {
-        final data = response.data as Map<String, dynamic>;
-        
-        final List<dynamic> volumenSemanal = data['volumen_semanal'] ?? [];
-        final diasSemana = ['L', 'M', 'M', 'J', 'V', 'S', 'D'];
-        final weeklyProgress = <ChartDataPoint>[];
-        for (int i = 0; i < volumenSemanal.length && i < diasSemana.length; i++) {
-          weeklyProgress.add(ChartDataPoint(
-            label: diasSemana[i],
-            value: (volumenSemanal[i] as num).toDouble(),
-          ));
-        }
-
-        InsightData? masConstante;
-        if (data['mas_constante'] != null) {
-          masConstante = InsightData(
-            name: data['mas_constante']['nombre'],
-            streak: data['mas_constante']['racha'] ?? 0,
-            rate: (data['mas_constante']['rate'] as num?)?.toDouble() ?? 0.0,
-          );
-        }
-
-        InsightData? oportunidad;
-        if (data['oportunidad_mejora'] != null) {
-          oportunidad = InsightData(
-            name: data['oportunidad_mejora']['nombre'],
-            rate: (data['oportunidad_mejora']['rate'] as num?)?.toDouble() ?? 0.0,
-          );
-        }
-
-        final consistenciaMes = data['consistencia_mes'] as List<dynamic>? ?? [];
-        final monthlyProgress = <ChartDataPoint>[];
-        for (var item in consistenciaMes) {
-          monthlyProgress.add(ChartDataPoint(
-            label: item['fecha'],
-            value: (item['activos'] as num).toDouble(),
-          ));
-        }
-
-        return HabitStats(
-          weeklyCompliancePercentage: (data['cumplimiento_global'] as num?)?.toDouble() ?? 0.0,
-          monthlyCompliancePercentage: (data['cumplimiento_global'] as num?)?.toDouble() ?? 0.0,
-          completedDays: data['total_cumplido'] ?? 0,
-          totalExpectedDays: data['total_esperado'] ?? 0,
-          currentStreak: data['racha_actual'] ?? 0,
-          maxStreak: data['racha_maxima'] ?? 0,
-          accumulatedPoints: data['puntos_totales'] ?? 0,
-          smartInsight: data['insight'] ?? 'Continúa así para mantener tu consistencia.',
-          weeklyProgress: weeklyProgress,
-          monthlyProgress: monthlyProgress,
-          mostConsistentHabit: masConstante,
-          improvementOpportunity: oportunidad,
-        );
+        return _mapToHabitStats(response.data as Map<String, dynamic>);
       } else {
         throw Exception('Failed to load habit stats');
       }

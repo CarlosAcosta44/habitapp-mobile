@@ -1,22 +1,22 @@
 import 'package:flutter/material.dart';
 
 class AppTheme {
-  static Color primaryBlue = Color(0xFF2D82FA);
-  static Color primaryPink = Color(0xFFF94C84);
+  static Color primaryBlue = const Color(0xFF2D82FA);
+  static Color primaryPink = const Color(0xFFF94C84);
 
   // Light Mode Colors
-  static final Color _lightBg = Color(0xFFF7F7F9);
-  static final Color _lightSurface = Colors.white;
-  static final Color _lightTextPrimary = Color(0xFF1E1E1E);
-  static final Color _lightTextSecondary = Color(0xFF6B6B6B);
-  static final Color _lightDivider = Color(0xFFE0E0E0);
+  static const Color _lightBg = Color(0xFFF7F7F9);
+  static const Color _lightSurface = Colors.white;
+  static const Color _lightTextPrimary = Color(0xFF1E1E1E);
+  static const Color _lightTextSecondary = Color(0xFF6B6B6B);
+  static const Color _lightDivider = Color(0xFFE0E0E0);
 
   // Dark Mode Colors
-  static final Color _darkBg = Color(0xFF161618);
-  static final Color _darkSurface = Color(0xFF25252A);
-  static final Color _darkTextPrimary = Colors.white;
-  static final Color _darkTextSecondary = Color(0xFF9E9E9E);
-  static final Color _darkDivider = Color(0xFF333338);
+  static const Color _darkBg = Color(0xFF161618);
+  static const Color _darkSurface = Color(0xFF25252A);
+  static const Color _darkTextPrimary = Colors.white;
+  static const Color _darkTextSecondary = Color(0xFF9E9E9E);
+  static const Color _darkDivider = Color(0xFF333338);
 
   static ThemeData get lightTheme {
     return ThemeData(
@@ -27,12 +27,12 @@ class AppTheme {
         primary: primaryBlue,
         secondary: primaryPink,
         surface: _lightSurface,
-        surfaceContainerHighest: Color(0xFFF3F4F6),
+        surfaceContainerHighest: const Color(0xFFF3F4F6),
         onSurface: _lightTextPrimary,
         onSurfaceVariant: _lightTextSecondary,
         outline: _lightDivider,
       ),
-      appBarTheme: AppBarTheme(
+      appBarTheme: const AppBarTheme(
         backgroundColor: _lightBg,
         elevation: 0,
         iconTheme: IconThemeData(color: _lightTextPrimary),
@@ -59,12 +59,12 @@ class AppTheme {
         primary: primaryBlue,
         secondary: primaryPink,
         surface: _darkSurface,
-        surfaceContainerHighest: Color(0xFF1E1E22), // Un gris sutilmente distinto
+        surfaceContainerHighest: const Color(0xFF1E1E22), // Un gris sutilmente distinto
         onSurface: _darkTextPrimary,
         onSurfaceVariant: _darkTextSecondary,
         outline: _darkDivider,
       ),
-      appBarTheme: AppBarTheme(
+      appBarTheme: const AppBarTheme(
         backgroundColor: _darkBg,
         elevation: 0,
         iconTheme: IconThemeData(color: _darkTextPrimary),

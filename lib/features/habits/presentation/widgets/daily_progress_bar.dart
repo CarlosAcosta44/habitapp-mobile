@@ -16,7 +16,7 @@ class DailyProgressBar extends StatelessWidget {
     final int percentageInt = (percentage * 100).toInt();
 
     return Container(
-      padding: EdgeInsets.all(16),
+      padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: Colors.blue.shade600,
         borderRadius: BorderRadius.circular(16),
@@ -45,7 +45,7 @@ class DailyProgressBar extends StatelessWidget {
               ],
             ),
           ),
-          SizedBox(width: 16),
+          const SizedBox(width: 16),
           // Text
           Expanded(
             child: Column(
@@ -57,7 +57,7 @@ class DailyProgressBar extends StatelessWidget {
                 ),
                 Text(
                   '$completed de $total completados',
-                  style: TextStyle(color: Colors.white70, fontSize: 12),
+                  style: const TextStyle(color: Colors.white70, fontSize: 12),
                 ),
               ],
             ),

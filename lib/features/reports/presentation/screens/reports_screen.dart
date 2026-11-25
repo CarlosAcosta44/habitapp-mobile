@@ -45,7 +45,7 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
         actions: [
           IconButton(
             icon: Container(
-              padding: EdgeInsets.all(8),
+              padding: const EdgeInsets.all(8),
               decoration: BoxDecoration(
                 color: Theme.of(context).colorScheme.surface,
                 shape: BoxShape.circle,
@@ -54,7 +54,7 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
                     color: Theme.of(context).colorScheme.shadow
                         .withValues(alpha: 0.05),
                     blurRadius: 4,
-                    offset: Offset(0, 2),
+                    offset: const Offset(0, 2),
                   ),
                 ],
               ),
@@ -69,12 +69,12 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
             // para enviar una captura del reporte o los datos principales por redes sociales.
             onPressed: () {},
           ),
-          SizedBox(width: 8),
+          const SizedBox(width: 8),
         ],
       ),
       body: reportAsync.when(
         data: (stats) => _buildBody(stats),
-        loading: () => Center(child: CircularProgressIndicator()),
+        loading: () => const Center(child: CircularProgressIndicator()),
         error: (e, st) => Center(child: Text('Error: $e')),
       ),
     );
@@ -82,14 +82,14 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
 
   Widget _buildBody(HabitStats stats) {
     return SingleChildScrollView(
-      padding: EdgeInsets.all(20),
+      padding: const EdgeInsets.all(20),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           _buildSegmentedControl(),
-          SizedBox(height: 20),
+          const SizedBox(height: 20),
           _buildGlobalCompliance(stats),
-          SizedBox(height: 16),
+          const SizedBox(height: 16),
           Row(
             children: [
               Expanded(
@@ -100,7 +100,7 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
                   true,
                 ),
               ),
-              SizedBox(width: 16),
+              const SizedBox(width: 16),
               Expanded(
                 child: _buildStreakCard(
                   'Racha máxima',
@@ -111,15 +111,15 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
               ),
             ],
           ),
-          SizedBox(height: 16),
+          const SizedBox(height: 16),
           _buildInsightsCards(stats),
-          SizedBox(height: 16),
+          const SizedBox(height: 16),
           _buildWeeklyVolume(stats),
-          SizedBox(height: 16),
+          const SizedBox(height: 16),
           _buildMonthConsistency(stats),
-          SizedBox(height: 16),
+          const SizedBox(height: 16),
           _buildSmartInsight(stats),
-          SizedBox(height: 24),
+          const SizedBox(height: 24),
           FilledButton.icon(
             onPressed: () async {
               await ref
@@ -130,26 +130,26 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
             label: const Text('Descargar reporte (PDF)'),
             style: FilledButton.styleFrom(
               backgroundColor: Theme.of(context).colorScheme.primary,
-              padding: EdgeInsets.symmetric(vertical: 16),
+              padding: const EdgeInsets.symmetric(vertical: 16),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(12),
               ),
             ),
           ),
-          SizedBox(height: 40),
+          const SizedBox(height: 40),
         ],
       ),
     );
   }
 
   Widget _buildSegmentedControl() {
-    return SizedBox.shrink(); // Tabs eliminadas por solicitud del usuario
+    return const SizedBox.shrink(); // Tabs eliminadas por solicitud del usuario
   }
 
   Widget _buildGlobalCompliance(HabitStats stats) {
     final cumplimiento = stats.weeklyCompliancePercentage;
     return Container(
-      padding: EdgeInsets.all(20),
+      padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
         color: Theme.of(context).colorScheme.surface,
         borderRadius: BorderRadius.circular(20),
@@ -168,26 +168,26 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
                   color: Theme.of(context).colorScheme.onSurfaceVariant,
                 ),
               ),
-              SizedBox(height: 8),
+              const SizedBox(height: 8),
               Row(
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
                   Text(
                     '$cumplimiento%',
-                    style: TextStyle(
+                    style: const TextStyle(
                       fontSize: 40,
                       fontWeight: FontWeight.w900,
                       height: 1.0,
                     ),
                   ),
-                  SizedBox(width: 8),
+                  const SizedBox(width: 8),
                   Container(
-                    padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                     decoration: BoxDecoration(
                       color: _kGreen.withValues(alpha: 0.1),
                       borderRadius: BorderRadius.circular(12),
                     ),
-                    child: Text(
+                    child: const Text(
                       '+6% vs sem. ant.',
                       style: TextStyle(
                         color: _kGreen,
@@ -198,7 +198,7 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
                   ),
                 ],
               ),
-              SizedBox(height: 8),
+              const SizedBox(height: 8),
               Text(
                 '${stats.completedDays} de ${stats.totalExpectedDays} completados esta semana',
                 style: TextStyle(
@@ -247,7 +247,7 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
     bool isCurrent,
   ) {
     return Container(
-      padding: EdgeInsets.all(16),
+      padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: Theme.of(context).colorScheme.surface,
         borderRadius: BorderRadius.circular(20),
@@ -265,9 +265,9 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
                   fontWeight: FontWeight.w600,
                 ),
               ),
-              Spacer(),
+              const Spacer(),
               Container(
-                padding: EdgeInsets.all(4),
+                padding: const EdgeInsets.all(4),
                 decoration: BoxDecoration(
                   color: isCurrent
                       ? Theme.of(context).colorScheme.primary
@@ -285,12 +285,12 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
               ),
             ],
           ),
-          SizedBox(height: 12),
+          const SizedBox(height: 12),
           Text(
             value,
-            style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+            style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
           ),
-          SizedBox(height: 4),
+          const SizedBox(height: 4),
           Row(
             children: [
               Icon(
@@ -298,7 +298,7 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
                 size: 12,
                 color: isCurrent ? _kGreen : _kOrange,
               ),
-              SizedBox(width: 4),
+              const SizedBox(width: 4),
               Text(
                 subtitle,
                 style: TextStyle(
@@ -340,14 +340,14 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
           if (constante != null)
             ListTile(
               leading: Container(
-                padding: EdgeInsets.all(8),
+                padding: const EdgeInsets.all(8),
                 decoration: BoxDecoration(
                   color: _kGreen.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(8),
                 ),
-                child: Icon(Icons.water_drop, color: _kGreen),
+                child: const Icon(Icons.water_drop, color: _kGreen),
               ),
-              title: Text(
+              title: const Text(
                 'MÁS CONSTANTE',
                 style: TextStyle(
                   fontSize: 10,
@@ -368,7 +368,7 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
                   ),
                   Text(
                     'Racha activa de ${constante.streak} días seguidos',
-                    style: TextStyle(fontSize: 12),
+                    style: const TextStyle(fontSize: 12),
                   ),
                 ],
               ),
@@ -378,7 +378,7 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
                 children: [
                   Text(
                     '${constante.rate}%',
-                    style: TextStyle(
+                    style: const TextStyle(
                       fontWeight: FontWeight.bold,
                       color: _kGreen,
                       fontSize: 14,
@@ -394,18 +394,18 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
                 ],
               ),
             ),
-          if (constante != null && oportunidad != null) Divider(height: 1),
+          if (constante != null && oportunidad != null) const Divider(height: 1),
           if (oportunidad != null)
             ListTile(
               leading: Container(
-                padding: EdgeInsets.all(8),
+                padding: const EdgeInsets.all(8),
                 decoration: BoxDecoration(
                   color: _kOrange.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(8),
                 ),
-                child: Icon(Icons.menu_book, color: _kOrange),
+                child: const Icon(Icons.menu_book, color: _kOrange),
               ),
-              title: Text(
+              title: const Text(
                 'OPORTUNIDAD DE MEJORA',
                 style: TextStyle(
                   fontSize: 10,
@@ -426,7 +426,7 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
                   ),
                   Text(
                     'Cumplimiento del ${oportunidad.rate}%',
-                    style: TextStyle(fontSize: 12),
+                    style: const TextStyle(fontSize: 12),
                   ),
                 ],
               ),
@@ -436,7 +436,7 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
                 children: [
                   Text(
                     '${oportunidad.rate}%',
-                    style: TextStyle(
+                    style: const TextStyle(
                       fontWeight: FontWeight.bold,
                       color: _kOrange,
                       fontSize: 14,
@@ -457,25 +457,67 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
     );
   }
 
+  double _calculateMaxChartY(List<dynamic> chartData) {
+    double maxY = 10.0;
+    for (final data in chartData) {
+      if (data.y > maxY) {
+        maxY = data.y;
+      }
+    }
+    return (maxY * 1.2).ceilToDouble();
+  }
+
+  Widget _buildBottomTitleWidget(double value) {
+    const days = ['L', 'M', 'M', 'J', 'V', 'S', 'D'];
+    final isToday = DateTime.now().weekday == value.toInt() + 1;
+    final colorScheme = Theme.of(context).colorScheme;
+    return Padding(
+      padding: const EdgeInsets.only(top: 8.0),
+      child: Text(
+        days[value.toInt()],
+        style: TextStyle(
+          color: isToday ? colorScheme.primary : colorScheme.onSurfaceVariant,
+          fontWeight: isToday ? FontWeight.bold : FontWeight.normal,
+        ),
+      ),
+    );
+  }
+
+  BarChartGroupData _buildBarGroup(dynamic spot, double maxY) {
+    final i = spot.x.toInt();
+    final isToday = DateTime.now().weekday == i + 1;
+    final theme = Theme.of(context);
+    final primary = theme.colorScheme.primary;
+    final isDark = theme.brightness == Brightness.dark;
+
+    return BarChartGroupData(
+      x: i,
+      barRods: [
+        BarChartRodData(
+          toY: spot.y,
+          color: isToday ? primary : primary.withValues(alpha: 0.5),
+          width: 20,
+          borderRadius: BorderRadius.circular(4),
+          backDrawRodData: BackgroundBarChartRodData(
+            show: true,
+            toY: maxY,
+            color: isDark ? Colors.white.withValues(alpha: 0.05) : Colors.grey.shade100,
+          ),
+        ),
+      ],
+    );
+  }
+
   Widget _buildWeeklyVolume(HabitStats stats) {
-    // Obtenemos los datos del provider de fl_chart
     final chartDataAsync = ref.watch(weeklyProgressChartDataProvider(targetUserId: widget.userId));
 
     return chartDataAsync.when(
       data: (chartData) {
-        double totalSemanal = chartData.fold<double>(0, (a, b) => a + b.y);
-        
-        // Calcular maxY dinámicamente para que las barras no desborden
-        double maxY = 10.0;
-        for (var data in chartData) {
-          if (data.y > maxY) {
-            maxY = data.y;
-          }
-        }
-        maxY = (maxY * 1.2).ceilToDouble(); // 20% de margen superior
+        final totalSemanal = chartData.fold<double>(0, (a, b) => a + b.y);
+        final maxY = _calculateMaxChartY(chartData);
 
         return Container(
-          padding: EdgeInsets.all(20),
+          padding: const EdgeInsets.all(20),
           decoration: BoxDecoration(
             color: Theme.of(context).colorScheme.surface,
             borderRadius: BorderRadius.circular(20),
@@ -486,12 +528,12 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text(
+                  const Text(
                     'Volumen Semanal',
                     style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                   ),
                   Container(
-                    padding: EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
                     decoration: BoxDecoration(
                       color: Theme.of(context).colorScheme.primary
                           .withValues(alpha: 0.1),
@@ -508,7 +550,7 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
                   ),
                 ],
               ),
-              SizedBox(height: 4),
+              const SizedBox(height: 4),
               Text(
                 'Hábitos completados por día',
                 style: TextStyle(
@@ -516,40 +558,20 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
                   color: Theme.of(context).colorScheme.onSurfaceVariant,
                 ),
               ),
-              SizedBox(height: 24),
+              const SizedBox(height: 24),
               SizedBox(
                 height: 150,
                 child: BarChart(
                   BarChartData(
                     alignment: BarChartAlignment.spaceAround,
                     maxY: maxY,
-                    barTouchData: BarTouchData(enabled: false),
+                    barTouchData: const BarTouchData(enabled: false),
                     titlesData: FlTitlesData(
                       show: true,
                       bottomTitles: AxisTitles(
                         sideTitles: SideTitles(
                           showTitles: true,
-                          getTitlesWidget: (value, meta) {
-                            const days = ['L', 'M', 'M', 'J', 'V', 'S', 'D'];
-                            bool isToday =
-                                DateTime.now().weekday == value.toInt() + 1;
-                            return Padding(
-                              padding: EdgeInsets.only(top: 8.0),
-                              child: Text(
-                                days[value.toInt()],
-                                style: TextStyle(
-                                  color: isToday
-                                      ? Theme.of(context).colorScheme.primary
-                                      : Theme.of(context)
-                                            .colorScheme
-                                            .onSurfaceVariant,
-                                  fontWeight: isToday
-                                      ? FontWeight.bold
-                                      : FontWeight.normal,
-                                ),
-                              ),
-                            );
-                          },
+                          getTitlesWidget: (value, meta) => _buildBottomTitleWidget(value),
                         ),
                       ),
                       leftTitles: AxisTitles(
@@ -567,10 +589,10 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
                           ),
                         ),
                       ),
-                      topTitles: AxisTitles(
+                      topTitles: const AxisTitles(
                         sideTitles: SideTitles(showTitles: false),
                       ),
-                      rightTitles: AxisTitles(
+                      rightTitles: const AxisTitles(
                         sideTitles: SideTitles(showTitles: false),
                       ),
                     ),
@@ -586,37 +608,13 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
                       ),
                     ),
                     borderData: FlBorderData(show: false),
-                    barGroups: chartData.map((spot) {
-                      int i = spot.x.toInt();
-                      bool isToday = DateTime.now().weekday == i + 1;
-                      return BarChartGroupData(
-                        x: i,
-                        barRods: [
-                          BarChartRodData(
-                            toY: spot.y,
-                            color: isToday
-                                ? Theme.of(context).colorScheme.primary
-                                : Theme.of(context).colorScheme.primary
-                                      .withValues(alpha: 0.5),
-                            width: 20,
-                            borderRadius: BorderRadius.circular(4),
-                            backDrawRodData: BackgroundBarChartRodData(
-                              show: true,
-                              toY: maxY,
-                              color: Theme.of(context).brightness == Brightness.dark
-                                  ? Colors.white.withValues(alpha: 0.05)
-                                  : Colors.grey.shade100,
-                            ),
-                          ),
-                        ],
-                      );
-                    }).toList(),
+                    barGroups: chartData.map((spot) => _buildBarGroup(spot, maxY)).toList(),
                   ),
                 ),
               ),
-              SizedBox(height: 16),
-              Divider(),
-              SizedBox(height: 8),
+              const SizedBox(height: 16),
+              const Divider(),
+              const SizedBox(height: 8),
               Row(
                 children: [
                   Text(
@@ -628,7 +626,7 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
                   ),
                   Text(
                     '${totalSemanal.toInt()} completados',
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
+                    style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
                   ),
                 ],
               ),
@@ -636,7 +634,7 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
           ),
         );
       },
-      loading: () => Center(child: CircularProgressIndicator()),
+      loading: () => const Center(child: CircularProgressIndicator()),
       error: (e, st) => Center(child: Text('Error cargando gráfico: $e')),
     );
   }
@@ -645,7 +643,7 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
     // Aquí implementamos un heatmap sencillo o UI de días activos.
     // Para no excedernos de complejidad, mostraremos la UI base con un texto descriptivo o grilla sencilla.
     return Container(
-      padding: EdgeInsets.all(20),
+      padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
         color: Theme.of(context).colorScheme.surface,
         borderRadius: BorderRadius.circular(20),
@@ -656,12 +654,12 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(
+              const Text(
                 'Consistencia del Mes',
                 style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
               ),
               Container(
-                padding: EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
                 decoration: BoxDecoration(
                   color: Theme.of(context).colorScheme.primary
                       .withValues(alpha: 0.1),
@@ -678,7 +676,7 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
               ),
             ],
           ),
-          SizedBox(height: 4),
+          const SizedBox(height: 4),
           Text(
             'Mapa de actividad de hábitos',
             style: TextStyle(
@@ -686,12 +684,12 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
               color: Theme.of(context).colorScheme.onSurfaceVariant,
             ),
           ),
-          SizedBox(height: 20),
+          const SizedBox(height: 20),
           // Grilla heatmap con datos reales
           GridView.builder(
             shrinkWrap: true,
-            physics: NeverScrollableScrollPhysics(),
-            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+            physics: const NeverScrollableScrollPhysics(),
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
               crossAxisCount: 7,
               crossAxisSpacing: 8,
               mainAxisSpacing: 8,

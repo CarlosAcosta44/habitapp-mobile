@@ -5,9 +5,11 @@ import '../../../dashboard/data/repositories/quotes_repository.dart';
 import '../../providers/auth_provider.dart';
 import '../../providers/splash_provider.dart';
 
+const _kMorningSplashAsset = 'assets/images/Mañana.jpg';
+
 class SplashData {
   static Quote? dailyQuote;
-  static String splashImage = 'assets/images/Mañana.jpg';
+  static String splashImage = _kMorningSplashAsset;
 }
 
 class SplashScreen extends ConsumerStatefulWidget {
@@ -20,7 +22,7 @@ class SplashScreen extends ConsumerStatefulWidget {
 class _SplashScreenState extends ConsumerState<SplashScreen> with SingleTickerProviderStateMixin {
   late AnimationController _animationController;
   late Animation<double> _fadeAnimation;
-  String _imagePath = 'assets/images/Mañana.jpg';
+  String _imagePath = _kMorningSplashAsset;
   Quote? _quote;
 
   @override
@@ -42,7 +44,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen> with SingleTickerPr
   void _determineTimeOfDay() {
     final hour = DateTime.now().hour;
     if (hour >= 5 && hour < 12) {
-      _imagePath = 'assets/images/Mañana.jpg';
+      _imagePath = _kMorningSplashAsset;
     } else if (hour >= 12 && hour < 19) {
       _imagePath = 'assets/images/Tarde.jpg';
     } else {
@@ -128,7 +130,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen> with SingleTickerPr
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Spacer(),
+                  const Spacer(),
                   Column(
                     children: [
                       Image.asset(
@@ -149,7 +151,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen> with SingleTickerPr
                       ),
                     ],
                   ),
-                  SizedBox(height: 32),
+                  const SizedBox(height: 32),
                   Text(
                     _quote?.phrase ?? 'Cargando tu día...',
                     textAlign: TextAlign.center,
@@ -171,9 +173,9 @@ class _SplashScreenState extends ConsumerState<SplashScreen> with SingleTickerPr
                       fontStyle: FontStyle.italic,
                     ),
                   ),
-                  Spacer(),
+                  const Spacer(),
                   const CircularProgressIndicator(color: Colors.white),
-                  SizedBox(height: 48),
+                  const SizedBox(height: 48),
                 ],
               ),
             ),

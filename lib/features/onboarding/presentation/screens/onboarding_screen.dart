@@ -81,7 +81,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
           children: [
             // ── Header (Logo) ──
             Padding(
-              padding: EdgeInsets.symmetric(vertical: 20),
+              padding: const EdgeInsets.symmetric(vertical: 20),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -90,9 +90,9 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                     width: 36,
                     height: 36,
                     errorBuilder: (context, error, stackTrace) =>
-                        Icon(Icons.extension, color: _kHighlightBlue, size: 36),
+                        const Icon(Icons.extension, color: _kHighlightBlue, size: 36),
                   ),
-                  SizedBox(width: 8),
+                  const SizedBox(width: 8),
                   Text(
                     'HabitApp',
                     style: TextStyle(
@@ -114,7 +114,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                 itemBuilder: (context, index) {
                   final slide = _slides[index];
                   return Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 32),
+                    padding: const EdgeInsets.symmetric(horizontal: 32),
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
@@ -125,7 +125,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                           alignment: Alignment.center,
                           child: Icon(slide.icon, size: 120, color: _kHighlightBlue),
                         ),
-                        SizedBox(height: 40),
+                        const SizedBox(height: 40),
 
                         // Título
                         RichText(
@@ -141,12 +141,12 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                               TextSpan(text: slide.titleNormal),
                               TextSpan(
                                 text: slide.titleHighlight,
-                                style: TextStyle(color: _kHighlightBlue),
+                                style: const TextStyle(color: _kHighlightBlue),
                               ),
                             ],
                           ),
                         ),
-                        SizedBox(height: 16),
+                        const SizedBox(height: 16),
 
                         // Subtítulo
                         Text(
@@ -167,14 +167,14 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
 
             // ── Indicador de página ──
             Padding(
-              padding: EdgeInsets.symmetric(vertical: 24),
+              padding: const EdgeInsets.symmetric(vertical: 24),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: List.generate(
                   _slides.length,
                   (index) => AnimatedContainer(
-                    duration: Duration(milliseconds: 300),
-                    margin: EdgeInsets.symmetric(horizontal: 4),
+                    duration: const Duration(milliseconds: 300),
+                    margin: const EdgeInsets.symmetric(horizontal: 4),
                     width: _page == index ? 24 : 8,
                     height: 8,
                     decoration: BoxDecoration(
@@ -190,7 +190,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
 
             // ── Botones y Footer ──
             Padding(
-              padding: EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
               child: Column(
                 children: [
                   // Botón principal
@@ -200,12 +200,12 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                       backgroundColor: _kHighlightBlue,
                       foregroundColor: Theme.of(context).colorScheme.surface,
                       elevation: 0,
-                      minimumSize: Size(double.infinity, 56),
+                      minimumSize: const Size(double.infinity, 56),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(28),
                       ),
                     ),
-                    child: Row(
+                    child: const Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Icon(Icons.mail_outline_rounded, size: 22),
@@ -220,7 +220,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                       ],
                     ),
                   ),
-                  SizedBox(height: 12),
+                  const SizedBox(height: 12),
 
                   // Botones sociales
                   Row(
@@ -233,7 +233,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                           onTap: _continueWithSocial,
                         ),
                       ),
-                      SizedBox(width: 12),
+                      const SizedBox(width: 12),
                       Expanded(
                         child: _SocialButton(
                           fallbackIcon: Icons.facebook,
@@ -243,7 +243,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                       ),
                     ],
                   ),
-                  SizedBox(height: 24),
+                  const SizedBox(height: 24),
 
                   // Términos y condiciones
                   Text(
@@ -253,11 +253,11 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                       fontSize: 12,
                     ),
                   ),
-                  SizedBox(height: 4),
+                  const SizedBox(height: 4),
                   Wrap(
                     alignment: WrapAlignment.center,
                     children: [
-                      Text(
+                      const Text(
                         'Términos de servicio',
                         style: TextStyle(
                           color: _kHighlightBlue,
@@ -272,7 +272,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                           fontSize: 12,
                         ),
                       ),
-                      Text(
+                      const Text(
                         'Política de privacidad',
                         style: TextStyle(
                           color: _kHighlightBlue,

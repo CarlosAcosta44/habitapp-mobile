@@ -15,6 +15,6 @@ class OnboardingNotifier extends _$OnboardingNotifier {
   Future<void> completeOnboarding() async {
     final storage = ref.watch(secureStorageProvider);
     await storage.write(key: 'has_seen_onboarding', value: 'true');
-    state = AsyncValue.data(true);
+    state = const AsyncValue.data(true);
   }
 }

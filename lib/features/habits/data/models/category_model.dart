@@ -35,26 +35,39 @@ abstract class CategoryModel with _$CategoryModel {
   factory CategoryModel.fromJson(Map<String, dynamic> json) =>
       _$CategoryModelFromJson(json);
 
+  static Color? _tryParseHexColor(String? rawHex) {
+    if (rawHex == null || rawHex.isEmpty) return null;
+    final hexString = rawHex.replaceAll('#', '');
+    if (hexString.length == 6) {
+      final val = int.tryParse('FF$hexString', radix: 16);
+      return val != null ? Color(val) : null;
+    }
+    if (hexString.length == 8) {
+      final val = int.tryParse(hexString, radix: 16);
+      return val != null ? Color(val) : null;
+    }
+    return null;
+  }
+
+  static const List<MapEntry<List<String>, Color>> _categoryColorRules = [
+    MapEntry(['ejercicio', 'deporte', 'correr'], Color(0xFFFF9800)),
+    MapEntry(['hidratación', 'agua'], Color(0xFF2196F3)),
+    MapEntry(['nutrición'], Color(0xFF4CAF50)),
+    MapEntry(['productividad', 'lectura', 'estudio'], Color(0xFF9C27B0)),
+    MapEntry(['salud mental', 'mente', 'mindfulness'], Color(0xFF009688)),
+    MapEntry(['sueño'], Color(0xFF3F51B5)),
+  ];
+
   /// Retorna un objeto Color derivado de colorHex o de acuerdo a la categoría
   Color get parsedColor {
-    if (colorHex != null && colorHex!.isNotEmpty) {
-      final hexString = colorHex!.replaceAll('#', '');
-      if (hexString.length == 6) {
-        final val = int.tryParse('FF$hexString', radix: 16);
-        if (val != null) return Color(val);
-      } else if (hexString.length == 8) {
-        final val = int.tryParse(hexString, radix: 16);
-        if (val != null) return Color(val);
-      }
-    }
+    final fromHex = _tryParseHexColor(colorHex);
+    if (fromHex != null) return fromHex;
+
     final nameLower = nombre.toLowerCase();
-    if (nameLower.contains('ejercicio') || nameLower.contains('deporte') || nameLower.contains('correr')) return Color(0xFFFF9800);
-    if (nameLower.contains('hidratación') || nameLower.contains('agua')) return Color(0xFF2196F3);
-    if (nameLower.contains('nutrición')) return Color(0xFF4CAF50);
-    if (nameLower.contains('productividad') || nameLower.contains('lectura') || nameLower.contains('estudio')) return Color(0xFF9C27B0);
-    if (nameLower.contains('salud mental') || nameLower.contains('mente') || nameLower.contains('mindfulness')) return Color(0xFF009688);
-    if (nameLower.contains('sueño')) return Color(0xFF3F51B5);
-    return Color(0xFF3F51B5);
+    for (final rule in _categoryColorRules) {
+      if (rule.key.any(nameLower.contains)) return rule.value;
+    }
+    return const Color(0xFF3F51B5);
   }
 
   /// Retorna un objeto IconData derivado del nombre de la categoría

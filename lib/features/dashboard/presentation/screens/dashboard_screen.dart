@@ -68,6 +68,175 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
     return months[month - 1];
   }
 
+  List<dynamic> _filterActiveHabitsForDate(List<dynamic> allHabits, DateTime selectedDate, int selectedWeekday) {
+    return allHabits.where((h) {
+      if (h.estado != 'Activo') return false;
+      if (h.fechaInicio != null) {
+        try {
+          final startDate = DateTime.parse(h.fechaInicio!);
+          final startDateOnly = DateTime(startDate.year, startDate.month, startDate.day);
+          final selectedDateOnly = DateTime(selectedDate.year, selectedDate.month, selectedDate.day);
+          if (selectedDateOnly.isBefore(startDateOnly)) return false;
+        } catch (_) {}
+      }
+      return h.diasSemana.isEmpty || h.diasSemana.contains(selectedWeekday);
+    }).toList();
+  }
+
+  int _countCompletedHabits(List<dynamic> habits, String selectedDateString) {
+    return habits.where((h) {
+      if (_selectedDayOffset == 0) return h.completadoHoy == true;
+      return h.fechasCompletadas.contains(selectedDateString);
+    }).length;
+  }
+
+  Color _resolveWeekDotColor(bool isSelected, int offsetFromToday) {
+    if (isSelected) return Theme.of(context).colorScheme.surface;
+    if (offsetFromToday == 0) return const Color(0xFF0F8A5D);
+    return Colors.transparent;
+  }
+
+  Widget _buildWeekStrip(DateTime now) {
+    return Container(
+      padding: const EdgeInsets.symmetric(vertical: 12),
+      decoration: BoxDecoration(
+        color: Theme.of(context).colorScheme.surface,
+        borderRadius: BorderRadius.circular(24),
+        boxShadow: [
+          BoxShadow(color: Theme.of(context).colorScheme.shadow.withValues(alpha: 0.02), blurRadius: 10, offset: const Offset(0, 4)),
+        ],
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: List.generate(7, (index) {
+          final offsetFromToday = index - 3;
+          final dayDate = now.add(Duration(days: offsetFromToday));
+          final isSelected = offsetFromToday == _selectedDayOffset;
+          final dayName = _getShortDayName(dayDate.weekday);
+
+          return GestureDetector(
+            onTap: () => setState(() => _selectedDayOffset = offsetFromToday),
+            child: Container(
+              padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 10),
+              decoration: BoxDecoration(
+                color: isSelected ? Theme.of(context).colorScheme.primary : Colors.transparent,
+                borderRadius: BorderRadius.circular(16),
+              ),
+              child: Column(
+                children: [
+                  Text(
+                    dayName,
+                    style: TextStyle(
+                      fontSize: 12,
+                      fontWeight: FontWeight.w600,
+                      color: isSelected ? Theme.of(context).colorScheme.surface : Theme.of(context).colorScheme.onSurfaceVariant,
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    '${dayDate.day}',
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: isSelected ? FontWeight.w900 : FontWeight.w600,
+                      color: isSelected ? Theme.of(context).colorScheme.surface : Theme.of(context).colorScheme.onSurface,
+                    ),
+                  ),
+                  const SizedBox(height: 6),
+                  Container(
+                    width: 4,
+                    height: 4,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: _resolveWeekDotColor(isSelected, offsetFromToday),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          );
+        }),
+      ),
+    );
+  }
+
+  Widget _buildHabitsListSection(List<dynamic> habits, String selectedDateString) {
+    if (habits.isEmpty) {
+      return Center(
+        child: Padding(
+          padding: const EdgeInsets.all(24.0),
+          child: Text('No hay hábitos programados para hoy.', style: TextStyle(color: Theme.of(context).colorScheme.onSurfaceVariant)),
+        ),
+      );
+    }
+    return ListView.separated(
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      itemCount: habits.length,
+      separatorBuilder: (context, index) => const SizedBox(height: 16),
+      itemBuilder: (context, index) {
+        final habit = habits[index];
+        final isNumeric = habit.metaDiaria > 1;
+        final rightText = isNumeric ? '${habit.progresoHoy.toInt()}/${habit.metaDiaria.toInt()}\n${habit.unidadMedida}' : null;
+        final badgeText = isNumeric ? '${habit.rachaActual}d' : null;
+        final isCompleted = _selectedDayOffset == 0 ? habit.completadoHoy : habit.fechasCompletadas.contains(selectedDateString);
+
+        return GestureDetector(
+          onTap: () => context.push('/habit/${habit.id}'),
+          child: HabitCard(
+            title: habit.nombre,
+            subtitle: habit.descripcion ?? 'Sin descripción',
+            icon: _getCategoryIcon(habit.categoria?.icono ?? habit.categoria?.nombre),
+            iconColor: habit.categoria?.parsedColor ?? Theme.of(context).colorScheme.primary,
+            badgeText: badgeText,
+            isCompleted: isCompleted,
+            isNumeric: isNumeric,
+            rightText: rightText,
+            onToggle: _selectedDayOffset == 0
+                ? () => ref.read(habitsDashboardProvider.notifier).toggleHabit(habit.id)
+                : null,
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _buildRetosCarousel(AsyncValue<List<dynamic>> retosAsync) {
+    return SizedBox(
+      height: 170,
+      child: retosAsync.when(
+        data: (retos) {
+          if (retos.isEmpty) {
+            return Center(
+              child: Text('No hay retos activos.', style: TextStyle(color: Theme.of(context).colorScheme.onSurfaceVariant)),
+            );
+          }
+          return ListView.separated(
+            scrollDirection: Axis.horizontal,
+            clipBehavior: Clip.none,
+            itemCount: retos.length,
+            separatorBuilder: (_, i) => const SizedBox(width: 16),
+            itemBuilder: (context, index) {
+              final reto = retos[index];
+              final color = index % 2 == 0 ? Theme.of(context).colorScheme.secondary : const Color(0xFF0F8A5D);
+              final progresoMock = index % 2 == 0 ? 0.2 : 0.45;
+
+              return _ChallengeCard(
+                title: reto['titulo'] ?? 'Reto',
+                subtitle: reto['descripcion'] ?? 'Únete ahora',
+                progressText: '${(progresoMock * 100).toInt()}% completado',
+                progress: progresoMock,
+                color: color,
+                badgeText: '${reto['puntosRecompensa'] ?? 50} pts',
+              );
+            },
+          );
+        },
+        loading: () => const Center(child: CircularProgressIndicator()),
+        error: (e, _) => const Center(child: Text('Error al cargar retos')),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final habitsAsync = ref.watch(habitsDashboardProvider);
@@ -89,13 +258,13 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
             await ref.read(habitsDashboardProvider.notifier).refresh();
           },
           child: SingleChildScrollView(
-            physics: AlwaysScrollableScrollPhysics(),
+            physics: const AlwaysScrollableScrollPhysics(),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 // ── Header Custom ──
                 Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 24.0, vertical: 12.0),
+                  padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 12.0),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -108,7 +277,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                             errorBuilder: (context, error, stackTrace) =>
                                 Icon(Icons.extension, color: Theme.of(context).colorScheme.primary, size: 24),
                           ),
-                          SizedBox(width: 8),
+                          const SizedBox(width: 8),
                           Text(
                             'HabitApp',
                             style: TextStyle(fontSize: 20, fontWeight: FontWeight.w900, color: Theme.of(context).colorScheme.onSurface),
@@ -135,37 +304,19 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                     ],
                   ),
                 ),
-                SizedBox(height: 1),
+                const SizedBox(height: 1),
                 habitsAsync.when(
                   data: (allHabits) {
-                    final habits = allHabits.where((h) {
-                      if (h.estado != 'Activo') return false;
-                      
-                      // Don't show habits on dates before they were created
-                      if (h.fechaInicio != null) {
-                        try {
-                          final startDate = DateTime.parse(h.fechaInicio!);
-                          final startDateOnly = DateTime(startDate.year, startDate.month, startDate.day);
-                          final selectedDateOnly = DateTime(selectedDate.year, selectedDate.month, selectedDate.day);
-                          if (selectedDateOnly.isBefore(startDateOnly)) return false;
-                        } catch (_) {}
-                      }
-
-                      if (h.diasSemana.isEmpty) return true;
-                      return h.diasSemana.contains(selectedWeekday);
-                    }).toList();
-                    final completedCount = habits.where((h) {
-                      if (_selectedDayOffset == 0) return h.completadoHoy;
-                      return h.fechasCompletadas.contains(selectedDateString);
-                    }).length;
+                    final habits = _filterActiveHabitsForDate(allHabits, selectedDate, selectedWeekday);
+                    final completedCount = _countCompletedHabits(habits, selectedDateString);
                     final totalCount = habits.length;
 
                     return Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 24.0),
+                      padding: const EdgeInsets.symmetric(horizontal: 24.0),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          SizedBox(height: 24),
+                          const SizedBox(height: 24),
                           
                           // ── Fila de Fecha y Nivel ──
                           Row(
@@ -179,7 +330,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                                 ),
                                 child: Icon(Icons.calendar_today_rounded, color: Theme.of(context).colorScheme.secondary, size: 20),
                               ),
-                              SizedBox(width: 12),
+                              const SizedBox(width: 12),
                               Expanded(
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -188,7 +339,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                                       '${selectedDate.day} ${_getMonthName(selectedDate.month)}, ${selectedDate.year}',
                                       style: TextStyle(fontSize: 18, fontWeight: FontWeight.w800, color: Theme.of(context).colorScheme.onSurface),
                                     ),
-                                    SizedBox(height: 2),
+                                    const SizedBox(height: 2),
                                     Row(
                                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                       children: [
@@ -202,7 +353,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                                         ),
                                       ],
                                     ),
-                                    SizedBox(height: 8),
+                                    const SizedBox(height: 8),
                                     SizedBox(
                                       width: double.infinity,
                                       height: 8,
@@ -220,73 +371,11 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                               ),
                             ],
                           ),
-                          SizedBox(height: 24),
+                          const SizedBox(height: 24),
                           
                           // ── Calendario Semanal Strip ──
-                          Container(
-                            padding: EdgeInsets.symmetric(vertical: 12),
-                            decoration: BoxDecoration(
-                              color: Theme.of(context).colorScheme.surface,
-                              borderRadius: BorderRadius.circular(24),
-                              boxShadow: [
-                                BoxShadow(color: Theme.of(context).colorScheme.shadow.withValues(alpha: 0.02), blurRadius: 10, offset: Offset(0, 4)),
-                              ],
-                            ),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              children: List.generate(7, (index) {
-                                // 7 días, hoy en el medio (índice 3)
-                                final offsetFromToday = index - 3; 
-                                final dayDate = now.add(Duration(days: offsetFromToday));
-                                final isSelected = offsetFromToday == _selectedDayOffset;
-                                final dayName = _getShortDayName(dayDate.weekday);
-                                
-                                return GestureDetector(
-                                  onTap: () => setState(() => _selectedDayOffset = offsetFromToday),
-                                  child: Container(
-                                    padding: EdgeInsets.symmetric(vertical: 8, horizontal: 10),
-                                    decoration: BoxDecoration(
-                                      color: isSelected ? Theme.of(context).colorScheme.primary : Colors.transparent,
-                                      borderRadius: BorderRadius.circular(16),
-                                    ),
-                                    child: Column(
-                                      children: [
-                                        Text(
-                                          dayName,
-                                          style: TextStyle(
-                                            fontSize: 12,
-                                            fontWeight: FontWeight.w600,
-                                            color: isSelected ? Theme.of(context).colorScheme.surface : Theme.of(context).colorScheme.onSurfaceVariant,
-                                          ),
-                                        ),
-                                        SizedBox(height: 4),
-                                        Text(
-                                          '${dayDate.day}',
-                                          style: TextStyle(
-                                            fontSize: 20,
-                                            fontWeight: isSelected ? FontWeight.w900 : FontWeight.w600,
-                                            color: isSelected ? Theme.of(context).colorScheme.surface : Theme.of(context).colorScheme.onSurface,
-                                          ),
-                                        ),
-                                        SizedBox(height: 6),
-                                        Container(
-                                          width: 4,
-                                          height: 4,
-                                          decoration: BoxDecoration(
-                                            shape: BoxShape.circle,
-                                            color: isSelected 
-                                                ? Theme.of(context).colorScheme.surface 
-                                                : (offsetFromToday == 0 ? Color(0xFF0F8A5D) : Colors.transparent),
-                                          ),
-                                        )
-                                      ],
-                                    ),
-                                  ),
-                                );
-                              }),
-                            ),
-                          ),
-                          SizedBox(height: 24),
+                          _buildWeekStrip(now),
+                          const SizedBox(height: 24),
                           
                           // ── Banner Paisaje Motivacional ──
                           Container(
@@ -303,7 +392,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                               child: BackdropFilter(
                                 filter: ImageFilter.blur(sigmaX: 3.0, sigmaY: 3.0),
                                 child: Container(
-                                  padding: EdgeInsets.symmetric(horizontal: 24, vertical: 52),
+                                  padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 52),
                                   color: Colors.black.withValues(alpha: 0.35),
                                   child: Column(
                                     crossAxisAlignment: CrossAxisAlignment.center,
@@ -312,7 +401,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                                       Text(
                                         dynamicQuote != null ? '«${dynamicQuote.phrase}»' : '«Cada nuevo amanecer es una nueva oportunidad»',
                                         textAlign: TextAlign.center,
-                                        style: TextStyle(
+                                        style: const TextStyle(
                                           fontSize: 16, 
                                           fontWeight: FontWeight.w800, 
                                           color: Colors.white,
@@ -321,7 +410,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                                           ],
                                         ),
                                       ),
-                                      SizedBox(height: 8),
+                                      const SizedBox(height: 8),
                                       Text(
                                         dynamicQuote != null && dynamicQuote.author.isNotEmpty ? '- ${dynamicQuote.author}' : '',
                                         textAlign: TextAlign.center,
@@ -330,7 +419,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                                           fontWeight: FontWeight.w600, 
                                           fontStyle: FontStyle.italic,
                                           color: Colors.white.withValues(alpha: 0.9),
-                                          shadows: [
+                                          shadows: const [
                                             Shadow(color: Colors.black87, blurRadius: 6, offset: Offset(0, 1))
                                           ],
                                         ),
@@ -341,14 +430,14 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                               ),
                             ),
                           ),
-                          SizedBox(height: 28),
+                          const SizedBox(height: 28),
                           
                           // ── Encabezado Lista de Hábitos ──
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Container(
-                                padding: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                                 decoration: BoxDecoration(
                                   color: Theme.of(context).colorScheme.surfaceContainerHighest,
                                   borderRadius: BorderRadius.circular(16),
@@ -361,54 +450,12 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                               Text('Ver todos', style: TextStyle(fontSize: 13, fontWeight: FontWeight.w700, color: Theme.of(context).colorScheme.onSurface)),
                             ],
                           ),
-                          SizedBox(height: 16),
+                          const SizedBox(height: 16),
 
                           // ── Lista de Hábitos ──
-                          if (habits.isEmpty)
-                            Center(
-                              child: Padding(
-                                padding: EdgeInsets.all(24.0),
-                                child: Text('No hay hábitos programados para hoy.', style: TextStyle(color: Theme.of(context).colorScheme.onSurfaceVariant)),
-                              ),
-                            )
-                          else
-                            ListView.separated(
-                              shrinkWrap: true,
-                              physics: NeverScrollableScrollPhysics(),
-                              itemCount: habits.length,
-                              separatorBuilder: (context, index) => SizedBox(height: 16),
-                              itemBuilder: (context, index) {
-                                final habit = habits[index];
-                                final isNumeric = habit.metaDiaria > 1;
-                                final rightText = isNumeric 
-                                    ? '${habit.progresoHoy.toInt()}/${habit.metaDiaria.toInt()}\n${habit.unidadMedida}' 
-                                    : null;
-                                final badgeText = isNumeric ? '${habit.rachaActual}d' : null;
-                                
-                                final isCompleted = _selectedDayOffset == 0 
-                                    ? habit.completadoHoy 
-                                    : habit.fechasCompletadas.contains(selectedDateString);
-
-                                return GestureDetector(
-                                  onTap: () => context.push('/habit/${habit.id}'),
-                                  child: HabitCard(
-                                    title: habit.nombre,
-                                    subtitle: habit.descripcion ?? 'Sin descripción',
-                                    icon: _getCategoryIcon(habit.categoria?.icono ?? habit.categoria?.nombre),
-                                    iconColor: habit.categoria?.parsedColor ?? Theme.of(context).colorScheme.primary,
-                                    badgeText: badgeText,
-                                    isCompleted: isCompleted,
-                                    isNumeric: isNumeric,
-                                    rightText: rightText,
-                                    onToggle: _selectedDayOffset == 0 ? () {
-                                      ref.read(habitsDashboardProvider.notifier).toggleHabit(habit.id);
-                                    } : null,
-                                  ),
-                                );
-                              },
-                            ),
+                          _buildHabitsListSection(habits, selectedDateString),
                             
-                          SizedBox(height: 24),
+                          const SizedBox(height: 24),
                           
                           SizedBox(
                             width: double.infinity,
@@ -417,13 +464,13 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                               icon: Icon(Icons.archive_outlined, color: Theme.of(context).colorScheme.onSurfaceVariant),
                               label: Text('Ver hábitos archivados', style: TextStyle(color: Theme.of(context).colorScheme.onSurface, fontWeight: FontWeight.bold)),
                               style: OutlinedButton.styleFrom(
-                                padding: EdgeInsets.symmetric(vertical: 16),
+                                padding: const EdgeInsets.symmetric(vertical: 16),
                                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
                               ),
                             ),
                           ),
 
-                          SizedBox(height: 28),
+                          const SizedBox(height: 28),
                           
                           // ── Tus Retos ──
                           Row(
@@ -432,7 +479,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                               Text('Tus retos', style: TextStyle(fontSize: 18, fontWeight: FontWeight.w800, color: Theme.of(context).colorScheme.onSurface)),
                               GestureDetector(
                                 onTap: () {},
-                                child: Row(
+                                child: const Row(
                                   children: [
                                     Text('Ver todos', style: TextStyle(color: Color(0xFF0F8A5D), fontWeight: FontWeight.w700, fontSize: 13)),
                                     Icon(Icons.chevron_right, color: Color(0xFF0F8A5D), size: 16),
@@ -441,52 +488,16 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                               ),
                             ],
                           ),
-                          SizedBox(height: 16),
-                          SizedBox(
-                            height: 170,
-                            child: retosAsync.when(
-                              data: (retos) {
-                                if (retos.isEmpty) {
-                                  return Center(
-                                    child: Text('No hay retos activos.', style: TextStyle(color: Theme.of(context).colorScheme.onSurfaceVariant)),
-                                  );
-                                }
-                                return ListView.separated(
-                                  scrollDirection: Axis.horizontal,
-                                  clipBehavior: Clip.none,
-                                  itemCount: retos.length,
-                                  separatorBuilder: (_, i) => SizedBox(width: 16),
-                                  itemBuilder: (context, index) {
-                                    final reto = retos[index];
-                                    final color = index % 2 == 0 ? Theme.of(context).colorScheme.secondary : Color(0xFF0F8A5D);
-                                    
-                                    // Cálculo de progreso ficticio para demostración
-                                    final progresoMock = index % 2 == 0 ? 0.2 : 0.45;
-                                    final progressText = '${(progresoMock * 100).toInt()}% completado';
-
-                                    return _ChallengeCard(
-                                      title: reto['titulo'] ?? 'Reto',
-                                      subtitle: reto['descripcion'] ?? 'Únete ahora',
-                                      progressText: progressText,
-                                      progress: progresoMock,
-                                      color: color,
-                                      badgeText: '${reto['puntosRecompensa'] ?? 50} pts',
-                                    );
-                                  },
-                                );
-                              },
-                              loading: () => Center(child: CircularProgressIndicator()),
-                              error: (e, _) => Center(child: Text('Error al cargar retos')),
-                            ),
-                          ),
+                          const SizedBox(height: 16),
+                          _buildRetosCarousel(retosAsync),
 
 
-                          SizedBox(height: 120), // Margen inferior para FAB y BottomNav
+                          const SizedBox(height: 120), // Margen inferior para FAB y BottomNav
                         ],
                       ),
                     );
                   },
-                  loading: () => Center(child: Padding(padding: EdgeInsets.all(32.0), child: CircularProgressIndicator())),
+                  loading: () => const Center(child: Padding(padding: EdgeInsets.all(32.0), child: CircularProgressIndicator())),
                   error: (error, _) => Center(child: Text('Error: $error')),
                 ),
               ],
@@ -523,12 +534,12 @@ class _ChallengeCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       width: 180,
-      padding: EdgeInsets.all(16),
+      padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: Theme.of(context).colorScheme.surface,
         borderRadius: BorderRadius.circular(24),
         boxShadow: [
-          BoxShadow(color: Theme.of(context).colorScheme.shadow.withValues(alpha: 0.03), blurRadius: 10, offset: Offset(0, 4)),
+          BoxShadow(color: Theme.of(context).colorScheme.shadow.withValues(alpha: 0.03), blurRadius: 10, offset: const Offset(0, 4)),
         ],
       ),
       child: Column(
@@ -544,15 +555,15 @@ class _ChallengeCard extends StatelessWidget {
                 child: Icon(Icons.emoji_events_outlined, color: color, size: 20),
               ),
               Container(
-                padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                 decoration: BoxDecoration(color: color.withValues(alpha: 0.1), borderRadius: BorderRadius.circular(12)),
                 child: Text(badgeText, style: TextStyle(color: color, fontSize: 10, fontWeight: FontWeight.w700)),
               ),
             ],
           ),
-          SizedBox(height: 12),
+          const SizedBox(height: 12),
           Text(title, style: TextStyle(fontSize: 16, fontWeight: FontWeight.w800, color: Theme.of(context).colorScheme.onSurface), maxLines: 1, overflow: TextOverflow.ellipsis),
-          SizedBox(height: 2),
+          const SizedBox(height: 2),
           Expanded(
             child: Text(
               subtitle,
@@ -568,7 +579,7 @@ class _ChallengeCard extends StatelessWidget {
               Text(progressText, style: TextStyle(fontSize: 10, fontWeight: FontWeight.w800, color: color)),
             ],
           ),
-          SizedBox(height: 6),
+          const SizedBox(height: 6),
           LinearProgressIndicator(
             value: progress,
             backgroundColor: Theme.of(context).colorScheme.surfaceContainerHighest,

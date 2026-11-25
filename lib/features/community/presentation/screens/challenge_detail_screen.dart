@@ -25,6 +25,19 @@ class ChallengeDetailScreen extends ConsumerWidget {
     }
   }
 
+  Future<void> _handleJoinReto(BuildContext context, WidgetRef ref) async {
+    final notifier = ref.read(retosProvider.notifier);
+    await notifier.joinReto(retoId);
+    if (context.mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('¡Te uniste al reto!'),
+          backgroundColor: Colors.green,
+        ),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
@@ -50,10 +63,10 @@ class ChallengeDetailScreen extends ConsumerWidget {
           if (retoMap == null) return const Center(child: Text('Reto no encontrado'));
 
           final isJoined = retoMap['is_joined'] == true || retoMap['isJoined'] == true;
-          final currentProgress = 0;
+          const currentProgress = 0;
           final targetCount = retoMap['meta_diaria'] ?? 0;
           final progressPercentage = targetCount > 0 ? (currentProgress / targetCount) : 0.0;
-          final icon = 'emoji_events';
+          const icon = 'emoji_events';
           final category = retoMap['categoria'];
           final title = retoMap['titulo'];
           final points = retoMap['puntos_recompensa'] ?? 0;
@@ -292,20 +305,7 @@ class ChallengeDetailScreen extends ConsumerWidget {
                   width: double.infinity,
                   height: 54,
                   child: ElevatedButton(
-                    onPressed: isJoined
-                        ? null
-                        : () async {
-                            final notifier = ref.read(retosProvider.notifier);
-                            await notifier.joinReto(retoId);
-                            if (context.mounted) {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                  content: Text('¡Te uniste al reto!'),
-                                  backgroundColor: Colors.green,
-                                ),
-                              );
-                            }
-                          },
+                    onPressed: isJoined ? null : () => _handleJoinReto(context, ref),
                     style: ElevatedButton.styleFrom(
                       backgroundColor: colorScheme.primary,
                       foregroundColor: Colors.white,

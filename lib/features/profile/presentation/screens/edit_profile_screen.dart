@@ -65,7 +65,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
         await ref.read(profileProvider.notifier).uploadAvatar(pickedFile.path);
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Foto de perfil actualizada correctamente.')),
+            const SnackBar(content: Text('Foto de perfil actualizada correctamente.')),
           );
         }
       } catch (e) {
@@ -81,7 +81,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
   void _showImageSourceOptions() {
     showModalBottomSheet(
       context: context,
-      shape: RoundedRectangleBorder(
+      shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
       builder: (context) {
@@ -89,16 +89,16 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
           child: Wrap(
             children: [
               ListTile(
-                leading: Icon(Icons.camera_alt),
-                title: Text('Tomar Foto'),
+                leading: const Icon(Icons.camera_alt),
+                title: const Text('Tomar Foto'),
                 onTap: () {
                   Navigator.pop(context);
                   _pickImage(ImageSource.camera);
                 },
               ),
               ListTile(
-                leading: Icon(Icons.photo_library),
-                title: Text('Elegir de Galería'),
+                leading: const Icon(Icons.photo_library),
+                title: const Text('Elegir de Galería'),
                 onTap: () {
                   Navigator.pop(context);
                   _pickImage(ImageSource.gallery);
@@ -123,7 +123,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
         });
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Perfil guardado con éxito.')),
+            const SnackBar(content: Text('Perfil guardado con éxito.')),
           );
           context.pop();
         }
@@ -197,7 +197,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
               errorBuilder: (context, error, stackTrace) =>
                   Icon(Icons.extension, color: Theme.of(context).colorScheme.primary, size: 24),
             ),
-            SizedBox(width: 8),
+            const SizedBox(width: 8),
             Text(
               'HabitApp',
               style: TextStyle(color: Theme.of(context).colorScheme.onSurface, fontWeight: FontWeight.bold, fontSize: 18),
@@ -207,9 +207,9 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
       ),
       body: profileState.when(
         data: (profile) {
-          if (profile == null) return Center(child: Text('Perfil no encontrado'));
+          if (profile == null) return const Center(child: Text('Perfil no encontrado'));
           return SingleChildScrollView(
-            padding: EdgeInsets.all(20.0),
+            padding: const EdgeInsets.all(20.0),
             child: Form(
               key: _formKey,
               child: Column(
@@ -227,7 +227,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
                           child: profile.fotoperfil == null ? Icon(Icons.person, color: Theme.of(context).colorScheme.onSurfaceVariant, size: 50) : null,
                         ),
                         Container(
-                          padding: EdgeInsets.all(6),
+                          padding: const EdgeInsets.all(6),
                           decoration: BoxDecoration(
                             color: Theme.of(context).colorScheme.primary,
                             shape: BoxShape.circle,
@@ -238,20 +238,20 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
                       ],
                     ),
                   ),
-                  SizedBox(height: 12),
+                  const SizedBox(height: 12),
                   GestureDetector(
                     onTap: _showImageSourceOptions,
                     child: Text('Cambiar foto de perfil', style: TextStyle(color: Theme.of(context).colorScheme.primary, fontWeight: FontWeight.bold, fontSize: 13)),
                   ),
-                  SizedBox(height: 4),
+                  const SizedBox(height: 4),
                   Text('JPG o PNG de hasta 5 MB', style: TextStyle(color: Theme.of(context).colorScheme.onSurfaceVariant, fontSize: 11)),
-                  SizedBox(height: 32),
+                  const SizedBox(height: 32),
 
                   // --- Información Personal ---
                   _buildSectionTitle(Icons.assignment_ind_outlined, 'Información Personal', trailingText: 'Requerido *'),
-                  SizedBox(height: 12),
+                  const SizedBox(height: 12),
                   Container(
-                    padding: EdgeInsets.all(16),
+                    padding: const EdgeInsets.all(16),
                     decoration: BoxDecoration(
                       color: Theme.of(context).colorScheme.surface,
                       borderRadius: BorderRadius.circular(16),
@@ -261,11 +261,11 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
                         Row(
                           children: [
                             Expanded(child: _buildTextField('Nombre *', _nameController, prefixIcon: Icons.person_outline)),
-                            SizedBox(width: 12),
+                            const SizedBox(width: 12),
                             Expanded(child: _buildTextField('Apellido *', _lastNameController)),
                           ],
                         ),
-                        SizedBox(height: 16),
+                        const SizedBox(height: 16),
                         _buildTextField('Teléfono móvil', _phoneController, suffixIcon: Icons.phone_outlined),
                         const SizedBox(height: 16),
                         _buildTextField('Fecha de nacimiento', _dobController, prefixIcon: Icons.calendar_today_outlined, suffixIcon: Icons.cake_outlined),
@@ -274,13 +274,13 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
                       ],
                     ),
                   ),
-                  SizedBox(height: 32),
+                  const SizedBox(height: 32),
 
                   // --- Acceso y Seguridad ---
                   _buildSectionTitle(Icons.lock_outline, 'Acceso y Seguridad'),
-                  SizedBox(height: 12),
+                  const SizedBox(height: 12),
                   Container(
-                    padding: EdgeInsets.all(16),
+                    padding: const EdgeInsets.all(16),
                     decoration: BoxDecoration(
                       color: Theme.of(context).colorScheme.surface,
                       borderRadius: BorderRadius.circular(16),
@@ -298,13 +298,13 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
                             onExpansionChanged: (expanded) {
                             },
                             children: [
-                              SizedBox(height: 8),
+                              const SizedBox(height: 8),
                               _buildTextField('Contraseña Actual', _currentPasswordController, obscureText: true),
-                              SizedBox(height: 16),
+                              const SizedBox(height: 16),
                               _buildTextField('Nueva Contraseña', _newPasswordController, obscureText: true),
-                              SizedBox(height: 16),
+                              const SizedBox(height: 16),
                               _buildTextField('Confirmar Nueva Contraseña', _confirmPasswordController, obscureText: true),
-                              SizedBox(height: 16),
+                              const SizedBox(height: 16),
                               Align(
                                 alignment: Alignment.centerRight,
                                 child: ElevatedButton(
@@ -313,15 +313,15 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
                                     backgroundColor: Theme.of(context).colorScheme.primary,
                                     foregroundColor: Theme.of(context).colorScheme.onPrimary,
                                   ),
-                                  child: Text('Actualizar Contraseña'),
+                                  child: const Text('Actualizar Contraseña'),
                                 ),
                               ),
-                              SizedBox(height: 16),
+                              const SizedBox(height: 16),
                             ],
                           ),
                         ),
                         Divider(height: 1, color: Theme.of(context).colorScheme.outlineVariant),
-                        SizedBox(height: 16),
+                        const SizedBox(height: 16),
 
                         // Toggles
                         Row(
@@ -329,8 +329,8 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
                           children: [
                             Row(
                               children: [
-                                CircleAvatar(radius: 14, backgroundColor: Color(0xFFE8F0FE), child: Icon(Icons.fingerprint, color: Theme.of(context).colorScheme.primary, size: 14)),
-                                SizedBox(width: 12),
+                                CircleAvatar(radius: 14, backgroundColor: const Color(0xFFE8F0FE), child: Icon(Icons.fingerprint, color: Theme.of(context).colorScheme.primary, size: 14)),
+                                const SizedBox(width: 12),
                                 Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
@@ -357,14 +357,14 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
                             ),
                           ],
                         ),
-                        SizedBox(height: 16),
+                        const SizedBox(height: 16),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Row(
                               children: [
                                 CircleAvatar(radius: 14, backgroundColor: Theme.of(context).colorScheme.surfaceContainerHighest, child: Icon(Icons.shield_outlined, color: Theme.of(context).colorScheme.onSurfaceVariant, size: 14)),
-                                SizedBox(width: 12),
+                                const SizedBox(width: 12),
                                 Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
@@ -384,43 +384,43 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
                       ],
                     ),
                   ),
-                  SizedBox(height: 32),
+                  const SizedBox(height: 32),
 
                   // --- Botones Inferiores ---
                   SizedBox(
                     width: double.infinity,
                     child: FilledButton.icon(
                       onPressed: _saveChanges,
-                      icon: Icon(Icons.check, size: 18),
-                      label: Text('Guardar Cambios', style: TextStyle(fontWeight: FontWeight.bold)),
+                      icon: const Icon(Icons.check, size: 18),
+                      label: const Text('Guardar Cambios', style: TextStyle(fontWeight: FontWeight.bold)),
                       style: FilledButton.styleFrom(
                         backgroundColor: Theme.of(context).colorScheme.primary,
-                        padding: EdgeInsets.symmetric(vertical: 16),
+                        padding: const EdgeInsets.symmetric(vertical: 16),
                         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
                       ),
                     ),
                   ),
-                  SizedBox(height: 12),
+                  const SizedBox(height: 12),
                   SizedBox(
                     width: double.infinity,
                     child: OutlinedButton(
                       onPressed: () => context.pop(),
                       style: OutlinedButton.styleFrom(
                         
-                        padding: EdgeInsets.symmetric(vertical: 16),
+                        padding: const EdgeInsets.symmetric(vertical: 16),
                         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
                         backgroundColor: Theme.of(context).colorScheme.surface,
                       ),
                       child: Text('Descartar cambios', style: TextStyle(color: Theme.of(context).colorScheme.onSurface, fontWeight: FontWeight.bold)),
                     ),
                   ),
-                  SizedBox(height: 48),
+                  const SizedBox(height: 48),
                 ],
               ),
             ),
           );
         },
-        loading: () => Center(child: CircularProgressIndicator()),
+        loading: () => const Center(child: CircularProgressIndicator()),
         error: (err, stack) => Center(child: Text('Error: $err')),
       ),
     );
@@ -430,9 +430,9 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
     return Row(
       children: [
         Icon(icon, color: Theme.of(context).colorScheme.primary, size: 20),
-        SizedBox(width: 8),
+        const SizedBox(width: 8),
         Text(title, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: Theme.of(context).colorScheme.onSurface)),
-        Spacer(),
+        const Spacer(),
         if (trailingText != null)
           Text(trailingText, style: TextStyle(fontSize: 11, color: Theme.of(context).colorScheme.onSurfaceVariant)),
       ],
@@ -444,7 +444,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(label, style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: Theme.of(context).colorScheme.onSurfaceVariant)),
-        SizedBox(height: 8),
+        const SizedBox(height: 8),
         TextField(
           controller: controller,
           obscureText: obscureText,
@@ -453,9 +453,9 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
             filled: true,
             fillColor: Theme.of(context).colorScheme.surfaceContainerHighest,
             prefixIcon: prefixWidget ?? (prefixIcon != null ? Icon(prefixIcon, color: Theme.of(context).colorScheme.onSurfaceVariant, size: 18) : null),
-            prefixIconConstraints: BoxConstraints(minWidth: 40, minHeight: 40),
+            prefixIconConstraints: const BoxConstraints(minWidth: 40, minHeight: 40),
             suffixIcon: suffixIcon != null ? Icon(suffixIcon, color: Theme.of(context).colorScheme.onSurfaceVariant, size: 18) : null,
-            contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+            contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
             border: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: BorderSide.none),
             focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: BorderSide(color: Theme.of(context).colorScheme.primary)),
           ),
@@ -476,7 +476,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(label, style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: Theme.of(context).colorScheme.onSurfaceVariant)),
-        SizedBox(height: 8),
+        const SizedBox(height: 8),
         DropdownButtonFormField<String>(
           initialValue: currentValue,
           items: items.map((String value) {
@@ -497,8 +497,8 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
             filled: true,
             fillColor: Theme.of(context).colorScheme.surfaceContainerHighest,
             prefixIcon: prefixIcon != null ? Icon(prefixIcon, color: Theme.of(context).colorScheme.onSurfaceVariant, size: 18) : null,
-            prefixIconConstraints: BoxConstraints(minWidth: 40, minHeight: 40),
-            contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+            prefixIconConstraints: const BoxConstraints(minWidth: 40, minHeight: 40),
+            contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
             border: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: BorderSide.none),
             focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: BorderSide(color: Theme.of(context).colorScheme.primary)),
           ),
