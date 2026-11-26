@@ -30,14 +30,14 @@ class MainLayoutScreen extends StatelessWidget {
       floatingActionButton: Container(
         width: 64,
         height: 64,
-        margin: EdgeInsets.only(top: 32),
+        margin: const EdgeInsets.only(top: 32),
         decoration: BoxDecoration(
           shape: BoxShape.circle,
           boxShadow: [
             BoxShadow(
               color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.3),
               blurRadius: 16,
-              offset: Offset(0, 8),
+              offset: const Offset(0, 8),
             ),
           ],
         ),
@@ -45,7 +45,7 @@ class MainLayoutScreen extends StatelessWidget {
           onPressed: () => context.push('/create-habit'),
           backgroundColor: Theme.of(context).colorScheme.primary,
           elevation: 0,
-          shape: CircleBorder(),
+          shape: const CircleBorder(),
           child: Icon(Icons.add, color: Theme.of(context).colorScheme.surface, size: 32),
         ),
       ),
@@ -53,7 +53,7 @@ class MainLayoutScreen extends StatelessWidget {
         color: Theme.of(context).colorScheme.surface,
         elevation: 20,
         shadowColor: Theme.of(context).colorScheme.shadow.withValues(alpha: 0.1),
-        shape: CircularNotchedRectangle(),
+        shape: const CircularNotchedRectangle(),
         notchMargin: 8,
         height: 70,
         child: Row(
@@ -82,7 +82,7 @@ class MainLayoutScreen extends StatelessWidget {
               ),
             ),
             // Spacer for FAB
-            SizedBox(width: 48),
+            const SizedBox(width: 48),
             // Right side
             Expanded(
               child: Row(
@@ -138,7 +138,7 @@ class _NavItem extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Icon(isActive ? activeIcon : icon, color: color, size: 24),
-          SizedBox(height: 2),
+          const SizedBox(height: 2),
           Text(
             label,
             style: TextStyle(

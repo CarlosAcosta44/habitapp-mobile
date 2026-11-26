@@ -8,6 +8,8 @@ import '../../providers/habits_provider.dart';
 import '../../../notifications/providers/notification_provider.dart';
 
 
+const _kCreateHabitTitle = 'Crear Hábito';
+
 IconData getCategoryIcon(String? iconName) {
   switch (iconName?.toLowerCase()) {
     case 'water_drop':
@@ -110,92 +112,97 @@ class _CreateHabitScreenState extends ConsumerState<CreateHabitScreen> {
     return '${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}';
   }
 
-  Future<void> _submitForm() async {
+  bool _validateFormInputs() {
     final isFormValid = _formKey.currentState!.validate();
-
     if (!isFormValid || _selectedDays.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
+        const SnackBar(
           content: Text('Por favor completa los campos y elige al menos 1 día.'),
           backgroundColor: Colors.redAccent,
         ),
       );
-      return;
+      return false;
     }
-
     if (_selectedCategoryId == null) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
+        const SnackBar(
           content: Text('Por favor selecciona una categoría'),
+          backgroundColor: Colors.redAccent,
+        ),
+      );
+      return false;
+    }
+    return true;
+  }
+
+  CreateHabitDto _buildCreateHabitDto(List<int> sortedDays) {
+    final descText = _descripcionController.text.trim();
+    final unitText = _unidadMedidaController.text.trim();
+    return CreateHabitDto(
+      nombre: _nombreController.text.trim(),
+      descripcion: descText.isEmpty ? null : descText,
+      fechaInicio: _formatDate(_fechaInicio),
+      fechaFin: _fechaFin != null ? _formatDate(_fechaFin!) : null,
+      puntos: 10,
+      metaDiaria: double.tryParse(_metaDiariaController.text.trim()) ?? 1.0,
+      unidadMedida: unitText.isEmpty ? 'veces' : unitText,
+      idCategoria: _selectedCategoryId!,
+      diasSemana: sortedDays,
+    );
+  }
+
+  Future<void> _scheduleAndPersistReminders(dynamic createdHabit, List<int> sortedDays) async {
+    final notifRepo = ref.read(notificationRepositoryProvider);
+    int index = 0;
+    for (final time in _reminderTimes) {
+      try {
+        await notifRepo.scheduleHabitNotification(
+          id: createdHabit.id.hashCode,
+          title: '¡Recordatorio de hábito!',
+          body: 'Es hora de: ${createdHabit.nombre}',
+          hour: time.hour,
+          minute: time.minute,
+          daysOfWeek: sortedDays,
+          index: index,
+        );
+        index++;
+      } catch (e) {
+        debugPrint('Error scheduling notification: $e');
+      }
+    }
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final key = 'reminders_${createdHabit.id}';
+      final stringList = _reminderTimes.map((t) => '${t.hour}:${t.minute}').toList();
+      await prefs.setStringList(key, stringList);
+    } catch (e) {
+      debugPrint('Error saving reminders locally: $e');
+    }
+  }
+
+  Future<void> _submitForm() async {
+    if (!_validateFormInputs()) return;
+
+    setState(() => _isLoading = true);
+    final sortedDays = _selectedDays.toList()..sort();
+    final dto = _buildCreateHabitDto(sortedDays);
+    final createdHabit = await ref.read(habitsDashboardProvider.notifier).createHabit(dto);
+
+    if (!mounted) return;
+    setState(() => _isLoading = false);
+
+    if (createdHabit == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Error al crear el hábito. Inténtalo de nuevo.'),
           backgroundColor: Colors.redAccent,
         ),
       );
       return;
     }
 
-    setState(() => _isLoading = true);
-
-    final sortedDays = _selectedDays.toList()..sort();
-
-    final dto = CreateHabitDto(
-      nombre: _nombreController.text.trim(),
-      descripcion: _descripcionController.text.trim().isEmpty ? null : _descripcionController.text.trim(),
-      fechaInicio: _formatDate(_fechaInicio),
-      fechaFin: _fechaFin != null ? _formatDate(_fechaFin!) : null,
-      puntos: 10,
-      metaDiaria: double.tryParse(_metaDiariaController.text.trim()) ?? 1.0,
-      unidadMedida: _unidadMedidaController.text.trim().isEmpty ? 'veces' : _unidadMedidaController.text.trim(),
-      idCategoria: _selectedCategoryId!,
-      diasSemana: sortedDays,
-    );
-
-    final createdHabit = await ref.read(habitsDashboardProvider.notifier).createHabit(dto);
-
-    if (mounted) {
-      setState(() => _isLoading = false);
-      if (createdHabit != null) {
-        final notifRepo = ref.read(notificationRepositoryProvider);
-        int index = 0;
-        for (var time in _reminderTimes) {
-          try {
-            await notifRepo.scheduleHabitNotification(
-              id: createdHabit.id.hashCode,
-              title: '¡Recordatorio de hábito!',
-              body: 'Es hora de: ${createdHabit.nombre}',
-              hour: time.hour,
-              minute: time.minute,
-              daysOfWeek: sortedDays,
-              index: index,
-            );
-            index++;
-          } catch (e) {
-            debugPrint('Error scheduling notification: $e');
-          }
-        }
-        // Persist reminder times AFTER the loop, keyed by the new habit UUID
-        try {
-          final prefs = await SharedPreferences.getInstance();
-          final key = 'reminders_${createdHabit.id}';
-          final stringList =
-              _reminderTimes.map((t) => '${t.hour}:${t.minute}').toList();
-          await prefs.setStringList(key, stringList);
-          debugPrint('[Reminders] Saved key=$key → $stringList');
-        } catch (e) {
-          debugPrint('Error saving reminders locally: $e');
-        }
-
-        if (mounted) context.pop();
-      } else {
-        if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text('Error al crear el hábito. Inténtalo de nuevo.'),
-              backgroundColor: Colors.redAccent,
-            ),
-          );
-        }
-      }
-    }
+    await _scheduleAndPersistReminders(createdHabit, sortedDays);
+    if (mounted) context.pop();
   }
 
   @override
@@ -211,11 +218,11 @@ class _CreateHabitScreenState extends ConsumerState<CreateHabitScreen> {
           icon: Icon(Icons.arrow_back, color: Theme.of(context).colorScheme.onSurface),
           onPressed: () => context.pop(),
         ),
-        title: Text('Crear Hábito', style: TextStyle(color: Theme.of(context).colorScheme.onSurface, fontWeight: FontWeight.bold, fontSize: 16)),
+        title: Text(_kCreateHabitTitle, style: TextStyle(color: Theme.of(context).colorScheme.onSurface, fontWeight: FontWeight.bold, fontSize: 16)),
         centerTitle: false,
         actions: [
           Padding(
-            padding: EdgeInsets.only(right: 16.0),
+            padding: const EdgeInsets.only(right: 16.0),
             child: CircleAvatar(
               radius: 16,
               backgroundColor: Theme.of(context).colorScheme.secondary.withValues(alpha: 0.1),
@@ -227,7 +234,7 @@ class _CreateHabitScreenState extends ConsumerState<CreateHabitScreen> {
       body: categoriesAsync.when(
         data: (categories) {
           if (categories.isEmpty) {
-            return Center(child: Text('No hay categorías disponibles'));
+            return const Center(child: Text('No hay categorías disponibles'));
           }
 
           if (_selectedCategoryId == null && categories.isNotEmpty) {
@@ -240,35 +247,35 @@ class _CreateHabitScreenState extends ConsumerState<CreateHabitScreen> {
           );
 
           return SingleChildScrollView(
-            padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
             child: Form(
               key: _formKey,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text('Crear Hábito', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 22, color: Theme.of(context).colorScheme.onSurface)),
-                  SizedBox(height: 16),
+                  Text(_kCreateHabitTitle, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 22, color: Theme.of(context).colorScheme.onSurface)),
+                  const SizedBox(height: 16),
                   _buildCategorySelector(categories, selectedCat),
-                  SizedBox(height: 16),
+                  const SizedBox(height: 16),
                   _buildInputField('NOMBRE DEL HÁBITO', Icons.edit_note, _nombreController, 'Beber agua conscientemente'),
-                  SizedBox(height: 12),
+                  const SizedBox(height: 12),
                   _buildInputField('MOTIVACIÓN O PROPÓSITO', Icons.format_quote, _descripcionController, 'Tomar 8 vasos de agua para mantener mi energía...', maxLines: 2),
-                  SizedBox(height: 12),
+                  const SizedBox(height: 12),
                   _buildDailyGoalField(),
-                  SizedBox(height: 12),
+                  const SizedBox(height: 12),
                   _buildSoundCard(),
-                  SizedBox(height: 12),
+                  const SizedBox(height: 12),
                   _buildDaysCard(),
-                  SizedBox(height: 32),
+                  const SizedBox(height: 32),
                   SizedBox(
                     width: double.infinity,
                     height: 56,
                     child: ElevatedButton.icon(
                       onPressed: _isLoading ? null : _submitForm,
-                      icon: _isLoading ? SizedBox() : Icon(Icons.add_task, color: Theme.of(context).colorScheme.surface),
+                      icon: _isLoading ? const SizedBox() : Icon(Icons.add_task, color: Theme.of(context).colorScheme.surface),
                       label: _isLoading
                           ? SizedBox(width: 24, height: 24, child: CircularProgressIndicator(color: Theme.of(context).colorScheme.surface, strokeWidth: 2))
-                          : Text('Crear Hábito', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Theme.of(context).colorScheme.surface)),
+                          : Text(_kCreateHabitTitle, style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Theme.of(context).colorScheme.surface)),
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Theme.of(context).colorScheme.primary,
                         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
@@ -276,13 +283,13 @@ class _CreateHabitScreenState extends ConsumerState<CreateHabitScreen> {
                       ),
                     ),
                   ),
-                  SizedBox(height: 40),
+                  const SizedBox(height: 40),
                 ],
               ),
             ),
           );
         },
-        loading: () => Center(child: CircularProgressIndicator()),
+        loading: () => const Center(child: CircularProgressIndicator()),
         error: (err, _) => Center(child: Text('Error: $err')),
       ),
     );
@@ -291,7 +298,7 @@ class _CreateHabitScreenState extends ConsumerState<CreateHabitScreen> {
   Widget _buildCategorySelector(List<CategoryModel> categories, CategoryModel selectedCat) {
     return Container(
       width: double.infinity,
-      padding: EdgeInsets.symmetric(vertical: 24, horizontal: 16),
+      padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 16),
       decoration: BoxDecoration(
         color: Theme.of(context).colorScheme.surface,
         borderRadius: BorderRadius.circular(24),
@@ -300,7 +307,7 @@ class _CreateHabitScreenState extends ConsumerState<CreateHabitScreen> {
       child: Column(
         children: [
           Container(
-            padding: EdgeInsets.all(16),
+            padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
               color: Theme.of(context).scaffoldBackgroundColor,
               borderRadius: BorderRadius.circular(20),
@@ -308,8 +315,8 @@ class _CreateHabitScreenState extends ConsumerState<CreateHabitScreen> {
             child: Column(
               children: [
                 Icon(getCategoryIcon(selectedCat.icono), size: 32, color: Theme.of(context).colorScheme.primary),
-                SizedBox(height: 8),
-                Row(
+                const SizedBox(height: 8),
+                const Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Icon(Icons.local_fire_department, color: Color(0xFF0F8A5D), size: 12),
@@ -320,11 +327,11 @@ class _CreateHabitScreenState extends ConsumerState<CreateHabitScreen> {
               ],
             ),
           ),
-          SizedBox(height: 12),
+          const SizedBox(height: 12),
           Text(selectedCat.nombre, style: TextStyle(fontSize: 12, color: Theme.of(context).colorScheme.onSurfaceVariant)),
-          SizedBox(height: 16),
+          const SizedBox(height: 16),
           Container(
-            padding: EdgeInsets.all(6),
+            padding: const EdgeInsets.all(6),
             decoration: BoxDecoration(
               color: Theme.of(context).scaffoldBackgroundColor,
               borderRadius: BorderRadius.circular(30),
@@ -336,12 +343,12 @@ class _CreateHabitScreenState extends ConsumerState<CreateHabitScreen> {
                 return GestureDetector(
                   onTap: () => setState(() => _selectedCategoryId = cat.id),
                   child: Container(
-                    margin: EdgeInsets.symmetric(horizontal: 4),
-                    padding: EdgeInsets.all(8),
+                    margin: const EdgeInsets.symmetric(horizontal: 4),
+                    padding: const EdgeInsets.all(8),
                     decoration: BoxDecoration(
                       color: isSelected ? Theme.of(context).colorScheme.surface : Colors.transparent,
                       shape: BoxShape.circle,
-                      boxShadow: isSelected ? [BoxShadow(color: Theme.of(context).colorScheme.shadow.withValues(alpha: 0.05), blurRadius: 4, offset: Offset(0, 2))] : [],
+                      boxShadow: isSelected ? [BoxShadow(color: Theme.of(context).colorScheme.shadow.withValues(alpha: 0.05), blurRadius: 4, offset: const Offset(0, 2))] : [],
                       border: isSelected ? Border.all(color: Theme.of(context).colorScheme.primary, width: 1.5) : null,
                     ),
                     child: Icon(
@@ -366,17 +373,17 @@ class _CreateHabitScreenState extends ConsumerState<CreateHabitScreen> {
         borderRadius: BorderRadius.circular(16),
         border: Border.all(color: Theme.of(context).colorScheme.surfaceContainerHighest),
       ),
-      padding: EdgeInsets.all(16),
+      padding: const EdgeInsets.all(16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(label, style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: Theme.of(context).colorScheme.onSurfaceVariant, letterSpacing: 1)),
-          SizedBox(height: 8),
+          const SizedBox(height: 8),
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Icon(icon, color: Theme.of(context).colorScheme.onSurfaceVariant, size: 20),
-              SizedBox(width: 12),
+              const SizedBox(width: 12),
               Expanded(
                 child: TextFormField(
                   controller: controller,
@@ -409,19 +416,19 @@ class _CreateHabitScreenState extends ConsumerState<CreateHabitScreen> {
         borderRadius: BorderRadius.circular(16),
         border: Border.all(color: Theme.of(context).colorScheme.surfaceContainerHighest),
       ),
-      padding: EdgeInsets.all(16),
+      padding: const EdgeInsets.all(16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text('META DIARIA', style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: Theme.of(context).colorScheme.onSurfaceVariant, letterSpacing: 1)),
-          SizedBox(height: 8),
+          const SizedBox(height: 8),
           Row(
             children: [
               Icon(Icons.flag_outlined, color: Theme.of(context).colorScheme.onSurfaceVariant, size: 20),
-              SizedBox(width: 12),
+              const SizedBox(width: 12),
               Expanded(
                 child: Container(
-                  padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                   decoration: BoxDecoration(
                     color: Theme.of(context).scaffoldBackgroundColor,
                     borderRadius: BorderRadius.circular(8),
@@ -441,10 +448,10 @@ class _CreateHabitScreenState extends ConsumerState<CreateHabitScreen> {
                   ),
                 ),
               ),
-              SizedBox(width: 12),
+              const SizedBox(width: 12),
               Expanded(
                 child: Container(
-                  padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                   decoration: BoxDecoration(
                     color: Theme.of(context).scaffoldBackgroundColor,
                     borderRadius: BorderRadius.circular(8),
@@ -463,7 +470,7 @@ class _CreateHabitScreenState extends ConsumerState<CreateHabitScreen> {
                   ),
                 ),
               ),
-              SizedBox(width: 8),
+              const SizedBox(width: 8),
               Text('/ dia', style: TextStyle(color: Theme.of(context).colorScheme.onSurfaceVariant, fontSize: 12)),
             ],
           )
@@ -497,7 +504,7 @@ class _CreateHabitScreenState extends ConsumerState<CreateHabitScreen> {
         borderRadius: BorderRadius.circular(16),
         border: Border.all(color: Theme.of(context).colorScheme.surfaceContainerHighest),
       ),
-      padding: EdgeInsets.all(16),
+      padding: const EdgeInsets.all(16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -506,9 +513,9 @@ class _CreateHabitScreenState extends ConsumerState<CreateHabitScreen> {
               CircleAvatar(
                 radius: 18,
                 backgroundColor: Colors.orange.withValues(alpha: 0.1),
-                child: Icon(Icons.notifications_active_outlined, color: Colors.orange, size: 18),
+                child: const Icon(Icons.notifications_active_outlined, color: Colors.orange, size: 18),
               ),
-              SizedBox(width: 16),
+              const SizedBox(width: 16),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -525,9 +532,9 @@ class _CreateHabitScreenState extends ConsumerState<CreateHabitScreen> {
             ],
           ),
           if (_reminderTimes.isNotEmpty) ...[
-            SizedBox(height: 16),
-            Divider(height: 1),
-            SizedBox(height: 8),
+            const SizedBox(height: 16),
+            const Divider(height: 1),
+            const SizedBox(height: 8),
             ..._reminderTimes.asMap().entries.map((entry) {
               final index = entry.key;
               final time = entry.value;
@@ -537,7 +544,7 @@ class _CreateHabitScreenState extends ConsumerState<CreateHabitScreen> {
                   GestureDetector(
                     onTap: () => _pickTime(index),
                     child: Container(
-                      padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                       decoration: BoxDecoration(
                         color: Theme.of(context).colorScheme.surfaceContainerHighest,
                         borderRadius: BorderRadius.circular(8),
@@ -549,7 +556,7 @@ class _CreateHabitScreenState extends ConsumerState<CreateHabitScreen> {
                     ),
                   ),
                   IconButton(
-                    icon: Icon(Icons.delete_outline, color: Colors.red),
+                    icon: const Icon(Icons.delete_outline, color: Colors.red),
                     onPressed: () {
                       setState(() {
                         _reminderTimes.removeAt(index);
@@ -572,7 +579,7 @@ class _CreateHabitScreenState extends ConsumerState<CreateHabitScreen> {
         borderRadius: BorderRadius.circular(16),
         border: Border.all(color: Theme.of(context).colorScheme.surfaceContainerHighest),
       ),
-      padding: EdgeInsets.all(20),
+      padding: const EdgeInsets.all(20),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -583,17 +590,17 @@ class _CreateHabitScreenState extends ConsumerState<CreateHabitScreen> {
               Text('${_selectedDays.length} días', style: TextStyle(color: Theme.of(context).colorScheme.primary, fontWeight: FontWeight.bold, fontSize: 12)),
             ],
           ),
-          SizedBox(height: 16),
+          const SizedBox(height: 16),
           Row(
             children: [
               _buildPresetButton('Todos los\ndías', 'all', Icons.check, _selectedDays.length == 7),
-              SizedBox(width: 8),
+              const SizedBox(width: 8),
               _buildPresetButton('Laborales\n(L-V)', 'workdays', null, _selectedDays.length == 5 && _selectedDays.containsAll([1, 2, 3, 4, 5])),
-              SizedBox(width: 8),
+              const SizedBox(width: 8),
               _buildPresetButton('Fines de\nsemana', 'weekends', null, _selectedDays.length == 2 && _selectedDays.containsAll([6, 7])),
             ],
           ),
-          SizedBox(height: 20),
+          const SizedBox(height: 20),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: _dayList.map((day) {
@@ -621,20 +628,20 @@ class _CreateHabitScreenState extends ConsumerState<CreateHabitScreen> {
               );
             }).toList(),
           ),
-          SizedBox(height: 24),
+          const SizedBox(height: 24),
           Divider(height: 1, color: Theme.of(context).colorScheme.outlineVariant),
-          SizedBox(height: 16),
+          const SizedBox(height: 16),
           Row(
             children: [
               Container(
-                padding: EdgeInsets.all(8),
+                padding: const EdgeInsets.all(8),
                 decoration: BoxDecoration(
                   color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(8),
                 ),
                 child: Icon(Icons.calendar_today, color: Theme.of(context).colorScheme.primary, size: 16),
               ),
-              SizedBox(width: 12),
+              const SizedBox(width: 12),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -645,7 +652,7 @@ class _CreateHabitScreenState extends ConsumerState<CreateHabitScreen> {
                 ),
               ),
               Container(
-                padding: EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                 decoration: BoxDecoration(
                   color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(12),
@@ -664,7 +671,7 @@ class _CreateHabitScreenState extends ConsumerState<CreateHabitScreen> {
       child: GestureDetector(
         onTap: () => _selectPreset(preset),
         child: Container(
-          padding: EdgeInsets.symmetric(vertical: 8),
+          padding: const EdgeInsets.symmetric(vertical: 8),
           decoration: BoxDecoration(
             color: isSelected ? Theme.of(context).colorScheme.primary.withValues(alpha: 0.05) : Colors.transparent,
             borderRadius: BorderRadius.circular(8),
@@ -675,7 +682,7 @@ class _CreateHabitScreenState extends ConsumerState<CreateHabitScreen> {
             children: [
               if (icon != null && isSelected) ...[
                 Icon(icon, size: 12, color: Theme.of(context).colorScheme.primary),
-                SizedBox(width: 4),
+                const SizedBox(width: 4),
               ],
               Text(
                 text,

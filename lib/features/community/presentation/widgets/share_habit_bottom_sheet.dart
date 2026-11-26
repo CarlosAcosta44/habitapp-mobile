@@ -58,6 +58,117 @@ class _ShareHabitBottomSheetState extends ConsumerState<ShareHabitBottomSheet> {
     }
   }
 
+  Widget _buildShareButtonChild(bool isSharing, bool isShared) {
+    if (isSharing) {
+      return const SizedBox(
+        width: 16,
+        height: 16,
+        child: CircularProgressIndicator(strokeWidth: 2),
+      );
+    }
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        if (isShared) ...[
+          const Icon(Icons.check, size: 16),
+          const SizedBox(width: 4),
+        ],
+        Text(
+          isShared ? 'Compartido' : 'Compartir',
+          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildHabitItemTile(
+    ThemeData theme,
+    ColorScheme colorScheme,
+    dynamic habit,
+    List<dynamic> communityHabits,
+  ) {
+    final isSharedLocally = _sharedHabits.contains(habit.id);
+    final isSharedInDb = communityHabits.any((ch) => ch.isMine && ch.title == habit.nombre);
+    final isShared = isSharedLocally || isSharedInDb;
+    final isSharing = _sharingHabits.contains(habit.id);
+    final streak = habit.rachaActual;
+    final habitColor = habit.categoria?.parsedColor ?? _kBlue;
+    final isDark = theme.brightness == Brightness.dark;
+
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: isDark ? colorScheme.surfaceContainerHighest.withValues(alpha: 0.3) : Colors.white,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: colorScheme.surfaceContainerHighest),
+        boxShadow: isDark
+            ? null
+            : [
+                BoxShadow(
+                  color: Colors.black.withValues(alpha: 0.02),
+                  blurRadius: 8,
+                  offset: const Offset(0, 2),
+                ),
+              ],
+      ),
+      child: Row(
+        children: [
+          Container(
+            width: 48,
+            height: 48,
+            decoration: BoxDecoration(
+              color: habitColor.withValues(alpha: 0.1),
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: Icon(Icons.star_border_rounded, color: habitColor),
+          ),
+          const SizedBox(width: 16),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  habit.nombre,
+                  style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: colorScheme.onSurface),
+                ),
+                const SizedBox(height: 4),
+                Row(
+                  children: [
+                    const Icon(Icons.local_fire_department, size: 14, color: _kGreen),
+                    const SizedBox(width: 4),
+                    Expanded(
+                      child: Text(
+                        'Racha de $streak días • ${habit.progresoHoy.toInt()}/${habit.metaDiaria} ${habit.unidadMedida} hoy',
+                        style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600, color: colorScheme.onSurfaceVariant),
+                        overflow: TextOverflow.ellipsis,
+                        maxLines: 1,
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(width: 12),
+          SizedBox(
+            height: 36,
+            child: ElevatedButton(
+              onPressed: isShared ? null : () => _shareHabit(habit.id),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: (isShared ? _kGreen : _kBlue).withValues(alpha: 0.1),
+                foregroundColor: isShared ? _kGreen : _kBlue,
+                elevation: 0,
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+              ),
+              child: _buildShareButtonChild(isSharing, isShared),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -127,111 +238,12 @@ class _ShareHabitBottomSheetState extends ConsumerState<ShareHabitBottomSheet> {
                   shrinkWrap: true,
                   itemCount: habits.length,
                   separatorBuilder: (context, index) => const SizedBox(height: 16),
-                  itemBuilder: (context, index) {
-                    final habit = habits[index];
-                    final isSharedLocally = _sharedHabits.contains(habit.id);
-                    final isSharedInDb = communityHabits.any((ch) => ch.isMine && ch.title == habit.nombre);
-                    final isShared = isSharedLocally || isSharedInDb;
-                    
-                    final isSharing = _sharingHabits.contains(habit.id);
-                    final streak = habit.rachaActual;
-                    final habitColor = habit.categoria?.parsedColor ?? const Color(0xFF2D82FA);
-                    
-                    return Container(
-                      padding: const EdgeInsets.all(16),
-                      decoration: BoxDecoration(
-                        color: theme.brightness == Brightness.dark 
-                            ? colorScheme.surfaceContainerHighest.withValues(alpha: 0.3)
-                            : Colors.white,
-                        borderRadius: BorderRadius.circular(16),
-                        border: Border.all(color: colorScheme.surfaceContainerHighest),
-                        boxShadow: theme.brightness == Brightness.light ? [
-                          BoxShadow(
-                            color: Colors.black.withValues(alpha: 0.02),
-                            blurRadius: 8,
-                            offset: const Offset(0, 2),
-                          ),
-                        ] : null,
-                      ),
-                      child: Row(
-                        children: [
-                          Container(
-                            width: 48,
-                            height: 48,
-                            decoration: BoxDecoration(
-                              color: habitColor.withValues(alpha: 0.1),
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                            child: Icon(Icons.star_border_rounded, color: habitColor),
-                          ),
-                          const SizedBox(width: 16),
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  habit.nombre,
-                                  style: TextStyle(
-                                    fontSize: 15,
-                                    fontWeight: FontWeight.bold,
-                                    color: colorScheme.onSurface,
-                                  ),
-                                ),
-                                const SizedBox(height: 4),
-                                Row(
-                                  children: [
-                                    const Icon(Icons.local_fire_department, size: 14, color: _kGreen),
-                                    const SizedBox(width: 4),
-                                    Expanded(
-                                      child: Text(
-                                        'Racha de $streak días • ${habit.progresoHoy.toInt()}/${habit.metaDiaria} ${habit.unidadMedida} hoy',
-                                        style: TextStyle(
-                                          fontSize: 11,
-                                          fontWeight: FontWeight.w600,
-                                          color: colorScheme.onSurfaceVariant,
-                                        ),
-                                        overflow: TextOverflow.ellipsis,
-                                        maxLines: 1,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ],
-                            ),
-                          ),
-                          const SizedBox(width: 12),
-                          SizedBox(
-                            height: 36,
-                            child: ElevatedButton(
-                              onPressed: isShared ? null : () => _shareHabit(habit.id),
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: isShared ? _kGreen.withValues(alpha: 0.1) : _kBlue.withValues(alpha: 0.1),
-                                foregroundColor: isShared ? _kGreen : _kBlue,
-                                elevation: 0,
-                                padding: const EdgeInsets.symmetric(horizontal: 16),
-                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-                              ),
-                              child: isSharing
-                                ? const SizedBox(width: 16, height: 16, child: CircularProgressIndicator(strokeWidth: 2))
-                                : Row(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    if (isShared) ...[
-                                      const Icon(Icons.check, size: 16),
-                                      const SizedBox(width: 4),
-                                    ],
-                                    Text(
-                                      isShared ? 'Compartido' : 'Compartir',
-                                      style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
-                                    ),
-                                  ],
-                                ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    );
-                  },
+                  itemBuilder: (context, index) => _buildHabitItemTile(
+                    theme,
+                    colorScheme,
+                    habits[index],
+                    communityHabits,
+                  ),
                 );
               },
             ),

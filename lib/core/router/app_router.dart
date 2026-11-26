@@ -29,33 +29,104 @@ import '../../features/profile/providers/profile_provider.dart';
 
 part 'app_router.g.dart';
 
+const _kSplashPath = '/splash';
+const _kOnboardingPath = '/onboarding';
+const _kLoginPath = '/login';
+const _kRegisterPath = '/register';
+const _kLockPath = '/lock';
+const _kCompleteProfilePath = '/complete-profile';
+
+bool _isAuthOrGateLocation(String loc) {
+  return loc == _kLoginPath ||
+      loc == _kRegisterPath ||
+      loc == _kSplashPath ||
+      loc == _kOnboardingPath ||
+      loc == _kLockPath;
+}
+
+bool _isProfileIncomplete(dynamic profile) {
+  if (profile == null) return false;
+  return profile.genero == null || profile.fechanacimiento == null;
+}
+
+bool _isLoadingAnyState(
+  bool isSplashShowing,
+  AsyncValue<bool> authState,
+  AsyncValue<dynamic> onboardingState,
+  AsyncValue<dynamic> biometricState,
+) {
+  return isSplashShowing ||
+      authState.isLoading ||
+      onboardingState.isLoading ||
+      biometricState.isLoading;
+}
+
+String? _redirectIfMatching(String currentLoc, String targetLoc) {
+  return currentLoc == targetLoc ? null : targetLoc;
+}
+
+String? _evaluateUnauthenticatedRedirect(String loc) {
+  final canStayPublic = loc == _kLoginPath || loc == _kRegisterPath || loc == _kOnboardingPath;
+  return canStayPublic ? null : _kOnboardingPath;
+}
+
+String? _evaluateAppRedirect(Ref ref, GoRouterState state) {
+  final authState = ref.read(authProvider);
+  final onboardingState = ref.read(onboardingProvider);
+  final biometricState = ref.read(biometricProvider);
+  final isSplashShowing = ref.read(splashProvider);
+  final loc = state.matchedLocation;
+
+  if (_isLoadingAnyState(isSplashShowing, authState, onboardingState, biometricState)) {
+    return _redirectIfMatching(loc, _kSplashPath);
+  }
+
+  if (!(authState.value ?? false)) {
+    return _evaluateUnauthenticatedRedirect(loc);
+  }
+
+  if (biometricState.value?.isLocked ?? false) {
+    return _redirectIfMatching(loc, _kLockPath);
+  }
+
+  final profile = ref.read(profileProvider).value;
+  if (_isProfileIncomplete(profile)) {
+    return _redirectIfMatching(loc, _kCompleteProfilePath);
+  }
+
+  if (_isAuthOrGateLocation(loc) || (loc == _kCompleteProfilePath && profile != null)) {
+    return '/';
+  }
+  return null;
+}
+
 @riverpod
 GoRouter appRouter(Ref ref) {
   final listenable = _NotifierListenable(ref);
 
   return GoRouter(
-    initialLocation: '/splash',
+    initialLocation: _kSplashPath,
     refreshListenable: listenable,
     routes: [
       GoRoute(
-        path: '/splash',
-        builder: (context, state) => SplashScreen(),
+        path: _kSplashPath,
+        builder: (context, state) => const SplashScreen(),
       ),
       GoRoute(
-        path: '/onboarding',
-        builder: (context, state) => OnboardingScreen(),
+        path: _kOnboardingPath,
+        builder: (context, state) => const OnboardingScreen(),
       ),
       GoRoute(
-        path: '/login',
-        builder: (context, state) => LoginScreen(),
+        path: _kLoginPath,
+        builder: (context, state) => const LoginScreen(),
       ),
       GoRoute(
-        path: '/lock',
+        path: _kLockPath,
         builder: (context, state) => const LockScreen(),
       ),
       GoRoute(
-        path: '/register',
-        builder: (context, state) => RegisterScreen(),
+        path: _kRegisterPath,
+        builder: (context, state) => const RegisterScreen(),
       ),
       StatefulShellRoute.indexedStack(
         builder: (context, state, navigationShell) {
@@ -67,7 +138,7 @@ GoRouter appRouter(Ref ref) {
             routes: [
               GoRoute(
                 path: '/',
-                builder: (context, state) => DashboardScreen(),
+                builder: (context, state) => const DashboardScreen(),
               ),
             ],
           ),
@@ -85,7 +156,7 @@ GoRouter appRouter(Ref ref) {
             routes: [
               GoRoute(
                 path: '/add',
-                builder: (context, state) => Scaffold(),
+                builder: (context, state) => const Scaffold(),
               ),
             ],
           ),
@@ -106,7 +177,7 @@ GoRouter appRouter(Ref ref) {
             routes: [
               GoRoute(
                 path: '/settings',
-                builder: (context, state) => SettingsScreen(),
+                builder: (context, state) => const SettingsScreen(),
               ),
             ],
           ),
@@ -114,7 +185,7 @@ GoRouter appRouter(Ref ref) {
       ),
       GoRoute(
         path: '/profile/edit',
-        builder: (context, state) => EditProfileScreen(),
+        builder: (context, state) => const EditProfileScreen(),
       ),
       GoRoute(
         path: '/habit/:id',
@@ -125,15 +196,15 @@ GoRouter appRouter(Ref ref) {
       ),
       GoRoute(
         path: '/profile',
-        builder: (context, state) => ProfileScreen(),
+        builder: (context, state) => const ProfileScreen(),
       ),
       GoRoute(
         path: '/create-habit',
-        builder: (context, state) => CreateHabitScreen(),
+        builder: (context, state) => const CreateHabitScreen(),
       ),
       GoRoute(
         path: '/archived-habits',
-        builder: (context, state) => ArchivedHabitsScreen(),
+        builder: (context, state) => const ArchivedHabitsScreen(),
       ),
       GoRoute(
         path: '/community/challenge/:id',
@@ -155,64 +226,11 @@ GoRouter appRouter(Ref ref) {
         },
       ),
       GoRoute(
-        path: '/complete-profile',
-        builder: (context, state) => CompleteProfileScreen(),
+        path: _kCompleteProfilePath,
+        builder: (context, state) => const CompleteProfileScreen(),
       ),
     ],
-    redirect: (context, state) {
-      final authState = ref.read(authProvider);
-      final onboardingState = ref.read(onboardingProvider);
-      final biometricState = ref.read(biometricProvider);
-      final isSplashShowing = ref.read(splashProvider);
-
-      final loc = state.matchedLocation;
-      final isAtSplash = loc == '/splash';
-      final isAtOnboarding = loc == '/onboarding';
-      final isAtLogin = loc == '/login';
-      final isAtRegister = loc == '/register';
-      final isAtLock = loc == '/lock';
-
-      // 0. Si Splash está mostrándose por el temporizador, forzar ruta a splash
-      if (isSplashShowing) {
-        return isAtSplash ? null : '/splash';
-      }
-
-      // 1. Mientras cargan los providers → mantener en Splash
-      if (authState.isLoading || onboardingState.isLoading || biometricState.isLoading) {
-        return isAtSplash ? null : '/splash';
-      }
-
-      // 2. Si no está autenticado → puede estar en onboarding, login o register. Por defecto va a onboarding.
-      final isAuthenticated = authState.value ?? false;
-      if (!isAuthenticated) {
-        if (isAtLogin || isAtRegister || isAtOnboarding) return null;
-        return '/onboarding'; // Pantalla de bienvenida
-      }
-
-      // 4. Si está autenticado pero la app está bloqueada
-      final isLocked = biometricState.value?.isLocked ?? false;
-      if (isAuthenticated && isLocked) {
-        return isAtLock ? null : '/lock';
-      }
-
-      // 5. Verificar si falta completar el perfil (género o fecha de nacimiento)
-      final profileState = ref.read(profileProvider);
-      final profile = profileState.value;
-      final isAtCompleteProfile = loc == '/complete-profile';
-
-      if (isAuthenticated && profile != null) {
-        if (profile.genero == null || profile.fechanacimiento == null) {
-          return isAtCompleteProfile ? null : '/complete-profile';
-        }
-      }
-
-      // 6. Si ya está autenticado y desbloqueado → no puede volver a pantallas de auth ni lock
-      if (isAuthenticated && !isLocked && (isAtLogin || isAtRegister || isAtSplash || isAtOnboarding || isAtLock || (isAtCompleteProfile && profile != null && profile.genero != null && profile.fechanacimiento != null))) {
-        return '/';
-      }
-
-      return null;
-    },
+    redirect: (context, state) => _evaluateAppRedirect(ref, state),
   );
 }
 

@@ -46,7 +46,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
       if (!_acceptTerms) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Debes aceptar los Términos de Servicio.'),
+            content: const Text('Debes aceptar los Términos de Servicio.'),
             backgroundColor: Colors.red.shade600,
           ),
         );
@@ -65,6 +65,50 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
     }
   }
 
+  Future<void> _pickBirthDate() async {
+    final date = await showDatePicker(
+      context: context,
+      initialDate: DateTime.now().subtract(const Duration(days: 365 * 18)),
+      firstDate: DateTime(1900),
+      lastDate: DateTime.now(),
+    );
+    if (date != null) {
+      setState(() {
+        _dobCtrl.text = "${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}";
+      });
+    }
+  }
+
+  String? _validateEmailField(String? v) {
+    if (v == null || v.isEmpty) return 'Ingresa tu correo';
+    if (!v.contains('@')) return 'Correo inválido';
+    return null;
+  }
+
+  String? _validatePasswordField(String? v) {
+    if (v == null || v.isEmpty) return 'Ingresa tu contraseña';
+    if (v.length < 6) return 'Mínimo 6 caracteres';
+    return null;
+  }
+
+  Widget _buildSubmitChild(AsyncValue<bool> authState) {
+    if (authState.isLoading) {
+      return SizedBox(
+        width: 22,
+        height: 22,
+        child: CircularProgressIndicator(color: Theme.of(context).colorScheme.surface, strokeWidth: 2.5),
+      );
+    }
+    return const Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Text('Crear Cuenta', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
+        SizedBox(width: 8),
+        Icon(Icons.arrow_forward_rounded, size: 20),
+      ],
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final authState = ref.watch(authProvider);
@@ -76,7 +120,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
             content: Text(e.toString().replaceAll('Exception: ', '')),
             backgroundColor: Colors.red.shade600,
             behavior: SnackBarBehavior.floating,
-            margin: EdgeInsets.all(16),
+            margin: const EdgeInsets.all(16),
             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
           ),
         ),
@@ -90,7 +134,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
           children: [
             // ── AppBar (Personalizado) ──
             Padding(
-              padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
               child: Stack(
                 alignment: Alignment.center,
                 children: [
@@ -116,7 +160,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
             // ── Contenido ──
             Expanded(
               child: SingleChildScrollView(
-                padding: EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+                padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
                 child: Column(
                   children: [
                     // Icono Superior
@@ -143,16 +187,16 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                             Icon(Icons.extension, color: Theme.of(context).colorScheme.primary, size: 32),
                       ),
                     ),
-                    SizedBox(height: 16),
+                    const SizedBox(height: 16),
                     
                     // Badge Verde
                     Container(
-                      padding: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                       decoration: BoxDecoration(
                         color: _kBlueBadgeBg,
                         borderRadius: BorderRadius.circular(20),
                       ),
-                      child: Row(
+                      child: const Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           Icon(Icons.person_outline_rounded, color: _kBlueBadge, size: 14),
@@ -168,7 +212,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                         ],
                       ),
                     ),
-                    SizedBox(height: 16),
+                    const SizedBox(height: 16),
 
                     // Títulos
                     Text(
@@ -180,17 +224,17 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                         letterSpacing: -0.5,
                       ),
                     ),
-                    SizedBox(height: 8),
+                    const SizedBox(height: 8),
                     Text(
                       'Empieza hoy tu camino hacia una vida más plena\ny hábitos conscientes.',
                       textAlign: TextAlign.center,
                       style: TextStyle(fontSize: 14, color: Theme.of(context).colorScheme.onSurfaceVariant, height: 1.4),
                     ),
-                    SizedBox(height: 28),
+                    const SizedBox(height: 28),
 
                     // Card del Formulario
                     Container(
-                      padding: EdgeInsets.symmetric(horizontal: 20, vertical: 24),
+                      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
                       decoration: BoxDecoration(
                         color: Theme.of(context).colorScheme.surface,
                         borderRadius: BorderRadius.circular(24),
@@ -198,7 +242,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                           BoxShadow(
                             color: Theme.of(context).colorScheme.shadow.withValues(alpha: 0.03),
                             blurRadius: 20,
-                            offset: Offset(0, 8),
+                            offset: const Offset(0, 8),
                           ),
                         ],
                       ),
@@ -212,28 +256,28 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                               'Nombre completo',
                               style: TextStyle(fontWeight: FontWeight.w700, fontSize: 13, color: Theme.of(context).colorScheme.onSurface),
                             ),
-                            SizedBox(height: 8),
+                            const SizedBox(height: 8),
                             _StyledField(
                               controller: _nameCtrl,
                               hint: 'Marina',
                               prefixIcon: Icons.person_outline_rounded,
                               validator: (v) => v!.isEmpty ? 'Ingresa tu nombre' : null,
                             ),
-                            SizedBox(height: 16),
+                            const SizedBox(height: 16),
 
                             // ── Campo Apellido ──
                             Text(
                               'Apellido',
                               style: TextStyle(fontWeight: FontWeight.w700, fontSize: 13, color: Theme.of(context).colorScheme.onSurface),
                             ),
-                            SizedBox(height: 8),
+                            const SizedBox(height: 8),
                             _StyledField(
                               controller: _apellidoCtrl,
                               hint: 'Soler',
                               prefixIcon: Icons.person_outline_rounded,
                               validator: (v) => v!.isEmpty ? 'Ingresa tu apellido' : null,
                             ),
-                            SizedBox(height: 16),
+                            const SizedBox(height: 16),
 
                             // ── Campo Género y Fecha ──
                             Row(
@@ -246,7 +290,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                                         'Género',
                                         style: TextStyle(fontWeight: FontWeight.w700, fontSize: 13, color: Theme.of(context).colorScheme.onSurface),
                                       ),
-                                      SizedBox(height: 8),
+                                      const SizedBox(height: 8),
                                       DropdownButtonFormField<String>(
                                         isExpanded: true,
                                         initialValue: _generoCtrl.text,
@@ -259,7 +303,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                                         decoration: InputDecoration(
                                           filled: true,
                                           fillColor: Theme.of(context).colorScheme.surfaceContainerHighest,
-                                          contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                                          contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                                           border: OutlineInputBorder(borderRadius: BorderRadius.circular(16), borderSide: BorderSide.none),
                                         ),
                                         style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: Theme.of(context).colorScheme.onSurface),
@@ -267,7 +311,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                                     ],
                                   ),
                                 ),
-                                SizedBox(width: 12),
+                                const SizedBox(width: 12),
                                 Expanded(
                                   child: Column(
                                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -276,21 +320,9 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                                         'Fecha Nac.',
                                         style: TextStyle(fontWeight: FontWeight.w700, fontSize: 13, color: Theme.of(context).colorScheme.onSurface),
                                       ),
-                                      SizedBox(height: 8),
+                                      const SizedBox(height: 8),
                                       GestureDetector(
-                                        onTap: () async {
-                                          final date = await showDatePicker(
-                                            context: context,
-                                            initialDate: DateTime.now().subtract(const Duration(days: 365 * 18)),
-                                            firstDate: DateTime(1900),
-                                            lastDate: DateTime.now(),
-                                          );
-                                          if (date != null) {
-                                            setState(() {
-                                              _dobCtrl.text = "\${date.year}-\${date.month.toString().padLeft(2, '0')}-\${date.day.toString().padLeft(2, '0')}";
-                                            });
-                                          }
-                                        },
+                                        onTap: _pickBirthDate,
                                         child: AbsorbPointer(
                                           child: _StyledField(
                                             controller: _dobCtrl,
@@ -304,33 +336,29 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                                 ),
                               ],
                             ),
-                            SizedBox(height: 16),
+                            const SizedBox(height: 16),
 
                             // ── Campo Correo ──
                             Text(
                               'Correo electrónico',
                               style: TextStyle(fontWeight: FontWeight.w700, fontSize: 13, color: Theme.of(context).colorScheme.onSurface),
                             ),
-                            SizedBox(height: 8),
+                            const SizedBox(height: 8),
                             _StyledField(
                               controller: _emailCtrl,
                               hint: 'marina@ejemplo.com',
                               prefixIcon: Icons.mail_outline_rounded,
                               keyboardType: TextInputType.emailAddress,
-                              validator: (v) {
-                                if (v == null || v.isEmpty) return 'Ingresa tu correo';
-                                if (!v.contains('@')) return 'Correo inválido';
-                                return null;
-                              },
+                              validator: _validateEmailField,
                             ),
-                            SizedBox(height: 16),
+                            const SizedBox(height: 16),
 
                             // ── Campo Contraseña ──
                             Text(
                               'Contraseña segura',
                               style: TextStyle(fontWeight: FontWeight.w700, fontSize: 13, color: Theme.of(context).colorScheme.onSurface),
                             ),
-                            SizedBox(height: 8),
+                            const SizedBox(height: 8),
                             _StyledField(
                               controller: _passCtrl,
                               hint: '••••••••',
@@ -344,13 +372,9 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                                 ),
                                 onPressed: () => setState(() => _obscure = !_obscure),
                               ),
-                              validator: (v) {
-                                if (v == null || v.isEmpty) return 'Ingresa tu contraseña';
-                                if (v.length < 6) return 'Mínimo 6 caracteres';
-                                return null;
-                              },
+                              validator: _validatePasswordField,
                             ),
-                            SizedBox(height: 8),
+                            const SizedBox(height: 8),
                             
                             // Requisitos contraseña
                             Row(
@@ -360,14 +384,14 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                                 Text('A-Z, 0-9, símbolos', style: TextStyle(fontSize: 10, color: Theme.of(context).colorScheme.onSurfaceVariant, fontWeight: FontWeight.w600)),
                               ],
                             ),
-                            SizedBox(height: 16),
+                            const SizedBox(height: 16),
 
                             // ── Campo Confirmar Contraseña ──
                             Text(
                               'Confirmar contraseña',
                               style: TextStyle(fontWeight: FontWeight.w700, fontSize: 13, color: Theme.of(context).colorScheme.onSurface),
                             ),
-                            SizedBox(height: 8),
+                            const SizedBox(height: 8),
                             _StyledField(
                               controller: _confirmPassCtrl,
                               hint: '••••••••',
@@ -386,7 +410,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                                 return null;
                               },
                             ),
-                            SizedBox(height: 20),
+                            const SizedBox(height: 20),
 
                             // ── Aceptar Términos ──
                             Row(
@@ -403,12 +427,12 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                                     onChanged: (v) => setState(() => _acceptTerms = v!),
                                   ),
                                 ),
-                                SizedBox(width: 8),
+                                const SizedBox(width: 8),
                                 Expanded(
                                   child: RichText(
                                     text: TextSpan(
                                       style: TextStyle(fontSize: 11, color: Theme.of(context).colorScheme.onSurfaceVariant, height: 1.4),
-                                      children: [
+                                      children: const [
                                         TextSpan(text: 'Acepto los '),
                                         TextSpan(text: 'Términos de Servicio', style: TextStyle(color: _kBlueBadge, fontWeight: FontWeight.w600, decoration: TextDecoration.underline)),
                                         TextSpan(text: ' y la '),
@@ -420,7 +444,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                                 ),
                               ],
                             ),
-                            SizedBox(height: 24),
+                            const SizedBox(height: 24),
 
                             // ── Botón Crear Cuenta ──
                             SizedBox(
@@ -436,36 +460,23 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                                     borderRadius: BorderRadius.circular(26),
                                   ),
                                 ),
-                                child: authState.isLoading
-                                    ? SizedBox(
-                                        width: 22,
-                                        height: 22,
-                                        child: CircularProgressIndicator(color: Theme.of(context).colorScheme.surface, strokeWidth: 2.5),
-                                      )
-                                    : Row(
-                                        mainAxisAlignment: MainAxisAlignment.center,
-                                        children: [
-                                          Text('Crear Cuenta', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
-                                          SizedBox(width: 8),
-                                          Icon(Icons.arrow_forward_rounded, size: 20),
-                                        ],
-                                      ),
+                                child: _buildSubmitChild(authState),
                               ),
                             ),
-                            SizedBox(height: 24),
+                            const SizedBox(height: 24),
 
                             // ── Separador "O regístrate con" ──
                             Row(
                               children: [
                                 Expanded(child: Divider(color: Theme.of(context).colorScheme.outlineVariant)),
                                 Padding(
-                                  padding: EdgeInsets.symmetric(horizontal: 12),
+                                  padding: const EdgeInsets.symmetric(horizontal: 12),
                                   child: Text('O regístrate con', style: TextStyle(fontSize: 11, color: Theme.of(context).colorScheme.onSurfaceVariant, fontWeight: FontWeight.w600)),
                                 ),
                                 Expanded(child: Divider(color: Theme.of(context).colorScheme.outlineVariant)),
                               ],
                             ),
-                            SizedBox(height: 20),
+                            const SizedBox(height: 20),
 
                             // ── Botones Sociales ──
                             Row(
@@ -479,19 +490,19 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                                       backgroundColor: Theme.of(context).colorScheme.surfaceContainerHighest,
                                       foregroundColor: Theme.of(context).colorScheme.onSurface,
                                       elevation: 0,
-                                      minimumSize: Size(0, 48),
+                                      minimumSize: const Size(0, 48),
                                       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                                     ),
                                     icon: Image.asset(
                                       'assets/images/google_logo.png',
                                       width: 18,
                                       height: 18,
-                                      errorBuilder: (context, error, stackTrace) => Icon(Icons.g_mobiledata_rounded, color: Colors.red, size: 22),
+                                      errorBuilder: (context, error, stackTrace) => const Icon(Icons.g_mobiledata_rounded, color: Colors.red, size: 22),
                                     ),
-                                    label: Text('Google', style: TextStyle(fontWeight: FontWeight.w700, fontSize: 13)),
+                                    label: const Text('Google', style: TextStyle(fontWeight: FontWeight.w700, fontSize: 13)),
                                   ),
                                 ),
-                                SizedBox(width: 12),
+                                const SizedBox(width: 12),
                                 Expanded(
                                   child: ElevatedButton.icon(
                                     onPressed: () async {
@@ -501,11 +512,11 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                                       backgroundColor: Theme.of(context).colorScheme.surfaceContainerHighest,
                                       foregroundColor: Theme.of(context).colorScheme.onSurface,
                                       elevation: 0,
-                                      minimumSize: Size(0, 48),
+                                      minimumSize: const Size(0, 48),
                                       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                                     ),
                                     icon: Icon(Icons.facebook, color: Colors.blue.shade700, size: 20),
-                                    label: Text('Facebook', style: TextStyle(fontWeight: FontWeight.w700, fontSize: 13)),
+                                    label: const Text('Facebook', style: TextStyle(fontWeight: FontWeight.w700, fontSize: 13)),
                                   ),
                                 ),
                               ],
@@ -515,7 +526,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                       ),
                     ),
 
-                    SizedBox(height: 28),
+                    const SizedBox(height: 28),
 
                     // ── Inicia sesión ──
                     GestureDetector(
@@ -524,7 +535,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                         text: TextSpan(
                           style: TextStyle(fontSize: 14, color: Theme.of(context).colorScheme.onSurfaceVariant),
                           children: [
-                            TextSpan(text: '¿Ya tienes una cuenta? '),
+                            const TextSpan(text: '¿Ya tienes una cuenta? '),
                             TextSpan(
                               text: 'Inicia sesión',
                               style: TextStyle(color: Theme.of(context).colorScheme.primary, fontWeight: FontWeight.w700),
@@ -533,7 +544,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                         ),
                       ),
                     ),
-                    SizedBox(height: 24),
+                    const SizedBox(height: 24),
                   ],
                 ),
               ),
@@ -582,7 +593,7 @@ class _StyledField extends StatelessWidget {
         suffixIcon: suffix,
         filled: true,
         fillColor: Theme.of(context).colorScheme.surfaceContainerHighest,
-        contentPadding: EdgeInsets.symmetric(vertical: 16, horizontal: 16),
+        contentPadding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
           borderSide: BorderSide.none,

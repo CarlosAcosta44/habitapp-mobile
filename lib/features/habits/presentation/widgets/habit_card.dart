@@ -26,7 +26,7 @@ class HabitCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final effectiveColor = iconColor ?? Color(0xFF2D82FA); // Azul por defecto si no hay
+    final effectiveColor = iconColor ?? const Color(0xFF2D82FA); // Azul por defecto si no hay
     final bgColor = effectiveColor.withValues(alpha: 0.1);
 
     return Container(
@@ -37,12 +37,12 @@ class HabitCard extends StatelessWidget {
           BoxShadow(
             color: Theme.of(context).colorScheme.shadow.withValues(alpha: 0.03),
             blurRadius: 15,
-            offset: Offset(0, 5),
+            offset: const Offset(0, 5),
           ),
         ],
       ),
       child: Padding(
-        padding: EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(16.0),
         child: Row(
           children: [
             // Icono en círculo de color
@@ -60,7 +60,7 @@ class HabitCard extends StatelessWidget {
                 size: 26,
               ),
             ),
-            SizedBox(width: 16),
+            const SizedBox(width: 16),
             
             // Textos (Título, Badge, Subtítulo)
             Expanded(
@@ -84,9 +84,9 @@ class HabitCard extends StatelessWidget {
                         ),
                       ),
                       if (badgeText != null) ...[
-                        SizedBox(width: 8),
+                        const SizedBox(width: 8),
                         Container(
-                          padding: EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
                           decoration: BoxDecoration(
                             color: badgeText == 'Nuevo' 
                                 ? Colors.orange.withValues(alpha: 0.1) 
@@ -105,7 +105,7 @@ class HabitCard extends StatelessWidget {
                       ]
                     ],
                   ),
-                  SizedBox(height: 4),
+                  const SizedBox(height: 4),
                   Text(
                     subtitle,
                     style: TextStyle(
@@ -119,7 +119,7 @@ class HabitCard extends StatelessWidget {
               ),
             ),
             
-            SizedBox(width: 12),
+            const SizedBox(width: 12),
             
             // Sección Derecha (Números o Botón Check)
             Row(
@@ -140,7 +140,7 @@ class HabitCard extends StatelessWidget {
                         ),
                       ),
                       if (rightText!.contains('\n')) ...[
-                        SizedBox(width: 4),
+                        const SizedBox(width: 4),
                         Text(
                           rightText!.split('\n').last, // "min"
                           style: TextStyle(
@@ -152,7 +152,7 @@ class HabitCard extends StatelessWidget {
                       ],
                     ],
                   ),
-                  SizedBox(width: 12),
+                  const SizedBox(width: 12),
                 ],
                 // Botón check
                 GestureDetector(
@@ -161,7 +161,7 @@ class HabitCard extends StatelessWidget {
                     width: 44,
                     height: 44,
                     decoration: BoxDecoration(
-                      color: isCompleted ? Color(0xFF2D82FA) : Color(0xFFF0F1F5),
+                      color: isCompleted ? const Color(0xFF2D82FA) : const Color(0xFFF0F1F5),
                       shape: BoxShape.circle,
                     ),
                     alignment: Alignment.center,

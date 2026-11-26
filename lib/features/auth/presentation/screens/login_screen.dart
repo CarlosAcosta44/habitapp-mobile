@@ -52,7 +52,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
             content: Text(e.toString().replaceAll('Exception: ', '')),
             backgroundColor: Colors.red.shade600,
             behavior: SnackBarBehavior.floating,
-            margin: EdgeInsets.all(16),
+            margin: const EdgeInsets.all(16),
             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
           ),
         ),
@@ -66,7 +66,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
           children: [
             // ── AppBar (Personalizado) ──
             Padding(
-              padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
               child: Stack(
                 alignment: Alignment.center,
                 children: [
@@ -92,7 +92,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
             // ── Contenido ──
             Expanded(
               child: SingleChildScrollView(
-                padding: EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+                padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
                 child: Column(
                   children: [
                     // Avatar Logo con Badge
@@ -109,7 +109,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                               BoxShadow(
                                 color: Theme.of(context).colorScheme.shadow.withValues(alpha: 0.05),
                                 blurRadius: 10,
-                                offset: Offset(0, 4),
+                                offset: const Offset(0, 4),
                               ),
                             ],
                           ),
@@ -125,7 +125,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                         Container(
                           width: 24,
                           height: 24,
-                          decoration: BoxDecoration(
+                          decoration: const BoxDecoration(
                             color: _kGreenBadge,
                             shape: BoxShape.circle,
                           ),
@@ -138,7 +138,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                         ),
                       ],
                     ),
-                    SizedBox(height: 20),
+                    const SizedBox(height: 20),
 
                     // Títulos
                     Text(
@@ -150,17 +150,17 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                         letterSpacing: -0.5,
                       ),
                     ),
-                    SizedBox(height: 8),
+                    const SizedBox(height: 8),
                     Text(
                       'Inicia sesión para continuar cuidando de tus\nhábitos y bienestar mental.',
                       textAlign: TextAlign.center,
                       style: TextStyle(fontSize: 14, color: Theme.of(context).colorScheme.onSurfaceVariant, height: 1.4),
                     ),
-                    SizedBox(height: 28),
+                    const SizedBox(height: 28),
 
                     // Card del Formulario
                     Container(
-                      padding: EdgeInsets.symmetric(horizontal: 20, vertical: 24),
+                      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
                       decoration: BoxDecoration(
                         color: Theme.of(context).colorScheme.surface,
                         borderRadius: BorderRadius.circular(24),
@@ -168,7 +168,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                           BoxShadow(
                             color: Theme.of(context).colorScheme.shadow.withValues(alpha: 0.03),
                             blurRadius: 20,
-                            offset: Offset(0, 8),
+                            offset: const Offset(0, 8),
                           ),
                         ],
                       ),
@@ -186,7 +186,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                                 color: Theme.of(context).colorScheme.onSurface,
                               ),
                             ),
-                            SizedBox(height: 8),
+                            const SizedBox(height: 8),
                             _StyledField(
                               controller: _emailCtrl,
                               hint: 'marina@ejemplo.com',
@@ -198,7 +198,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                                 return null;
                               },
                             ),
-                            SizedBox(height: 20),
+                            const SizedBox(height: 20),
 
                             // ── Campo Contraseña ──
                             Text(
@@ -209,7 +209,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                                 color: Theme.of(context).colorScheme.onSurface,
                               ),
                             ),
-                            SizedBox(height: 8),
+                            const SizedBox(height: 8),
                             _StyledField(
                               controller: _passCtrl,
                               hint: '••••••••',
@@ -231,7 +231,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                                 return null;
                               },
                             ),
-                            SizedBox(height: 16),
+                            const SizedBox(height: 16),
 
                             // ── Recordar datos & Olvidaste contraseña ──
                             Row(
@@ -249,12 +249,12 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                                     onChanged: (v) => setState(() => _rememberMe = v!),
                                   ),
                                 ),
-                                SizedBox(width: 8),
+                                const SizedBox(width: 8),
                                 Text(
                                   'Recordar mis datos',
                                   style: TextStyle(fontSize: 13, color: Theme.of(context).colorScheme.onSurfaceVariant),
                                 ),
-                                Spacer(),
+                                const Spacer(),
                                 GestureDetector(
                                   onTap: () {},
                                   child: Text(
@@ -268,7 +268,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                                 ),
                               ],
                             ),
-                            SizedBox(height: 24),
+                            const SizedBox(height: 24),
 
                             // ── Botón Iniciar Sesión ──
                             SizedBox(
@@ -293,7 +293,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                                           strokeWidth: 2.5,
                                         ),
                                       )
-                                    : Row(
+                                    : const Row(
                                         mainAxisAlignment: MainAxisAlignment.center,
                                         children: [
                                           Text(
@@ -309,14 +309,14 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                                       ),
                               ),
                             ),
-                            SizedBox(height: 24),
+                            const SizedBox(height: 24),
 
                             // ── Separador "O continúa con" ──
                             Row(
                               children: [
                                 Expanded(child: Divider(color: Theme.of(context).colorScheme.outlineVariant)),
                                 Padding(
-                                  padding: EdgeInsets.symmetric(horizontal: 12),
+                                  padding: const EdgeInsets.symmetric(horizontal: 12),
                                   child: Text(
                                     'O continúa con',
                                     style: TextStyle(fontSize: 12, color: Theme.of(context).colorScheme.onSurfaceVariant),
@@ -325,7 +325,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                                 Expanded(child: Divider(color: Theme.of(context).colorScheme.outlineVariant)),
                               ],
                             ),
-                            SizedBox(height: 20),
+                            const SizedBox(height: 20),
 
                             // ── Botones Sociales ──
                             Row(
@@ -339,7 +339,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                                       backgroundColor: Theme.of(context).colorScheme.surfaceContainerHighest,
                                       foregroundColor: Theme.of(context).colorScheme.onSurface,
                                       elevation: 0,
-                                      minimumSize: Size(0, 48),
+                                      minimumSize: const Size(0, 48),
                                       shape: RoundedRectangleBorder(
                                         borderRadius: BorderRadius.circular(12),
                                       ),
@@ -349,17 +349,17 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                                       width: 18,
                                       height: 18,
                                       errorBuilder: (context, error, stackTrace) =>
-                                          Icon(Icons.g_mobiledata_rounded,
+                                          const Icon(Icons.g_mobiledata_rounded,
                                               color: Colors.red, size: 22),
                                     ),
-                                    label: Text(
+                                    label: const Text(
                                       'Google',
                                       style: TextStyle(
                                           fontWeight: FontWeight.w700, fontSize: 13),
                                     ),
                                   ),
                                 ),
-                                SizedBox(width: 12),
+                                const SizedBox(width: 12),
                                 Expanded(
                                   child: ElevatedButton.icon(
                                     onPressed: () async {
@@ -369,13 +369,13 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                                       backgroundColor: Theme.of(context).colorScheme.surfaceContainerHighest,
                                       foregroundColor: Theme.of(context).colorScheme.onSurface,
                                       elevation: 0,
-                                      minimumSize: Size(0, 48),
+                                      minimumSize: const Size(0, 48),
                                       shape: RoundedRectangleBorder(
                                         borderRadius: BorderRadius.circular(12),
                                       ),
                                     ),
                                     icon: Icon(Icons.facebook, color: Colors.blue.shade700, size: 20),
-                                    label: Text(
+                                    label: const Text(
                                       'Facebook',
                                       style: TextStyle(
                                           fontWeight: FontWeight.w700, fontSize: 13),
@@ -389,7 +389,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                       ),
                     ),
 
-                    SizedBox(height: 28),
+                    const SizedBox(height: 28),
 
                     // ── Regístrate gratis ──
                     GestureDetector(
@@ -398,7 +398,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                         text: TextSpan(
                           style: TextStyle(fontSize: 14, color: Theme.of(context).colorScheme.onSurfaceVariant),
                           children: [
-                            TextSpan(text: '¿Aún no tienes cuenta? '),
+                            const TextSpan(text: '¿Aún no tienes cuenta? '),
                             TextSpan(
                               text: 'Regístrate gratis',
                               style: TextStyle(color: Theme.of(context).colorScheme.primary, fontWeight: FontWeight.w700),
@@ -407,14 +407,14 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                         ),
                       ),
                     ),
-                    SizedBox(height: 16),
+                    const SizedBox(height: 16),
 
                     // ── Escudo de Seguridad ──
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Icon(Icons.shield_outlined, size: 16, color: Theme.of(context).colorScheme.onSurfaceVariant),
-                        SizedBox(width: 8),
+                        const SizedBox(width: 8),
                         Flexible(
                           child: Text(
                             'Tus datos de salud mental están 100% encriptados y\nprotegidos.',
@@ -472,7 +472,7 @@ class _StyledField extends StatelessWidget {
         suffixIcon: suffix,
         filled: true,
         fillColor: Theme.of(context).colorScheme.surfaceContainerHighest,
-        contentPadding: EdgeInsets.symmetric(vertical: 16, horizontal: 16),
+        contentPadding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
           borderSide: BorderSide.none,

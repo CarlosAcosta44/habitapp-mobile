@@ -93,21 +93,21 @@ class _CommunityHabitsTabState extends ConsumerState<CommunityHabitsTab> {
                     height: 24,
                     child: Stack(
                       children: [
-                        Positioned(
+                        const Positioned(
                           left: 0,
                           child: CircleAvatar(radius: 12, backgroundColor: Colors.white, child: Padding(padding: EdgeInsets.all(1), child: CircleAvatar(radius: 11, backgroundImage: NetworkImage('https://i.pravatar.cc/100?img=1')))),
                         ),
-                        Positioned(
+                        const Positioned(
                           left: 16,
                           child: CircleAvatar(radius: 12, backgroundColor: Colors.white, child: Padding(padding: EdgeInsets.all(1), child: CircleAvatar(radius: 11, backgroundImage: NetworkImage('https://i.pravatar.cc/100?img=2')))),
                         ),
-                        Positioned(
+                        const Positioned(
                           left: 32,
                           child: CircleAvatar(radius: 12, backgroundColor: Colors.white, child: Padding(padding: EdgeInsets.all(1), child: CircleAvatar(radius: 11, backgroundImage: NetworkImage('https://i.pravatar.cc/100?img=3')))),
                         ),
                         Positioned(
                           left: 48,
-                          child: CircleAvatar(radius: 12, backgroundColor: Colors.white, child: Padding(padding: EdgeInsets.all(1), child: CircleAvatar(radius: 11, backgroundColor: Colors.grey[200], child: Text('+9', style: TextStyle(fontSize: 8, color: Colors.black, fontWeight: FontWeight.bold))))),
+                          child: CircleAvatar(radius: 12, backgroundColor: Colors.white, child: Padding(padding: const EdgeInsets.all(1), child: CircleAvatar(radius: 11, backgroundColor: Colors.grey[200], child: const Text('+9', style: TextStyle(fontSize: 8, color: Colors.black, fontWeight: FontWeight.bold))))),
                         ),
                       ],
                     ),
