@@ -9,6 +9,8 @@ import '../data/auth_repository.dart';
 
 part 'auth_provider.g.dart';
 
+const _kTokenNotFoundError = 'Token not found in response';
+
 @Riverpod(keepAlive: true)
 class AuthNotifier extends _$AuthNotifier {
   late FlutterSecureStorage _storage;
@@ -43,7 +45,7 @@ class AuthNotifier extends _$AuthNotifier {
         }
         state = const AsyncValue.data(true);
       } else {
-        throw Exception('Token not found in response');
+        throw Exception(_kTokenNotFoundError);
       }
     } catch (e, st) {
       state = AsyncValue.error(e, st);
@@ -51,7 +53,7 @@ class AuthNotifier extends _$AuthNotifier {
   }
 
   Future<void> register(String email, String password, String nombre, String apellido, {String? genero, String? fechanacimiento}) async {
-    state = AsyncValue.loading();
+    state = const AsyncValue.loading();
     try {
       await _repository.register(email, password, nombre, apellido, genero: genero, fechanacimiento: fechanacimiento);
       // Auto-login since the backend now auto-confirms the email
@@ -72,7 +74,7 @@ class AuthNotifier extends _$AuthNotifier {
 
   Future<void> signInWithGoogle() async {
     try {
-      state = AsyncValue.loading();
+      state = const AsyncValue.loading();
       
       final GoogleSignIn googleSignIn = GoogleSignIn(
         serverClientId: '964868283203-03dia1hcs0tldoab5tusugcr21gms149.apps.googleusercontent.com',
@@ -81,7 +83,7 @@ class AuthNotifier extends _$AuthNotifier {
       final GoogleSignInAccount? googleUser = await googleSignIn.signIn();
       
       if (googleUser == null) {
-        state = AsyncValue.data(false); // Cancelado por el usuario
+        state = const AsyncValue.data(false); // Cancelado por el usuario
         return;
       }
       
@@ -108,7 +110,7 @@ class AuthNotifier extends _$AuthNotifier {
         }
         state = const AsyncValue.data(true);
       } else {
-        throw Exception('Token not found in response');
+        throw Exception(_kTokenNotFoundError);
       }
     } catch (e, st) {
       state = AsyncValue.error(e, st);
@@ -168,7 +170,7 @@ class AuthNotifier extends _$AuthNotifier {
           }
           state = const AsyncValue.data(true);
         } else {
-          throw Exception('Token not found in response');
+          throw Exception(_kTokenNotFoundError);
         }
       } else if (result.status == LoginStatus.cancelled) {
         state = const AsyncValue.data(false);
@@ -202,7 +204,7 @@ class AuthNotifier extends _$AuthNotifier {
 
   Future<void> signInWithApple() async {
     try {
-      state = AsyncValue.loading();
+      state = const AsyncValue.loading();
       
       final AuthorizationCredentialAppleID credential = await SignInWithApple.getAppleIDCredential(
         scopes: [
@@ -233,7 +235,7 @@ class AuthNotifier extends _$AuthNotifier {
         }
         state = const AsyncValue.data(true);
       } else {
-        throw Exception('Token not found in response');
+        throw Exception(_kTokenNotFoundError);
       }
     } catch (e, st) {
       state = AsyncValue.error(e, st);

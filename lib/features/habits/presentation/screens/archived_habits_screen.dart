@@ -38,7 +38,7 @@ class ArchivedHabitsScreen extends ConsumerWidget {
           }
 
           return ListView.builder(
-            padding: EdgeInsets.all(20),
+            padding: const EdgeInsets.all(20),
             itemCount: habits.length,
             itemBuilder: (context, index) {
               final habit = habits[index];
@@ -50,7 +50,7 @@ class ArchivedHabitsScreen extends ConsumerWidget {
         error: (error, stack) => Center(
           child: Text(
             'Error al cargar: $error',
-            style: TextStyle(color: Colors.red),
+            style: const TextStyle(color: Colors.red),
           ),
         ),
       ),
@@ -66,8 +66,8 @@ class _ArchivedHabitCard extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return Container(
-      margin: EdgeInsets.only(bottom: 16),
-      padding: EdgeInsets.all(16),
+      margin: const EdgeInsets.only(bottom: 16),
+      padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: Theme.of(context).colorScheme.surface,
         borderRadius: BorderRadius.circular(20),
@@ -75,7 +75,7 @@ class _ArchivedHabitCard extends ConsumerWidget {
           BoxShadow(
             color: Theme.of(context).colorScheme.shadow.withValues(alpha: 0.03),
             blurRadius: 10,
-            offset: Offset(0, 4),
+            offset: const Offset(0, 4),
           )
         ],
       ),
@@ -93,7 +93,7 @@ class _ArchivedHabitCard extends ConsumerWidget {
               color: Theme.of(context).colorScheme.secondary,
             ),
           ),
-          SizedBox(width: 16),
+          const SizedBox(width: 16),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -124,7 +124,7 @@ class _ArchivedHabitCard extends ConsumerWidget {
               final success = await ref.read(habitsDashboardProvider.notifier).unarchiveHabit(habit.id);
               if (success && context.mounted) {
                 ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text('Hábito desarchivado exitosamente')),
+                  const SnackBar(content: Text('Hábito desarchivado exitosamente')),
                 );
               }
             },

@@ -36,7 +36,7 @@ void main() async {
       overrides: [
         sharedPreferencesProvider.overrideWithValue(sharedPrefs),
       ],
-      child: MyApp(),
+      child: const MyApp(),
     ),
   );
 }

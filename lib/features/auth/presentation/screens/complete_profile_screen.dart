@@ -49,7 +49,7 @@ class _CompleteProfileScreenState extends ConsumerState<CompleteProfileScreen> {
       if (_selectedDate == null) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Por favor, selecciona tu fecha de nacimiento'),
+            content: const Text('Por favor, selecciona tu fecha de nacimiento'),
             backgroundColor: Colors.red.shade400,
           ),
         );
@@ -88,7 +88,7 @@ class _CompleteProfileScreenState extends ConsumerState<CompleteProfileScreen> {
       backgroundColor: Theme.of(context).colorScheme.surface,
       body: SafeArea(
         child: SingleChildScrollView(
-          padding: EdgeInsets.symmetric(horizontal: 24, vertical: 40),
+          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 40),
           child: Form(
             key: _formKey,
             child: Column(
@@ -99,7 +99,7 @@ class _CompleteProfileScreenState extends ConsumerState<CompleteProfileScreen> {
                   size: 64,
                   color: Theme.of(context).colorScheme.primary,
                 ),
-                SizedBox(height: 24),
+                const SizedBox(height: 24),
                 Text(
                   '¡Casi terminamos!',
                   textAlign: TextAlign.center,
@@ -109,7 +109,7 @@ class _CompleteProfileScreenState extends ConsumerState<CompleteProfileScreen> {
                     color: Theme.of(context).colorScheme.onSurface,
                   ),
                 ),
-                SizedBox(height: 8),
+                const SizedBox(height: 8),
                 Text(
                   'Para brindarte una mejor experiencia, necesitamos un par de datos más.',
                   textAlign: TextAlign.center,
@@ -119,7 +119,7 @@ class _CompleteProfileScreenState extends ConsumerState<CompleteProfileScreen> {
                     height: 1.5,
                   ),
                 ),
-                SizedBox(height: 48),
+                const SizedBox(height: 48),
 
                 // ── Género ──
                 Text(
@@ -130,7 +130,7 @@ class _CompleteProfileScreenState extends ConsumerState<CompleteProfileScreen> {
                     color: Theme.of(context).colorScheme.onSurface,
                   ),
                 ),
-                SizedBox(height: 8),
+                const SizedBox(height: 8),
                 DropdownButtonFormField<String>(
                   initialValue: _selectedGender,
                   decoration: InputDecoration(
@@ -140,13 +140,13 @@ class _CompleteProfileScreenState extends ConsumerState<CompleteProfileScreen> {
                     filled: true,
                     fillColor: Theme.of(context).colorScheme.surfaceContainerHighest.withValues(alpha: 0.5),
                     border: OutlineInputBorder(borderRadius: BorderRadius.circular(16), borderSide: BorderSide.none),
-                    contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+                    contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
                   ),
                   items: _genders.map((g) => DropdownMenuItem(value: g, child: Text(g))).toList(),
                   onChanged: (v) => setState(() => _selectedGender = v),
                   validator: (v) => v == null ? 'Selecciona una opción' : null,
                 ),
-                SizedBox(height: 20),
+                const SizedBox(height: 20),
 
                 // ── Fecha de Nacimiento ──
                 Text(
@@ -157,12 +157,12 @@ class _CompleteProfileScreenState extends ConsumerState<CompleteProfileScreen> {
                     color: Theme.of(context).colorScheme.onSurface,
                   ),
                 ),
-                SizedBox(height: 8),
+                const SizedBox(height: 8),
                 InkWell(
                   onTap: () => _selectDate(context),
                   borderRadius: BorderRadius.circular(16),
                   child: Container(
-                    padding: EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
                     decoration: BoxDecoration(
                       color: Theme.of(context).colorScheme.surfaceContainerHighest.withValues(alpha: 0.5),
                       borderRadius: BorderRadius.circular(16),
@@ -170,7 +170,7 @@ class _CompleteProfileScreenState extends ConsumerState<CompleteProfileScreen> {
                     child: Row(
                       children: [
                         Icon(Icons.calendar_today_outlined, color: Theme.of(context).colorScheme.onSurfaceVariant, size: 20),
-                        SizedBox(width: 12),
+                        const SizedBox(width: 12),
                         Text(
                           _selectedDate == null
                               ? 'Selecciona tu fecha'
@@ -185,7 +185,7 @@ class _CompleteProfileScreenState extends ConsumerState<CompleteProfileScreen> {
                   ),
                 ),
                 
-                SizedBox(height: 48),
+                const SizedBox(height: 48),
 
                 // ── Botón ──
                 SizedBox(
@@ -209,13 +209,13 @@ class _CompleteProfileScreenState extends ConsumerState<CompleteProfileScreen> {
                               strokeWidth: 2.5,
                             ),
                           )
-                        : Text(
+                        : const Text(
                             'Continuar al Inicio',
                             style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
                           ),
                   ),
                 ),
-                SizedBox(height: 16),
+                const SizedBox(height: 16),
                 TextButton(
                   onPressed: () {
                     ref.read(authProvider.notifier).logout();

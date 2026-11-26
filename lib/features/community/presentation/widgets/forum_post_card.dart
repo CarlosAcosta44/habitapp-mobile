@@ -22,6 +22,36 @@ class ForumPostCard extends StatelessWidget {
     this.onDelete,
   });
 
+  void _showOptionsMenu(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(20))),
+      builder: (ctx) => SafeArea(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            ListTile(
+              leading: const Icon(Icons.edit),
+              title: const Text('Editar foro'),
+              onTap: () {
+                Navigator.pop(ctx);
+                onEdit?.call();
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.delete, color: Colors.red),
+              title: const Text('Eliminar foro', style: TextStyle(color: Colors.red)),
+              onTap: () {
+                Navigator.pop(ctx);
+                onDelete?.call();
+              },
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -99,35 +129,7 @@ class ForumPostCard extends StatelessWidget {
                         padding: EdgeInsets.zero,
                         constraints: const BoxConstraints(),
                         icon: Icon(Icons.more_vert, size: 18, color: colorScheme.onSurfaceVariant),
-                        onPressed: () {
-                          showModalBottomSheet(
-                            context: context,
-                            shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(20))),
-                            builder: (ctx) => SafeArea(
-                              child: Column(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  ListTile(
-                                    leading: const Icon(Icons.edit),
-                                    title: const Text('Editar foro'),
-                                    onTap: () {
-                                      Navigator.pop(ctx);
-                                      if (onEdit != null) onEdit!();
-                                    },
-                                  ),
-                                  ListTile(
-                                    leading: const Icon(Icons.delete, color: Colors.red),
-                                    title: const Text('Eliminar foro', style: TextStyle(color: Colors.red)),
-                                    onTap: () {
-                                      Navigator.pop(ctx);
-                                      if (onDelete != null) onDelete!();
-                                    },
-                                  ),
-                                ],
-                              ),
-                            ),
-                          );
-                        },
+                        onPressed: () => _showOptionsMenu(context),
                       ),
                   ],
                 ),

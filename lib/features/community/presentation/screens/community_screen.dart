@@ -50,6 +50,158 @@ class _CommunityScreenState extends ConsumerState<CommunityScreen> {
     }
   }
 
+  Future<void> _handleAddCommunityHabit(
+    CommunityFeedState state,
+    CommunityFeedNotifier notifier,
+    String id,
+  ) async {
+    final habit = state.habits.firstWhere((h) => h.id == id);
+    if (habit.isAdded) return;
+
+    try {
+      await notifier.toggleHabitAdded(id);
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('¡Hábito "${habit.title}" añadido a tu rutina!'),
+          backgroundColor: _kGreen,
+          duration: const Duration(seconds: 2),
+        ),
+      );
+    } catch (e) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('No se pudo añadir el hábito: ${e.toString().replaceAll('Exception: ', '')}'),
+          backgroundColor: Colors.red,
+        ),
+      );
+    }
+  }
+
+  Future<void> _handleDeleteCommunityHabit(
+    CommunityFeedNotifier notifier,
+    String id,
+  ) async {
+    try {
+      await notifier.deleteSharedHabit(id);
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Hábito eliminado de la comunidad.'),
+          backgroundColor: _kGreen,
+        ),
+      );
+    } catch (e) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Error al eliminar: ${e.toString().replaceAll('Exception: ', '')}'),
+          backgroundColor: Colors.red,
+        ),
+      );
+    }
+  }
+
+  Future<void> _handleDeleteForumPost(
+    CommunityFeedNotifier notifier,
+    String postId,
+  ) async {
+    final confirm = await showDialog<bool>(
+      context: context,
+      builder: (c) => AlertDialog(
+        title: const Text('Eliminar Foro'),
+        content: const Text('¿Estás seguro de eliminar este foro? Esta acción no se puede deshacer.'),
+        actions: [
+          TextButton(onPressed: () => Navigator.pop(c, false), child: const Text('Cancelar')),
+          TextButton(onPressed: () => Navigator.pop(c, true), child: const Text('Eliminar', style: TextStyle(color: Colors.red))),
+        ],
+      ),
+    );
+    if (confirm != true) return;
+    try {
+      await notifier.deleteForum(postId);
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Foro eliminado')));
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(e.toString())));
+      }
+    }
+  }
+
+  void _showArticleReaderSheet(dynamic article) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (context) => Container(
+        padding: const EdgeInsets.all(24),
+        decoration: BoxDecoration(
+          color: Theme.of(context).colorScheme.surface,
+          borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
+        ),
+        constraints: BoxConstraints(
+          maxHeight: MediaQuery.of(context).size.height * 0.85,
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  '${article.category} • ${article.readTime}',
+                  style: TextStyle(
+                    fontSize: 12,
+                    fontWeight: FontWeight.w800,
+                    color: article.categoryColor,
+                    letterSpacing: 0.5,
+                  ),
+                ),
+                IconButton(
+                  onPressed: () => Navigator.of(context).pop(),
+                  icon: const Icon(Icons.close),
+                ),
+              ],
+            ),
+            const SizedBox(height: 16),
+            Text(
+              article.title,
+              style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold, height: 1.2),
+            ),
+            const SizedBox(height: 16),
+            Row(
+              children: [
+                const CircleAvatar(
+                  radius: 14,
+                  backgroundImage: NetworkImage('https://ui-avatars.com/api/?name=HabitApp&background=0D8ABC&color=fff'),
+                ),
+                const SizedBox(width: 8),
+                Text(
+                  'HabitApp • Publicado el ${article.publishDate}',
+                  style: TextStyle(
+                    fontSize: 13,
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 24),
+            Expanded(
+              child: SingleChildScrollView(
+                child: Text(article.content, style: const TextStyle(fontSize: 16, height: 1.6)),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final state = ref.watch(communityFeedProvider);
@@ -95,50 +247,8 @@ class _CommunityScreenState extends ConsumerState<CommunityScreen> {
                 if (state.selectedFilterIndex == 1) ...[
                   CommunityHabitsTab(
                     habits: state.habits,
-                    onAddHabit: (id) async {
-                      final habit = state.habits.firstWhere((h) => h.id == id);
-                      if (habit.isAdded) return; // Ya está añadido
-
-                      try {
-                        await notifier.toggleHabitAdded(id);
-                        if (!context.mounted) return;
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: Text('¡Hábito "${habit.title}" añadido a tu rutina!'),
-                            backgroundColor: _kGreen,
-                            duration: const Duration(seconds: 2),
-                          ),
-                        );
-                      } catch (e) {
-                        if (!context.mounted) return;
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: Text('No se pudo añadir el hábito: ${e.toString().replaceAll('Exception: ', '')}'),
-                            backgroundColor: Colors.red,
-                          ),
-                        );
-                      }
-                    },
-                    onDeleteHabit: (id) async {
-                      try {
-                        await notifier.deleteSharedHabit(id);
-                        if (!context.mounted) return;
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                            content: Text('Hábito eliminado de la comunidad.'),
-                            backgroundColor: _kGreen,
-                          ),
-                        );
-                      } catch (e) {
-                        if (!context.mounted) return;
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: Text('Error al eliminar: ${e.toString().replaceAll('Exception: ', '')}'),
-                            backgroundColor: Colors.red,
-                          ),
-                        );
-                      }
-                    },
+                    onAddHabit: (id) => _handleAddCommunityHabit(state, notifier, id),
+                    onDeleteHabit: (id) => _handleDeleteCommunityHabit(notifier, id),
                   ),
                   const SizedBox(height: 24),
                 ],
@@ -231,31 +341,7 @@ class _CommunityScreenState extends ConsumerState<CommunityScreen> {
                             const SnackBar(content: Text('La edición estará disponible pronto.')),
                           );
                         },
-                        onDelete: () async {
-                          final confirm = await showDialog<bool>(
-                            context: context,
-                            builder: (c) => AlertDialog(
-                              title: const Text('Eliminar Foro'),
-                              content: const Text('¿Estás seguro de eliminar este foro? Esta acción no se puede deshacer.'),
-                              actions: [
-                                TextButton(onPressed: () => Navigator.pop(c, false), child: const Text('Cancelar')),
-                                TextButton(onPressed: () => Navigator.pop(c, true), child: const Text('Eliminar', style: TextStyle(color: Colors.red))),
-                              ],
-                            ),
-                          );
-                          if (confirm == true) {
-                            try {
-                              await notifier.deleteForum(post.id);
-                              if (context.mounted) {
-                                ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Foro eliminado')));
-                              }
-                            } catch (e) {
-                              if (context.mounted) {
-                                ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(e.toString())));
-                              }
-                            }
-                          }
-                        },
+                        onDelete: () => _handleDeleteForumPost(notifier, post.id),
                       ),
                     );
                   }),
@@ -287,86 +373,7 @@ class _CommunityScreenState extends ConsumerState<CommunityScreen> {
                       padding: const EdgeInsets.only(bottom: 12),
                       child: ClinicalArticleCard(
                         article: article,
-                        onTap: () {
-                          showModalBottomSheet(
-                            context: context,
-                            isScrollControlled: true,
-                            backgroundColor: Colors.transparent,
-                            builder: (context) => Container(
-                              padding: const EdgeInsets.all(24),
-                              decoration: BoxDecoration(
-                                color: Theme.of(context).colorScheme.surface,
-                                borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
-                              ),
-                              constraints: BoxConstraints(
-                                maxHeight: MediaQuery.of(context).size.height * 0.85,
-                              ),
-                              child: Column(
-                                mainAxisSize: MainAxisSize.min,
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Text(
-                                        '${article.category} • ${article.readTime}',
-                                        style: TextStyle(
-                                          fontSize: 12,
-                                          fontWeight: FontWeight.w800,
-                                          color: article.categoryColor,
-                                          letterSpacing: 0.5,
-                                        ),
-                                      ),
-                                      IconButton(
-                                        onPressed: () => Navigator.of(context).pop(),
-                                        icon: const Icon(Icons.close),
-                                      ),
-                                    ],
-                                  ),
-                                  const SizedBox(height: 16),
-                                  Text(
-                                    article.title,
-                                    style: const TextStyle(
-                                      fontSize: 22,
-                                      fontWeight: FontWeight.bold,
-                                      height: 1.2,
-                                    ),
-                                  ),
-                                  const SizedBox(height: 16),
-                                  Row(
-                                    children: [
-                                      const CircleAvatar(
-                                        radius: 14,
-                                        backgroundImage: NetworkImage('https://ui-avatars.com/api/?name=HabitApp&background=0D8ABC&color=fff'),
-                                      ),
-                                      const SizedBox(width: 8),
-                                      Text(
-                                        'HabitApp • Publicado el ${article.publishDate}',
-                                        style: TextStyle(
-                                          fontSize: 13,
-                                          color: Theme.of(context).colorScheme.onSurfaceVariant,
-                                          fontWeight: FontWeight.w500,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                  const SizedBox(height: 24),
-                                  Expanded(
-                                    child: SingleChildScrollView(
-                                      child: Text(
-                                        article.content,
-                                        style: const TextStyle(
-                                          fontSize: 16,
-                                          height: 1.6,
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          );
-                        },
+                        onTap: () => _showArticleReaderSheet(article),
                       ),
                     );
                   }),

@@ -10,7 +10,7 @@ part 'dio_client.g.dart';
 // Provider for FlutterSecureStorage
 @Riverpod(keepAlive: true)
 FlutterSecureStorage secureStorage(Ref ref) {
-  return FlutterSecureStorage();
+  return const FlutterSecureStorage();
 }
 
 String _resolveApiBaseUrl() {

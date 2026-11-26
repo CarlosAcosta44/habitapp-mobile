@@ -61,11 +61,11 @@ class HabitsRepository {
   /// Obtiene todas las categorías de hábitos registradas en el backend
   Future<List<CategoryModel>> getCategorias() async {
     final defaultCategories = [
-      CategoryModel(id: 'cat-salud', nombre: 'Salud', icono: 'salud'),
-      CategoryModel(id: 'cat-deporte', nombre: 'Deporte', icono: 'deporte'),
-      CategoryModel(id: 'cat-lectura', nombre: 'Lectura', icono: 'lectura'),
-      CategoryModel(id: 'cat-mente', nombre: 'Mindfulness', icono: 'mindfulness'),
-      CategoryModel(id: 'cat-agua', nombre: 'Agua & Nutrición', icono: 'agua'),
+      const CategoryModel(id: 'cat-salud', nombre: 'Salud', icono: 'salud'),
+      const CategoryModel(id: 'cat-deporte', nombre: 'Deporte', icono: 'deporte'),
+      const CategoryModel(id: 'cat-lectura', nombre: 'Lectura', icono: 'lectura'),
+      const CategoryModel(id: 'cat-mente', nombre: 'Mindfulness', icono: 'mindfulness'),
+      const CategoryModel(id: 'cat-agua', nombre: 'Agua & Nutrición', icono: 'agua'),
     ];
 
     try {

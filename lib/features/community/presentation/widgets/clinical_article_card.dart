@@ -81,7 +81,7 @@ class ClinicalArticleCard extends StatelessWidget {
               // Bottom row: Avatar, Author & Publish Date
               Row(
                 children: [
-                  CircleAvatar(
+                  const CircleAvatar(
                     radius: 10,
                     backgroundImage: NetworkImage('https://ui-avatars.com/api/?name=HabitApp&background=0D8ABC&color=fff'),
                   ),

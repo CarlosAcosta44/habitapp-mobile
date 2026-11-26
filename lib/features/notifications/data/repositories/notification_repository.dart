@@ -15,6 +15,8 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   debugPrint("Handling a background message: ${message.messageId}");
 }
 
+const _kHabitRemindersChannelName = 'Recordatorios de Hábitos';
+
 class NotificationRepository {
   static final NotificationRepository _instance = NotificationRepository._internal();
   factory NotificationRepository() => _instance;
@@ -58,9 +60,9 @@ class NotificationRepository {
 
   Future<void> _setupLocalNotifications() async {
     AndroidInitializationSettings initializationSettingsAndroid =
-        AndroidInitializationSettings('@mipmap/ic_launcher');
+        const AndroidInitializationSettings('@mipmap/ic_launcher');
         
-    DarwinInitializationSettings initializationSettingsIOS = DarwinInitializationSettings(
+    DarwinInitializationSettings initializationSettingsIOS = const DarwinInitializationSettings(
       requestAlertPermission: false,
       requestBadgePermission: false,
       requestSoundPermission: false,
@@ -79,9 +81,9 @@ class NotificationRepository {
     );
 
     if (Platform.isAndroid) {
-      AndroidNotificationChannel channel = AndroidNotificationChannel(
+      AndroidNotificationChannel channel = const AndroidNotificationChannel(
         'habitapp_high_importance_channel', // id
-        'Recordatorios de Hábitos', // name
+        _kHabitRemindersChannelName, // name
         description: 'Canal usado para notificaciones importantes de hábitos.',
         importance: Importance.max,
       );
@@ -116,10 +118,10 @@ class NotificationRepository {
           id: notification.hashCode,
           title: notification.title,
           body: notification.body,
-          notificationDetails: NotificationDetails(
+          notificationDetails: const NotificationDetails(
             android: AndroidNotificationDetails(
               'habitapp_high_importance_channel',
-              'Recordatorios de Hábitos',
+              _kHabitRemindersChannelName,
               channelDescription: 'Canal usado para notificaciones importantes de hábitos.',
               icon: '@mipmap/ic_launcher',
               importance: Importance.max,
@@ -156,10 +158,10 @@ class NotificationRepository {
       id: id,
       title: title,
       body: body,
-      notificationDetails: NotificationDetails(
+      notificationDetails: const NotificationDetails(
         android: AndroidNotificationDetails(
           'habitapp_high_importance_channel',
-          'Recordatorios de Hábitos',
+          _kHabitRemindersChannelName,
           importance: Importance.max,
           priority: Priority.high,
         ),
@@ -193,7 +195,7 @@ class NotificationRepository {
         notificationDetails: const NotificationDetails(
           android: AndroidNotificationDetails(
             'habitapp_high_importance_channel',
-            'Recordatorios de Hábitos',
+            _kHabitRemindersChannelName,
             channelDescription: 'Recordatorios de hábitos',
             importance: Importance.max,
             priority: Priority.high,
