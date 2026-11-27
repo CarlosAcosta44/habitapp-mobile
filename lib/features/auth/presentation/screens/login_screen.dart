@@ -41,6 +41,20 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     }
   }
 
+  void _openForgotPasswordSheet() {
+    showModalBottomSheet<void>(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Theme.of(context).colorScheme.surface,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+      ),
+      builder: (ctx) => _ForgotPasswordSheet(
+        initialEmail: _emailCtrl.text.trim(),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final authState = ref.watch(authProvider);
@@ -256,7 +270,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                                 ),
                                 const Spacer(),
                                 GestureDetector(
-                                  onTap: () {},
+                                  onTap: _openForgotPasswordSheet,
                                   child: Text(
                                     '¿Olvidaste tu contraseña?',
                                     style: TextStyle(
@@ -488,6 +502,224 @@ class _StyledField extends StatelessWidget {
         focusedErrorBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
           borderSide: BorderSide(color: Colors.red.shade400, width: 1.5),
+        ),
+      ),
+    );
+  }
+}
+
+class _ForgotPasswordSheet extends ConsumerStatefulWidget {
+  final String initialEmail;
+
+  const _ForgotPasswordSheet({required this.initialEmail});
+
+  @override
+  ConsumerState<_ForgotPasswordSheet> createState() =>
+      _ForgotPasswordSheetState();
+}
+
+class _ForgotPasswordSheetState extends ConsumerState<_ForgotPasswordSheet> {
+  late final TextEditingController _emailCtrl;
+  final _tokenCtrl = TextEditingController();
+  final _newPassCtrl = TextEditingController();
+  bool _codeSent = false;
+  bool _loading = false;
+  String? _errorMsg;
+  String? _infoMsg;
+
+  @override
+  void initState() {
+    super.initState();
+    _emailCtrl = TextEditingController(text: widget.initialEmail);
+  }
+
+  @override
+  void dispose() {
+    _emailCtrl.dispose();
+    _tokenCtrl.dispose();
+    _newPassCtrl.dispose();
+    super.dispose();
+  }
+
+  Future<void> _sendResetEmail() async {
+    final email = _emailCtrl.text.trim();
+    if (email.isEmpty || !email.contains('@')) {
+      setState(() => _errorMsg = 'Ingresa un correo electrónico válido.');
+      return;
+    }
+    setState(() {
+      _loading = true;
+      _errorMsg = null;
+      _infoMsg = null;
+    });
+    try {
+      await ref.read(authProvider.notifier).requestPasswordReset(email);
+      if (!mounted) return;
+      setState(() {
+        _codeSent = true;
+        _loading = false;
+        _infoMsg =
+            'Enviamos las instrucciones y el código de recuperación a $email.';
+      });
+    } catch (e) {
+      if (!mounted) return;
+      setState(() {
+        _loading = false;
+        _errorMsg = e.toString().replaceAll('Exception: ', '');
+      });
+    }
+  }
+
+  Future<void> _confirmNewPassword() async {
+    final token = _tokenCtrl.text.trim();
+    final newPass = _newPassCtrl.text;
+    if (token.isEmpty) {
+      setState(() => _errorMsg = 'Pega el código/token recibido en tu correo.');
+      return;
+    }
+    if (newPass.length < 6) {
+      setState(
+          () => _errorMsg = 'La nueva contraseña debe tener mínimo 6 caracteres.');
+      return;
+    }
+    setState(() {
+      _loading = true;
+      _errorMsg = null;
+    });
+    try {
+      await ref
+          .read(authProvider.notifier)
+          .confirmPasswordReset(token, newPass);
+      if (!mounted) return;
+      Navigator.of(context).pop();
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text(
+              '¡Contraseña actualizada exitosamente! Ya puedes iniciar sesión.'),
+          backgroundColor: _kGreenBadge,
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
+    } catch (e) {
+      if (!mounted) return;
+      setState(() {
+        _loading = false;
+        _errorMsg = e.toString().replaceAll('Exception: ', '');
+      });
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final bottomInset = MediaQuery.of(context).viewInsets.bottom;
+    return Padding(
+      padding: EdgeInsets.fromLTRB(24, 24, 24, bottomInset + 24),
+      child: SingleChildScrollView(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              _codeSent ? 'Restablecer Contraseña' : 'Recuperar Contraseña',
+              style: TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.w800,
+                color: Theme.of(context).colorScheme.onSurface,
+              ),
+            ),
+            const SizedBox(height: 8),
+            Text(
+              _codeSent
+                  ? 'Revisa tu bandeja de entrada. Puedes usar el enlace del correo o pegar aquí el token recibido:'
+                  : 'Ingresa tu correo registrado y te enviaremos un enlace y código de recuperación.',
+              style: TextStyle(
+                fontSize: 13,
+                color: Theme.of(context).colorScheme.onSurfaceVariant,
+              ),
+            ),
+            const SizedBox(height: 16),
+            if (_errorMsg != null) ...[
+              Text(
+                _errorMsg!,
+                style: TextStyle(
+                  color: Colors.red.shade600,
+                  fontSize: 12,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+              const SizedBox(height: 12),
+            ],
+            if (_infoMsg != null) ...[
+              Text(
+                _infoMsg!,
+                style: const TextStyle(
+                  color: _kGreenBadge,
+                  fontSize: 12,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+              const SizedBox(height: 12),
+            ],
+            if (!_codeSent) ...[
+              _StyledField(
+                controller: _emailCtrl,
+                hint: 'tu-correo@ejemplo.com',
+                prefixIcon: Icons.mail_outline_rounded,
+                keyboardType: TextInputType.emailAddress,
+              ),
+              const SizedBox(height: 16),
+              SizedBox(
+                width: double.infinity,
+                height: 48,
+                child: ElevatedButton(
+                  onPressed: _loading ? null : _sendResetEmail,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Theme.of(context).colorScheme.primary,
+                    foregroundColor: Theme.of(context).colorScheme.surface,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(24),
+                    ),
+                  ),
+                  child: Text(
+                      _loading ? 'Enviando...' : 'Enviar correo de recuperación'),
+                ),
+              ),
+              TextButton(
+                onPressed: () => setState(() => _codeSent = true),
+                child: const Text('Ya tengo un código de recuperación'),
+              ),
+            ] else ...[
+              _StyledField(
+                controller: _tokenCtrl,
+                hint: 'Pega aquí el token recibido por correo',
+                prefixIcon: Icons.vpn_key_outlined,
+              ),
+              const SizedBox(height: 12),
+              _StyledField(
+                controller: _newPassCtrl,
+                hint: 'Nueva contraseña (mínimo 6 caracteres)',
+                prefixIcon: Icons.lock_outline_rounded,
+                obscureText: true,
+              ),
+              const SizedBox(height: 16),
+              SizedBox(
+                width: double.infinity,
+                height: 48,
+                child: ElevatedButton(
+                  onPressed: _loading ? null : _confirmNewPassword,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Theme.of(context).colorScheme.primary,
+                    foregroundColor: Theme.of(context).colorScheme.surface,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(24),
+                    ),
+                  ),
+                  child: Text(
+                      _loading ? 'Actualizando...' : 'Actualizar contraseña'),
+                ),
+              ),
+            ],
+          ],
         ),
       ),
     );
