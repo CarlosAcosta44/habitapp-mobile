@@ -70,6 +70,14 @@ class AuthNotifier extends _$AuthNotifier {
     state = const AsyncValue.data(false);
   }
 
+  Future<void> requestPasswordReset(String email) async {
+    await _repository.resetPassword(email);
+  }
+
+  Future<void> confirmPasswordReset(String token, String newPassword) async {
+    await _repository.updatePassword(newPassword, token: token);
+  }
+
   // --- SOCIAL LOGIN ---
 
   Future<void> signInWithGoogle() async {
